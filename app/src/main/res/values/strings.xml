@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">No_to_Garbage</string>
+    <string name="BTN_Kitchen">Кухня</string>
+    <string name="BTN_Сabinet">Кабинет</string>
+    <string name="BTN_Bathroom">Ванная</string>
+    <string name="BTN_Wardrobe">Гардеробная</string>
+    <string name="title_activity_main">мусор</string>
+    <string name="BTN_Battery">Батарейки</string>
+    <string name="BTN_Paper">Бумага</string>
+    <string name="BTN_Technic">Техника</string>
+    <string name="BTN_Bottles">Бутылки</string>
+    <string name="BTN_GoodClothes">Одежда в хорошем состоянии</string>
+    <string name="BTN_BadClothes">Одежда в плохом состоянии</string>
+    <string name="BTN_Jars">Стекляные банки</string>
+    <string name="BTN_Сontainers">Контейнеры</string>
+    <string name="BTN_Box">Коробки</string>
+</resources>

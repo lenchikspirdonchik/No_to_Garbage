@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "791111934162",
+    "firebase_url": "https://notogarbage-1bba7.firebaseio.com",
+    "project_id": "notogarbage-1bba7",
+    "storage_bucket": "notogarbage-1bba7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:791111934162:android:7d012c4e8a181e6d8dcd0b",
+        "android_client_info": {
+          "package_name": "spiridonov.no_to_garbage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "791111934162-9qrlg4a50j51j6eaaodr89hqqo4j10rk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_I54iM8A-KutMKPHmdRTFRFnBtVD_9AM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "791111934162-9qrlg4a50j51j6eaaodr89hqqo4j10rk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
