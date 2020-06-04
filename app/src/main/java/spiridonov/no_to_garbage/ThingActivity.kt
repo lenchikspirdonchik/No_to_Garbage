@@ -1,11 +1,13 @@
 package spiridonov.no_to_garbage
 
-
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yandex.mapkit.Animation
@@ -16,22 +18,31 @@ import com.yandex.mapkit.mapview.MapView
 import kotlinx.android.synthetic.main.activity_onething.*
 
 
-class OnethingActivity : AppCompatActivity() {
-    lateinit var mainCategory:String
+class ThingActivity : AppCompatActivity() {
+    lateinit var mainCategory: String
     private val TAG = "DocSnippets"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         MapKitFactory.setApiKey("c7cf7f99-a766-4d4b-bd41-450bbb95057c")
         MapKitFactory.initialize(this)
-        setContentView(R.layout.activity_onething)
+        setContentView(R.layout.activity_thing)
+        setSupportActionBar(findViewById(R.id.toolbar))
+        findViewById<CollapsingToolbarLayout>(R.id.toolbar_layout).title = title
+        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
+            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show()
+
+        }
         val mintent = intent
         mainCategory = mintent.extras?.getString("KEY_CATEGORY").toString()
         val txt = findViewById<TextView>(R.id.textView)
         var mapview = findViewById<View>(R.id.mapview) as MapView
         mapview.map.move(
-            CameraPosition(Point(60.012845, 30.279540), 15.0f, 0.0f, 0.0f),
+            CameraPosition(Point(60.012845, 30.279540), 11.0f, 0.0f, 0.0f),
             Animation(Animation.Type.SMOOTH, 0F), null
         )
+
+
         val db = Firebase.firestore
         db.collection(mainCategory).get().addOnSuccessListener { result ->
             for (document in result) {
@@ -43,9 +54,8 @@ class OnethingActivity : AppCompatActivity() {
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents.", exception)
             }
-
-
     }
+
     override fun onStop() {
         super.onStop()
         mapview.onStop()
@@ -57,4 +67,5 @@ class OnethingActivity : AppCompatActivity() {
         mapview.onStart()
         MapKitFactory.getInstance().onStart()
     }
+
 }

@@ -14,4 +14,6 @@
     <string name="BTN_Jars">Стекляные банки</string>
     <string name="BTN_Сontainers">Контейнеры</string>
     <string name="BTN_Box">Коробки</string>
+    <string name="title_activity_thing">ScrollingActivity</string>
+    <string name="action_settings">Settings</string>
 </resources>
