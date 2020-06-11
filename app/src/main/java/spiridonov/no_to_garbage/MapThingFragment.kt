@@ -15,6 +15,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
+
 class MapThingFragment : Fragment() {
     private lateinit var msp: SharedPreferences
     private val KEY_THING = "thing"
@@ -33,7 +34,7 @@ class MapThingFragment : Fragment() {
                     googleMap.addMarker(
                         MarkerOptions().position(point).title("${document.getString("Head")}")
                     )
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(point))
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLng(point))
                     geoPoint = document.getGeoPoint("Map$mapp")
                     mapp++
                 }
@@ -48,7 +49,6 @@ class MapThingFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         return inflater.inflate(R.layout.fragment_map_thing, container, false)
     }
 
@@ -57,6 +57,5 @@ class MapThingFragment : Fragment() {
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
     }
-
 
 }

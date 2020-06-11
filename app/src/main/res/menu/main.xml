@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_description"
+        android:icon="@drawable/battery"
+        android:title="@string/description" />
+
+    <item
+        android:id="@+id/navigation_Map"
+        android:icon="@drawable/battery"
+        android:title="@string/Map" />
+</menu>

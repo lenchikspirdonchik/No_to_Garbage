@@ -51,12 +51,4 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.google.firebase:firebase-firestore-ktx:21.4.3'
     implementation 'com.android.support:multidex:1.0.3'
-    // Основная библиотека MapKit.
-    implementation 'com.yandex.android:mapkit:3.5.0'
-    // Дополнительные модули MapKit.
-    // Удалите зависимости если ваше приложение не использует их.
-    implementation 'com.yandex.android:directions:3.5.0'
-    implementation 'com.yandex.android:places:3.5.0'
-    implementation 'com.yandex.android:search:3.5.0'
-    implementation 'com.yandex.android:transport:3.5.0'
 }

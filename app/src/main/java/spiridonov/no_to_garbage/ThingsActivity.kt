@@ -56,9 +56,8 @@ class ThingsActivity : AppCompatActivity() {
         val mintent = Intent(this, OnethingActivity::class.java)
         val btn: Button = view as Button
         msp = this.getSharedPreferences("things", Context.MODE_PRIVATE)
-        mintent.putExtra("KEY_CATEGORY", view.text)
         val editor = msp.edit()
-        editor.putString(KEY_THING, view.text.toString())
+        editor.putString(KEY_THING, btn.text.toString())
         editor.apply()
         startActivity(mintent)
     }
