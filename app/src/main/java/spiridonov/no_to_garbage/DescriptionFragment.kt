@@ -26,7 +26,6 @@ class DescriptionFragment : Fragment() {
         var mainCategory = ""
         msp = this.requireActivity().getSharedPreferences("things", Context.MODE_PRIVATE)
         if (msp.contains("thing")) mainCategory = msp.getString("thing", "").toString()
-        Log.w(TAG, "mainCategory = $mainCategory")
         val txt = root.findViewById<TextView>(R.id.textView)
         val db = Firebase.firestore
         db.collection(mainCategory).get().addOnSuccessListener { result ->

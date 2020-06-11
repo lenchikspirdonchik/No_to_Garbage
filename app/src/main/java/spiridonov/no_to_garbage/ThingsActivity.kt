@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -25,9 +26,13 @@ class ThingsActivity : AppCompatActivity() {
         btn_2 = findViewById(R.id.btn_2)
         btn_3 = findViewById(R.id.btn_3)
         btn_4 = findViewById(R.id.btn_4)
+        val actionBar = supportActionBar
+        actionBar?.setHomeButtonEnabled(true)
+        actionBar?.setDisplayHomeAsUpEnabled(true)
 
         val mintent = intent
         val mainCategory = mintent.extras!!.getString("KEY_CATEGORY")
+        title = mainCategory
         when (mainCategory) {
             resources.getString(R.string.BTN_Kitchen) -> {
                 setText(btn_1, resources.getString(R.string.BTN_Jars), "jars")
@@ -74,4 +79,13 @@ class ThingsActivity : AppCompatActivity() {
         button.setBackgroundResource(resID)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 }
