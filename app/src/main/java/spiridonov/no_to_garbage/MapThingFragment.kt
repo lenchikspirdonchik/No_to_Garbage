@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.ktx.firestore
@@ -19,11 +20,11 @@ import com.google.firebase.ktx.Firebase
 class MapThingFragment : Fragment() {
     private lateinit var msp: SharedPreferences
     private val KEY_THING = "thing"
-
     private val callback = OnMapReadyCallback { googleMap ->
         msp = this.requireActivity().getSharedPreferences("things", Context.MODE_PRIVATE)
         var mainCategory = ""
         if (msp.contains(KEY_THING)) mainCategory = msp.getString(KEY_THING, "").toString()
+
         val db = Firebase.firestore
         db.collection(mainCategory).get().addOnSuccessListener { result ->
             for (document in result) {
@@ -34,7 +35,10 @@ class MapThingFragment : Fragment() {
                     googleMap.addMarker(
                         MarkerOptions().position(point).title("${document.getString("Head")}")
                     )
-                    googleMap.animateCamera(CameraUpdateFactory.newLatLng(point))
+                    val cameraUpdate = CameraUpdateFactory.newCameraPosition(
+                        CameraPosition.Builder().target(point).zoom(13f).build()
+                    )
+                    googleMap.animateCamera(cameraUpdate)
                     geoPoint = document.getGeoPoint("Map$mapp")
                     mapp++
                 }

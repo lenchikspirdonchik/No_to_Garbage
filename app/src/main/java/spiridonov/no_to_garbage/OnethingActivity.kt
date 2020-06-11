@@ -18,8 +18,7 @@ class OnethingActivity : AppCompatActivity() {
         val navView = findViewById<BottomNavigationView>(R.id.nav_view)
         val appBarConfiguration = AppBarConfiguration.Builder(
             R.id.navigation_description, R.id.navigation_Map
-        )
-            .build()
+        ).build()
         val navController = Navigation.findNavController(this, R.id.nav_host_fragment)
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
         NavigationUI.setupWithNavController(navView, navController)

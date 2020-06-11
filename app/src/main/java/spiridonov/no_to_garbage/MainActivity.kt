@@ -13,11 +13,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
     }
 
     fun btnMain(view: View) {
         val rotate: Animation = AnimationUtils.loadAnimation(this, R.anim.rotate)
-        view.startAnimation(rotate);
+        view.startAnimation(rotate)
         val mintent = Intent(this@MainActivity, ThingsActivity::class.java)
         val btn:Button = view as Button
         mintent.putExtra("KEY_CATEGORY", view.text)
