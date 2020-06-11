@@ -30,22 +30,22 @@ class ThingsActivity : AppCompatActivity() {
         val mainCategory = mintent.extras!!.getString("KEY_CATEGORY")
         when (mainCategory) {
             resources.getString(R.string.BTN_Kitchen) -> {
-                setText(btn_1, resources.getString(R.string.BTN_Jars))
-                setText(btn_2, resources.getString(R.string.BTN_Bottles))
-                setText(btn_3, resources.getString(R.string.BTN_Сontainers))
-                setText(btn_4, resources.getString(R.string.BTN_Box))
+                setText(btn_1, resources.getString(R.string.BTN_Jars), "jars")
+                setText(btn_2, resources.getString(R.string.BTN_Bottles), "kitchenbottles")
+                setText(btn_3, resources.getString(R.string.BTN_Сontainers), "containers")
+                setText(btn_4, resources.getString(R.string.BTN_Box), "box")
             }
             resources.getString(R.string.BTN_Bathroom) -> {
-                setText(btn_1, resources.getString(R.string.BTN_Bottles))
+                setText(btn_1, resources.getString(R.string.BTN_Bottles), "bathbottles")
             }
             resources.getString(R.string.BTN_Wardrobe) -> {
-                setText(btn_1, resources.getString(R.string.BTN_GoodClothes))
-                setText(btn_2, resources.getString(R.string.BTN_BadClothes))
+                setText(btn_1, resources.getString(R.string.BTN_GoodClothes), "goodclothes")
+                setText(btn_2, resources.getString(R.string.BTN_BadClothes), "badclothes")
             }
             resources.getString(R.string.BTN_Сabinet) -> {
-                setText(btn_1, resources.getString(R.string.BTN_Battery))
-                setText(btn_2, resources.getString(R.string.BTN_Paper))
-                setText(btn_3, resources.getString(R.string.BTN_Technic))
+                setText(btn_1, resources.getString(R.string.BTN_Battery), "battery")
+                setText(btn_2, resources.getString(R.string.BTN_Paper), "paper")
+                setText(btn_3, resources.getString(R.string.BTN_Technic), "technic")
             }
         }
     }
@@ -63,9 +63,15 @@ class ThingsActivity : AppCompatActivity() {
     }
 
 
-    private fun setText(button: Button, txt: String) {
+    private fun setText(
+        button: Button = btn_1,
+        txt: String = resources.getString(R.string.BTN_Jars),
+        pic: String = "jars"
+    ) {
         button.visibility = View.VISIBLE
         button.text = txt
+        val resID = resources.getIdentifier(pic, "drawable", packageName)
+        button.setBackgroundResource(resID)
     }
 
 }
