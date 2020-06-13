@@ -2,11 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/navigation_description"
-        android:icon="@drawable/battery"
+        android:icon="@drawable/description"
         android:title="@string/description" />
 
     <item
         android:id="@+id/navigation_Map"
-        android:icon="@drawable/battery"
+        android:icon="@drawable/map_place"
         android:title="@string/Map" />
 </menu>

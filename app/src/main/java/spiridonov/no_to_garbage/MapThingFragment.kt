@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CameraPosition
@@ -20,40 +21,14 @@ import com.google.firebase.ktx.Firebase
 class MapThingFragment : Fragment() {
     private lateinit var msp: SharedPreferences
     private val KEY_THING = "thing"
-    private val callback = OnMapReadyCallback { googleMap ->
-        msp = this.requireActivity().getSharedPreferences("things", Context.MODE_PRIVATE)
-        var mainCategory = ""
-        if (msp.contains(KEY_THING)) mainCategory = msp.getString(KEY_THING, "").toString()
-
-        val db = Firebase.firestore
-        db.collection(mainCategory).get().addOnSuccessListener { result ->
-            for (document in result) {
-                var geoPoint = document.getGeoPoint("Map")
-                var mapp = 2
-                while (geoPoint != null) {
-                    val point = LatLng(geoPoint.latitude, geoPoint.longitude)
-                    googleMap.addMarker(
-                        MarkerOptions().position(point).title("${document.getString("Head")}")
-                    )
-                    val cameraUpdate = CameraUpdateFactory.newCameraPosition(
-                        CameraPosition.Builder().target(point).zoom(13f).build()
-                    )
-                    googleMap.animateCamera(cameraUpdate)
-                    geoPoint = document.getGeoPoint("Map$mapp")
-                    mapp++
-                }
-            }
-        }
-            .addOnFailureListener { exception ->
-            }
-    }
+    private val callback = OnMapReadyCallback { googleMap -> mapCreate(googleMap) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_map_thing, container, false)
+        return inflater.inflate(R.layout.fragment_mapview, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -62,4 +37,37 @@ class MapThingFragment : Fragment() {
         mapFragment?.getMapAsync(callback)
     }
 
+    private fun mapCreate(googleMap: GoogleMap) {
+        msp = this.requireActivity().getSharedPreferences("things", Context.MODE_PRIVATE)
+        var mainCategory = ""
+        if (msp.contains(KEY_THING)) mainCategory = msp.getString(KEY_THING, "").toString()
+
+        val db = Firebase.firestore
+        db.collection(mainCategory).get().addOnSuccessListener { result ->
+            for (document in result) {
+                var geoPoint = document.getGeoPoint("Map")
+                val point = LatLng(geoPoint!!.latitude, geoPoint.longitude)
+                googleMap.addMarker(
+                    MarkerOptions().position(point).title("${document.getString("Maptxt")}")
+                )
+                val cameraUpdate = CameraUpdateFactory.newCameraPosition(
+                    CameraPosition.Builder().target(point).zoom(13f).build()
+                )
+                googleMap.animateCamera(cameraUpdate)
+                var mapp = 2
+                geoPoint = document.getGeoPoint("Map$mapp")
+                while (geoPoint != null) {
+                    val point = LatLng(geoPoint.latitude, geoPoint.longitude)
+                    googleMap.addMarker(
+                        MarkerOptions().position(point)
+                            .title("${document.getString("Maptxt$mapp")}")
+                    )
+                    geoPoint = document.getGeoPoint("Map$mapp")
+                    mapp++
+                }
+            }
+        }
+            .addOnFailureListener { exception ->
+            }
+    }
 }
