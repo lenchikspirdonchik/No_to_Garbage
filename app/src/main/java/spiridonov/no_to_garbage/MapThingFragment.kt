@@ -66,8 +66,6 @@ class MapThingFragment : Fragment() {
                     mapp++
                 }
             }
-        }
-            .addOnFailureListener { exception ->
-            }
+        }.addOnFailureListener { exception -> }
     }
 }
