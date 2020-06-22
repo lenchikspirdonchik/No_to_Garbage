@@ -19,4 +19,5 @@
     <string name="description">Описание</string>
     <string name="Map">Карта</string>
     <string name="whereGarbage">Признавайся, где намусорил?</string>
+    <string name="menu_home">Главная</string>
 </resources>

@@ -37,6 +37,7 @@ class DescriptionFragment : Fragment() {
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents.", exception)
             }
+
         return root
     }
 }
