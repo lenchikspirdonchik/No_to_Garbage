@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(setOf(R.id.nav_home), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-
+//TODO("если авторизация успешная, то в nav_header_main поставить картинку и ФИ пользователя")
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

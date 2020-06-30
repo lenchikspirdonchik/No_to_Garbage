@@ -20,4 +20,14 @@
     <string name="Map">Карта</string>
     <string name="whereGarbage">Признавайся, где намусорил?</string>
     <string name="menu_home">Главная</string>
+    <string name="menu_account">Личный кабинет</string>
+    <string name="email">Введите почту</string>
+    <string name="password">Введите пароль</string>
+    <string name="logActivity">Войти</string>
+    <string name="againPassword">Повторите пароль</string>
+    <string name="yourName">Введите Ваше имя</string>
+    <string name="SignUpActivity">Зарегестрироваться</string>
+    <string name="NoAcc">Еще нет аккаунта? Зарегестрируйтесь!</string>
+    <string name="errorEmail">Неправильно введена почта</string>
+    <string name="errorPassword">Неправильно введен пароль</string>
 </resources>
