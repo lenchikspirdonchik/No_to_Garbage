@@ -11,7 +11,7 @@
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
     <fragment
-        android:id="@+id/accountFragment"
+        android:id="@+id/nav_account"
         android:name="spiridonov.no_to_garbage.ui.AccountFragment"
         android:label="fragment_account"
         tools:layout="@layout/fragment_account" />

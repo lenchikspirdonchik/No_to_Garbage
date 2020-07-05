@@ -30,4 +30,6 @@
     <string name="NoAcc">Еще нет аккаунта? Зарегестрируйтесь!</string>
     <string name="errorEmail">Неправильно введена почта</string>
     <string name="errorPassword">Неправильно введен пароль</string>
+    <string name="successSiqnUp">Вы успешны зарегестрированны</string>
+    <string name="successSiqnIn">Вы успешны вошли</string>
 </resources>
