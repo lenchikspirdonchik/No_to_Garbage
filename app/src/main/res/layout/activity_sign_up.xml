@@ -30,8 +30,7 @@
             android:layout_weight="0.1"
             android:ems="10"
             android:hint="@string/yourName"
-            android:inputType="textEmailAddress"
-            android:password="false" />
+            android:inputType="textPersonName" />
 
         <EditText
             android:id="@+id/txtSEmail"
@@ -40,8 +39,7 @@
             android:layout_weight="0.1"
             android:ems="10"
             android:hint="@string/email"
-            android:inputType="textEmailAddress"
-            android:password="false" />
+            android:inputType="textEmailAddress" />
 
         <EditText
             android:id="@+id/txtSPassword"
@@ -59,8 +57,7 @@
             android:layout_weight="0.1"
             android:ems="10"
             android:hint="@string/againPassword"
-            android:inputType="textEmailAddress"
-            android:password="false" />
+            android:inputType="textPassword" />
 
         <androidx.legacy.widget.Space
             android:layout_width="match_parent"

@@ -31,7 +31,7 @@
             android:ems="10"
             android:hint="@string/email"
             android:inputType="textEmailAddress"
-            android:password="false" />
+            android:text="2003.leonid2003@gmail.com" />
 
         <EditText
             android:id="@+id/txtPassword"
@@ -40,24 +40,42 @@
             android:layout_weight="0.1"
             android:ems="10"
             android:hint="@string/password"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:password="true"
+            android:text="123456" />
 
         <androidx.legacy.widget.Space
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="0.4" />
+
+        <ProgressBar
+            android:id="@+id/PbarLogin"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.1"
+            android:visibility="invisible" />
+
+        <androidx.legacy.widget.Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4" />
 
         <Button
             android:id="@+id/btnLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.1"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@color/colorPrimary"
             android:text="@string/logActivity" />
 
         <androidx.legacy.widget.Space
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5" />
+            android:layout_weight="0.4" />
 
         <TextView
             android:id="@+id/txtNoAcc"
@@ -65,11 +83,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.1"
             android:text="@string/NoAcc"
+            android:textAlignment="center"
             android:textSize="18dp" />
 
         <androidx.legacy.widget.Space
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1.7" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -23,9 +23,16 @@
             android:value="@string/google_maps_key" />
 
 
-        <activity android:name=".SignUpActivity" />
+        <activity
+            android:name=".SignUpActivity"
+            android:label="@string/SignUpActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name=".LoginActivity" />
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/logActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
 
         <activity android:name=".OnethingActivity" />
 

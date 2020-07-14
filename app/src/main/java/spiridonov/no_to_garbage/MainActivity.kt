@@ -11,11 +11,13 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.nav_header_main.*
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
-
+    private lateinit var mAuth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -30,7 +32,14 @@ class MainActivity : AppCompatActivity() {
             AppBarConfiguration(setOf(R.id.nav_home, R.id.nav_account), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-//TODO("если авторизация успешная, то в nav_header_main поставить картинку и ФИ пользователя")
+
+        val mAuth = FirebaseAuth.getInstance()
+        val firebaseUser = mAuth.currentUser
+        if (firebaseUser != null && header_name != null) {
+            header_name.text = firebaseUser.email
+        }
+
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
