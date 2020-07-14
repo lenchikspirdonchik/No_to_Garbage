@@ -11,6 +11,10 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import spiridonov.no_to_garbage.LoginActivity
 import spiridonov.no_to_garbage.R
 
@@ -27,12 +31,32 @@ class AccountFragment : Fragment() {
         val btn_signOu = root.findViewById<Button>(R.id.btn_signOut)
         val textView = root.findViewById<TextView>(R.id.textView4)
         val firebaseUser = mAuth.currentUser
+        val firebaseDate = FirebaseDatabase.getInstance()
+        val rootReference = firebaseDate.reference
+
+
         if (firebaseUser == null) {
             val mintent: Intent? = Intent(context, LoginActivity::class.java)
             startActivityForResult(mintent, 1)
         } else {
             Log.d("Log", "from account page ${firebaseUser.email.toString()}")
-            textView.text = "добрый день,\n ${firebaseUser.email}"
+            val nameReference = rootReference.child("Users").child(firebaseUser.uid).child("Name")
+
+            nameReference.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val value =
+                        dataSnapshot.getValue(String::class.java)!!
+                    Log.d("TAG", "Value is: $value")
+                    textView.text = "добрый день, " +
+                            "$value" +
+                            "\nyour email: ${firebaseUser.email}"
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Failed to read value
+                    Log.w("TAG", "Failed to read value.", error.toException())
+                }
+            })
 
 
         }

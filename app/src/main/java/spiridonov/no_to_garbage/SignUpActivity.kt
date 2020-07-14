@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_sign_up.*
 
 
@@ -14,6 +16,7 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
         mAuth = FirebaseAuth.getInstance()
+
 
 
         btnSignUp.setOnClickListener {
@@ -33,6 +36,8 @@ class SignUpActivity : AppCompatActivity() {
                                 )
                                     .show()
                                 user.sendEmailVerification()
+                                saveNameInDatabase(user)
+
                                 val mintent: Intent? =
                                     Intent(applicationContext, MainActivity::class.java)
                                 startActivity(mintent)
@@ -48,6 +53,13 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
+    private fun saveNameInDatabase(user: FirebaseUser) {
+        val firebaseDate = FirebaseDatabase.getInstance()
+        val rootReference = firebaseDate.reference
+        val nameReference = rootReference.child("Users").child(user.uid).child("Name")
+        nameReference.setValue(txtSName.text.toString())
+    }
+
     private fun handlelogin(): Boolean {
         if (!checkEmailIsValid(txtSEmail.text.toString())) {
             txtSEmail.error = resources.getString(R.string.errorEmail)
@@ -60,6 +72,12 @@ class SignUpActivity : AppCompatActivity() {
             txtSPassword.error = resources.getString(R.string.errorPassword)
             txtSPassword.requestFocus()
             return false
+        }
+        if (txtSName.text.toString() == "") {
+            txtSName.error = resources.getString(R.string.errorName)
+            txtSName.requestFocus()
+            return false
+
         }
         return true
     }
