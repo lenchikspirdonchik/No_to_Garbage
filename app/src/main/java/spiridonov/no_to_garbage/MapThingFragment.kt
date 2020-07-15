@@ -46,7 +46,7 @@ class MapThingFragment : Fragment() {
         db.collection(mainCategory).get().addOnSuccessListener { result ->
             for (document in result) {
                 var geoPoint = document.getGeoPoint("Map")
-                val point = LatLng(geoPoint!!.latitude, geoPoint.longitude)
+                var point = LatLng(geoPoint!!.latitude, geoPoint.longitude)
                 googleMap.addMarker(
                     MarkerOptions().position(point).title("${document.getString("Maptxt")}")
                 )
@@ -57,7 +57,7 @@ class MapThingFragment : Fragment() {
                 var mapp = 2
                 geoPoint = document.getGeoPoint("Map$mapp")
                 while (geoPoint != null) {
-                    val point = LatLng(geoPoint.latitude, geoPoint.longitude)
+                    point = LatLng(geoPoint.latitude, geoPoint.longitude)
                     googleMap.addMarker(
                         MarkerOptions().position(point)
                             .title("${document.getString("Maptxt$mapp")}")
@@ -66,6 +66,6 @@ class MapThingFragment : Fragment() {
                     mapp++
                 }
             }
-        }.addOnFailureListener { exception -> }
+        }.addOnFailureListener { }
     }
 }
