@@ -33,4 +33,8 @@
     <string name="errorName">Неправильно введено имя</string>
     <string name="successSiqnUp">Вы успешны зарегестрированны</string>
     <string name="successSiqnIn">Вы успешны вошли</string>
+    <string name="addGarbage">Что выкинул на этот раз?</string>
+    <string name="howManyGarbage">Какое количество?</string>
+    <string name="done">Готово!</string>
+    <string name="noAccount">Для начала нужно войти в свой аккаунт!</string>
 </resources>

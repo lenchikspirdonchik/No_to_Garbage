@@ -19,6 +19,7 @@ class ThingsActivity : AppCompatActivity() {
     private lateinit var btn_4: Button
     private lateinit var msp: SharedPreferences
     private val KEY_THING = "thing"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_things)

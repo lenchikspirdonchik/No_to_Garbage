@@ -18,29 +18,28 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
 
         <activity
+            android:name=".AddGarbageActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".SignUpActivity"
             android:label="@string/SignUpActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".LoginActivity"
             android:label="@string/logActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-
-
         <activity android:name=".OnethingActivity" />
-
         <activity
             android:name=".ThingsActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme" />
-
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
@@ -51,8 +50,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
     </application>
 
 </manifest>
