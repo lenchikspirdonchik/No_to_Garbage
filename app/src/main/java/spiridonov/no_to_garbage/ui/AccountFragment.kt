@@ -29,7 +29,6 @@ class AccountFragment : Fragment() {
             getString(R.string.BTN_Bottles),
             getString(R.string.BTN_Сontainers),
             getString(R.string.BTN_Box),
-            getString(R.string.BTN_Bottles),
             getString(R.string.BTN_GoodClothes),
             getString(R.string.BTN_BadClothes),
             getString(R.string.BTN_Battery),
@@ -44,26 +43,24 @@ class AccountFragment : Fragment() {
         val firebaseUser = mAuth.currentUser
         val firebaseDate = FirebaseDatabase.getInstance()
         val rootReference = firebaseDate.reference
-        if (firebaseUser != null) {
-            nameReference = rootReference.child("Users").child(firebaseUser.uid).child("Name")
-            garbageReference = rootReference.child("Users").child(firebaseUser.uid).child("Garbage")
-        }
-        if (firebaseUser == null || nameReference == null || garbageReference == null) {
+
+        if (firebaseUser == null) {
             val mintent: Intent? = Intent(context, LoginActivity::class.java)
             startActivityForResult(mintent, 1)
         } else {
             Log.d("Log", "from account page ${firebaseUser.email.toString()}")
+            nameReference = rootReference.child("Users").child(firebaseUser.uid).child("Name")
+            garbageReference = rootReference.child("Users").child(firebaseUser.uid).child("Garbage")
 
-            try {
-                nameReference.addValueEventListener(object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val value =
-                            dataSnapshot.getValue(String::class.java)!!
-                        Log.d("TAG", "Value is: $value")
-                        textView.text = "добрый день, " +
-                                "$value" +
-                                "\nyour email: ${firebaseUser.email}"
-                    }
+            nameReference.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val value =
+                        dataSnapshot.getValue(String::class.java)!!
+                    Log.d("TAG", "Value is: $value")
+                    textView.text = "добрый день, " +
+                            "$value" +
+                            "\nyour email: ${firebaseUser.email}"
+                }
 
                     override fun onCancelled(error: DatabaseError) {
                         // Failed to read value
@@ -76,11 +73,10 @@ class AccountFragment : Fragment() {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         for (i in 0..allGarbage.lastIndex) {
                             val databaseReference = garbageReference.child(allGarbage[i])
-                            var garbage = ""
                             databaseReference.addValueEventListener(object : ValueEventListener {
                                 override fun onCancelled(error: DatabaseError) {}
                                 override fun onDataChange(datasnapshot: DataSnapshot) {
-                                    garbage = datasnapshot.getValue(String::class.java)!!
+                                    val garbage = datasnapshot.getValue(String::class.java)!!
                                     textView.text = "${textView.text}\n ${allGarbage[i]} : $garbage"
 
                                 }
@@ -89,10 +85,6 @@ class AccountFragment : Fragment() {
                         }
                     }
                 })
-
-            } catch (e: Exception) {
-            }
-
         }
         btn_signOu.setOnClickListener {
             mAuth.signOut()

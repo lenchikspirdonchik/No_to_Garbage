@@ -60,7 +60,6 @@ class SignUpActivity : AppCompatActivity() {
             getString(R.string.BTN_Bottles),
             getString(R.string.BTN_Сontainers),
             getString(R.string.BTN_Box),
-            getString(R.string.BTN_Bottles),
             getString(R.string.BTN_GoodClothes),
             getString(R.string.BTN_BadClothes),
             getString(R.string.BTN_Battery),
