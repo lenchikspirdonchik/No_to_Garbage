@@ -37,6 +37,7 @@ class SignUpActivity : AppCompatActivity() {
                                     .show()
                                 user.sendEmailVerification()
                                 saveNameInDatabase(user)
+                                createGarbageInDatabase(user)
 
                                 val mintent: Intent? =
                                     Intent(applicationContext, MainActivity::class.java)
@@ -51,6 +52,30 @@ class SignUpActivity : AppCompatActivity() {
 
             }
         }
+    }
+
+    private fun createGarbageInDatabase(user: FirebaseUser) {
+        var allGarbage = arrayOf(
+            resources.getString(R.string.BTN_Jars),
+            getString(R.string.BTN_Bottles),
+            getString(R.string.BTN_Сontainers),
+            getString(R.string.BTN_Box),
+            getString(R.string.BTN_Bottles),
+            getString(R.string.BTN_GoodClothes),
+            getString(R.string.BTN_BadClothes),
+            getString(R.string.BTN_Battery),
+            getString(R.string.BTN_Paper),
+            getString(R.string.BTN_Technic)
+        )
+
+        val firebaseDate = FirebaseDatabase.getInstance()
+        val rootReference = firebaseDate.reference
+        val garbageReference = rootReference.child("Users").child(user.uid).child("Garbage")
+        for (i in 0..allGarbage.lastIndex) {
+            val databaseReference = garbageReference.child(allGarbage[i])
+            databaseReference.setValue("0")
+        }
+
     }
 
     private fun saveNameInDatabase(user: FirebaseUser) {

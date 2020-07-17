@@ -26,7 +26,8 @@
 
         <activity
             android:name=".AddGarbageActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/addGarbage"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".SignUpActivity"
             android:label="@string/SignUpActivity"
@@ -35,6 +36,7 @@
             android:name=".LoginActivity"
             android:label="@string/logActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity android:name=".OnethingActivity" />
         <activity
             android:name=".ThingsActivity"

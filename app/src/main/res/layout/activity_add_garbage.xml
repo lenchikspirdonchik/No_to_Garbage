@@ -39,7 +39,7 @@
             android:id="@+id/editTextNumber"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="3"
             android:ems="10"
             android:hint="@string/howManyGarbage"
             android:inputType="number" />

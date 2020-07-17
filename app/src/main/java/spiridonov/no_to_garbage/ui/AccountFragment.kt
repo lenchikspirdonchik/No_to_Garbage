@@ -11,20 +11,31 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import spiridonov.no_to_garbage.LoginActivity
 import spiridonov.no_to_garbage.R
 
 
 class AccountFragment : Fragment() {
+    private lateinit var nameReference: DatabaseReference
+    private lateinit var garbageReference: DatabaseReference
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        var allGarbage = arrayOf(
+            resources.getString(R.string.BTN_Jars),
+            getString(R.string.BTN_Bottles),
+            getString(R.string.BTN_Сontainers),
+            getString(R.string.BTN_Box),
+            getString(R.string.BTN_Bottles),
+            getString(R.string.BTN_GoodClothes),
+            getString(R.string.BTN_BadClothes),
+            getString(R.string.BTN_Battery),
+            getString(R.string.BTN_Paper),
+            getString(R.string.BTN_Technic)
+        )
 
         val root = inflater.inflate(R.layout.fragment_account, container, false)
         val mAuth = FirebaseAuth.getInstance()
@@ -33,31 +44,54 @@ class AccountFragment : Fragment() {
         val firebaseUser = mAuth.currentUser
         val firebaseDate = FirebaseDatabase.getInstance()
         val rootReference = firebaseDate.reference
-
-
-        if (firebaseUser == null) {
+        if (firebaseUser != null) {
+            nameReference = rootReference.child("Users").child(firebaseUser.uid).child("Name")
+            garbageReference = rootReference.child("Users").child(firebaseUser.uid).child("Garbage")
+        }
+        if (firebaseUser == null || nameReference == null || garbageReference == null) {
             val mintent: Intent? = Intent(context, LoginActivity::class.java)
             startActivityForResult(mintent, 1)
         } else {
             Log.d("Log", "from account page ${firebaseUser.email.toString()}")
-            val nameReference = rootReference.child("Users").child(firebaseUser.uid).child("Name")
 
-            nameReference.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    val value =
-                        dataSnapshot.getValue(String::class.java)!!
-                    Log.d("TAG", "Value is: $value")
-                    textView.text = "добрый день, " +
-                            "$value" +
-                            "\nyour email: ${firebaseUser.email}"
-                }
+            try {
+                nameReference.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val value =
+                            dataSnapshot.getValue(String::class.java)!!
+                        Log.d("TAG", "Value is: $value")
+                        textView.text = "добрый день, " +
+                                "$value" +
+                                "\nyour email: ${firebaseUser.email}"
+                    }
 
-                override fun onCancelled(error: DatabaseError) {
-                    // Failed to read value
-                    Log.w("TAG", "Failed to read value.", error.toException())
-                }
-            })
+                    override fun onCancelled(error: DatabaseError) {
+                        // Failed to read value
+                        Log.w("TAG", "Failed to read value.", error.toException())
+                    }
+                })
+                garbageReference.addValueEventListener(object : ValueEventListener {
+                    override fun onCancelled(error: DatabaseError) {}
 
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        for (i in 0..allGarbage.lastIndex) {
+                            val databaseReference = garbageReference.child(allGarbage[i])
+                            var garbage = ""
+                            databaseReference.addValueEventListener(object : ValueEventListener {
+                                override fun onCancelled(error: DatabaseError) {}
+                                override fun onDataChange(datasnapshot: DataSnapshot) {
+                                    garbage = datasnapshot.getValue(String::class.java)!!
+                                    textView.text = "${textView.text}\n ${allGarbage[i]} : $garbage"
+
+                                }
+
+                            })
+                        }
+                    }
+                })
+
+            } catch (e: Exception) {
+            }
 
         }
         btn_signOu.setOnClickListener {
