@@ -43,10 +43,16 @@ class ThingsActivity : AppCompatActivity() {
             }
             resources.getString(R.string.BTN_Bathroom) -> {
                 setText(btn_1, resources.getString(R.string.BTN_Bottles), "bathbottles")
+                setText(btn_3, resources.getString(R.string.BTN_Bottles), "bathbottles")
+                btn_3.isEnabled = false
+                btn_3.visibility = View.INVISIBLE
             }
             resources.getString(R.string.BTN_Wardrobe) -> {
                 setText(btn_1, resources.getString(R.string.BTN_GoodClothes), "goodclothes")
                 setText(btn_2, resources.getString(R.string.BTN_BadClothes), "badclothes")
+                setText(btn_3, resources.getString(R.string.BTN_Bottles), "bathbottles")
+                btn_3.visibility = View.INVISIBLE
+                btn_3.isEnabled = false
             }
             resources.getString(R.string.BTN_Сabinet) -> {
                 setText(btn_1, resources.getString(R.string.BTN_Battery), "battery")

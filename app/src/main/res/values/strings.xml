@@ -36,6 +36,8 @@
     <string name="addGarbage">Что выкинул на этот раз?</string>
     <string name="howManyGarbage">Какое количество?</string>
     <string name="done">Готово!</string>
+    <string name="undo">Отмена!</string>
+    <string name="refreshInformation">Обновление информации</string>
     <string name="noAccount">Для начала нужно войти в свой аккаунт!</string>
     <string name="addGarageOnHome">Что то сдали? скорее добавьте информацию об этом!</string>
 </resources>

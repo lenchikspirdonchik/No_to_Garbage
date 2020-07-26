@@ -2,18 +2,21 @@ package spiridonov.no_to_garbage
 
 import android.R.layout
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_add_garbage.*
+
 
 class AddGarbageActivity : AppCompatActivity() {
 
@@ -67,6 +70,20 @@ class AddGarbageActivity : AppCompatActivity() {
                                 garbageReference.setValue(kolvo.toString())
                                 flag = false
                             }
+                            Snackbar.make(
+                                findViewById(android.R.id.content),
+                                resources.getString(R.string.refreshInformation),
+                                Snackbar.LENGTH_LONG
+                            )
+                                .setAction(resources.getString(R.string.undo)) {
+                                    val kolvoString2 = snapshot.getValue(String::class.java)!!
+                                    if (kolvoString2 != "") {
+                                        var kolvo = kolvoString2.toInt()
+                                        kolvo -= editTextNumber.text.toString().toInt()
+                                        garbageReference.setValue(kolvo.toString())
+                                        flag = false
+                                    }
+                                }.setActionTextColor(Color.RED).show()
                         }
                     })
 
