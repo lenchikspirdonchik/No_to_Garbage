@@ -117,7 +117,8 @@
                 android:textAlignment="center"
                 android:textColor="@color/colorMain"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:ignore="NestedWeights" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab"
