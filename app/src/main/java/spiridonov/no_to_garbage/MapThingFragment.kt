@@ -14,8 +14,10 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 
 class MapThingFragment : Fragment() {
@@ -39,33 +41,63 @@ class MapThingFragment : Fragment() {
 
     private fun mapCreate(googleMap: GoogleMap) {
         msp = this.requireActivity().getSharedPreferences("things", Context.MODE_PRIVATE)
-        var mainCategory = ""
-        if (msp.contains(KEY_THING)) mainCategory = msp.getString(KEY_THING, "").toString()
+        if (msp.contains(KEY_THING)) {
+            val mainCategory = msp.getString(KEY_THING, "").toString()
+            val firebaseDate = FirebaseDatabase.getInstance()
+            val rootReference = firebaseDate.reference
+            val garbageReference = rootReference.child("GarbageInformation").child(mainCategory)
 
-        val db = Firebase.firestore
-        db.collection(mainCategory).get().addOnSuccessListener { result ->
-            for (document in result) {
-                var geoPoint = document.getGeoPoint("Map")
-                var point = LatLng(geoPoint!!.latitude, geoPoint.longitude)
-                googleMap.addMarker(
-                    MarkerOptions().position(point).title("${document.getString("Maptxt")}")
-                )
-                val cameraUpdate = CameraUpdateFactory.newCameraPosition(
-                    CameraPosition.Builder().target(point).zoom(13f).build()
-                )
-                googleMap.animateCamera(cameraUpdate)
-                var mapp = 2
-                geoPoint = document.getGeoPoint("Map$mapp")
-                while (geoPoint != null) {
-                    point = LatLng(geoPoint.latitude, geoPoint.longitude)
-                    googleMap.addMarker(
-                        MarkerOptions().position(point)
-                            .title("${document.getString("Maptxt$mapp")}")
-                    )
-                    geoPoint = document.getGeoPoint("Map$mapp")
-                    mapp++
+
+            garbageReference.addValueEventListener(object : ValueEventListener {
+                override fun onCancelled(error: DatabaseError) {}
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val trueMapNumber: Long = (snapshot.childrenCount - 2) / 2
+
+                    var mapNumber = 0
+                    while (mapNumber < trueMapNumber) {
+                        var hint = ""
+                        val geopointReference = garbageReference.child("map$mapNumber")
+                        val hintReference = garbageReference.child("mapHint$mapNumber")
+
+                        hintReference.addValueEventListener(object : ValueEventListener {
+                            override fun onCancelled(error: DatabaseError) {}
+
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                hint = snapshot.getValue(String::class.java)!!
+                            }
+                        })
+
+                        geopointReference.addValueEventListener(object : ValueEventListener {
+                            override fun onCancelled(error: DatabaseError) {}
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                val value: List<String> =
+                                    snapshot.getValue(String::class.java)!!.split(",")
+
+                                createMarker(
+                                    googleMap,
+                                    LatLng(value[0].toDouble(), value[1].toDouble()),
+                                    hint
+                                )
+
+                            }
+                        })
+
+                        mapNumber++
+                    }
                 }
-            }
-        }.addOnFailureListener { }
+            })
+
+        }
     }
+
+    private fun createMarker(googleMap: GoogleMap, point: LatLng, hint: String) {
+        googleMap.addMarker(MarkerOptions().position(point).title(hint))
+        googleMap.animateCamera(
+            CameraUpdateFactory.newCameraPosition(
+                CameraPosition.Builder().target(point).zoom(12f).build()
+            )
+        )
+    }
+
+
 }
