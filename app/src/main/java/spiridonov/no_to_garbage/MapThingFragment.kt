@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -24,13 +25,15 @@ class MapThingFragment : Fragment() {
     private lateinit var msp: SharedPreferences
     private val KEY_THING = "thing"
     private val callback = OnMapReadyCallback { googleMap -> mapCreate(googleMap) }
-
+    private lateinit var txtMap: TextView
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_mapview, container, false)
+        val root = inflater.inflate(R.layout.fragment_mapview, container, false)
+//        txtMap = root.findViewById(R.id.txtMapFragment)
+        return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -51,7 +54,7 @@ class MapThingFragment : Fragment() {
             garbageReference.addValueEventListener(object : ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {}
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val trueMapNumber: Long = (snapshot.childrenCount - 2) / 2
+                    val trueMapNumber = (snapshot.childrenCount - 2) / 2
 
                     var mapNumber = 0
                     while (mapNumber < trueMapNumber) {
