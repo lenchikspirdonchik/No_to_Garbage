@@ -30,36 +30,33 @@ class LoginActivity : AppCompatActivity() {
         }
         btnLogin.setOnClickListener {
             if (handlelogin()) {
-                PbarLogin.visibility = View.VISIBLE
-                // var firebaseUser= Login().loginBackend(this, txtEmail.text.toString(), txtPassword.text.toString())
-                // if (firebaseUser == null) firebaseUser = Login().user
-
-                mAuth.signInWithEmailAndPassword(
-                    txtEmail.text.toString(),
-                    txtPassword.text.toString()
-                ).addOnCompleteListener(
-                    this
-                ) { task ->
-                    if (task.isSuccessful) {
-                        firebaseUser = mAuth.currentUser
-                        Log.d("Log", "${task.result.toString()}")
-                        Toast.makeText(
-                            this,
-                            "${getString(R.string.successSiqnIn)}\n${firebaseUser!!.email.toString()}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        val mintent = Intent()
-                        setResult(Activity.RESULT_OK, mintent)
-                        finish()
-                    } else {
-                        PbarLogin.visibility = View.INVISIBLE
-                        Log.d("Log", "${task.exception}")
-                        btnLogin.error = "Invalid data"
-                        btnLogin.requestFocus()
+                val bar = Thread(Runnable { PbarLogin.visibility = View.VISIBLE })
+                val siqnIn = Thread(Runnable {
+                    mAuth.signInWithEmailAndPassword(
+                        txtEmail.text.toString(),
+                        txtPassword.text.toString()
+                    ).addOnCompleteListener(this) { task ->
+                        if (task.isSuccessful) {
+                            firebaseUser = mAuth.currentUser
+                            Log.d("Log", "${task.result.toString()}")
+                            Toast.makeText(
+                                this,
+                                "${getString(R.string.successSiqnIn)}\n${firebaseUser!!.email.toString()}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            val mintent = Intent()
+                            setResult(Activity.RESULT_OK, mintent)
+                            finish()
+                        } else {
+                            PbarLogin.visibility = View.INVISIBLE
+                            Log.d("Log", "${task.exception}")
+                            btnLogin.error = "Invalid data"
+                            btnLogin.requestFocus()
+                        }
                     }
-
-
-                }
+                })
+                bar.start()
+                siqnIn.start()
 
             }
 

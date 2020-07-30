@@ -5,7 +5,7 @@
     <string name="BTN_Bathroom">Ванная</string>
     <string name="BTN_Wardrobe">Гардеробная</string>
     <string name="title_activity_main">Правильная утилизация мусора</string>
-        <string name="BTN_Battery">Батарейки</string>
+    <string name="BTN_Battery">Батарейки</string>
     <string name="BTN_Paper">Бумага</string>
     <string name="BTN_Technic">Техника</string>
     <string name="BTN_Bottles">Бутылки</string>
@@ -26,12 +26,12 @@
     <string name="logActivity">Войти</string>
     <string name="againPassword">Повторите пароль</string>
     <string name="yourName">Введите Ваше имя</string>
-    <string name="SignUpActivity">Зарегестрироваться</string>
-    <string name="NoAcc">Еще нет аккаунта? Зарегестрируйтесь!</string>
+    <string name="SignUpActivity">Зарегистрироваться</string>
+    <string name="NoAcc">Еще нет аккаунта? Зарегистрируйтесь!</string>
     <string name="errorEmail">Неправильно введена почта</string>
     <string name="errorPassword">Неправильно введен пароль</string>
     <string name="errorName">Неправильно введено имя</string>
-    <string name="successSiqnUp">Вы успешны зарегестрированны</string>
+    <string name="successSiqnUp">Вы успешны зарегистрированны</string>
     <string name="successSiqnIn">Вы успешны вошли</string>
     <string name="addGarbage">Что выкинул на этот раз?</string>
     <string name="howManyGarbage">Какое количество?</string>

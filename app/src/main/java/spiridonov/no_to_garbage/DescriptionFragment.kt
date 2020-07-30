@@ -23,10 +23,9 @@ class DescriptionFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_description, container, false)
-        var mainCategory = ""
         msp = this.requireActivity().getSharedPreferences("things", Context.MODE_PRIVATE)
         if (msp.contains("thing")) {
-            mainCategory = msp.getString("thing", "").toString()
+           val mainCategory = msp.getString("thing", "").toString()
             val firebaseDate = FirebaseDatabase.getInstance()
             val rootReference = firebaseDate.reference
             val garbageReference = rootReference.child("GarbageInformation").child(mainCategory)

@@ -48,25 +48,28 @@ class AccountFragment : Fragment() {
             val mintent: Intent? = Intent(context, LoginActivity::class.java)
             startActivityForResult(mintent, 1)
         } else {
-            Log.d("Log", "from account page ${firebaseUser.email.toString()}")
-            nameReference = rootReference.child("Users").child(firebaseUser.uid).child("Name")
-            garbageReference = rootReference.child("Users").child(firebaseUser.uid).child("Garbage")
-
-            nameReference.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    val value =
-                        dataSnapshot.getValue(String::class.java)!!
-                    Log.d("TAG", "Value is: $value")
-                    textView.text = "добрый день, " +
-                            "$value" +
-                            "\nyour email: ${firebaseUser.email}"
-                }
+            val name = Thread(Runnable {
+                nameReference = rootReference.child("Users").child(firebaseUser.uid).child("Name")
+                nameReference.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val value =
+                            dataSnapshot.getValue(String::class.java)!!
+                        Log.d("TAG", "Value is: $value")
+                        textView.text = "добрый день, " +
+                                "$value" +
+                                "\nyour email: ${firebaseUser.email}"
+                    }
 
                     override fun onCancelled(error: DatabaseError) {
                         // Failed to read value
                         Log.w("TAG", "Failed to read value.", error.toException())
                     }
                 })
+
+            })
+            val garbage = Thread(Runnable {
+                garbageReference =
+                    rootReference.child("Users").child(firebaseUser.uid).child("Garbage")
                 garbageReference.addValueEventListener(object : ValueEventListener {
                     override fun onCancelled(error: DatabaseError) {}
 
@@ -78,13 +81,18 @@ class AccountFragment : Fragment() {
                                 override fun onDataChange(datasnapshot: DataSnapshot) {
                                     val garbage = datasnapshot.getValue(String::class.java)!!
                                     textView.text = "${textView.text}\n ${allGarbage[i]} : $garbage"
-
                                 }
 
                             })
                         }
                     }
                 })
+            })
+
+            name.start()
+            garbage.start()
+
+
         }
         btn_signOu.setOnClickListener {
             mAuth.signOut()
