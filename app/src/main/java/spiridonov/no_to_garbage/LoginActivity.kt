@@ -30,7 +30,7 @@ class LoginActivity : AppCompatActivity() {
         }
         btnLogin.setOnClickListener {
             if (handlelogin()) {
-                val bar = Thread(Runnable { PbarLogin.visibility = View.VISIBLE })
+                 PbarLogin.visibility = View.VISIBLE
                 val siqnIn = Thread(Runnable {
                     mAuth.signInWithEmailAndPassword(
                         txtEmail.text.toString(),
@@ -55,7 +55,6 @@ class LoginActivity : AppCompatActivity() {
                         }
                     }
                 })
-                bar.start()
                 siqnIn.start()
 
             }

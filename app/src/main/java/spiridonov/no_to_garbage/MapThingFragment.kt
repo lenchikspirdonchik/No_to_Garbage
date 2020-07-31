@@ -1,12 +1,16 @@
 package spiridonov.no_to_garbage
 
+import android.Manifest
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -26,7 +30,8 @@ class MapThingFragment : Fragment(), OnMapReadyCallback {
     private lateinit var msp: SharedPreferences
     private val KEY_THING = "thing"
     private lateinit var txtMap: TextView
-
+    private val REQUEST_LOCATION_PERMISSION = 1
+    private lateinit var map: GoogleMap
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -42,8 +47,10 @@ class MapThingFragment : Fragment(), OnMapReadyCallback {
     }
 
     override fun onMapReady(p0: GoogleMap?) {
+
         msp = this.requireActivity().getSharedPreferences("things", Context.MODE_PRIVATE)
         if (msp.contains(KEY_THING) && p0 != null) {
+            map = p0
             val mainCategory = msp.getString(KEY_THING, "").toString()
             val getData = Thread(Runnable {
                 val firebaseDate = FirebaseDatabase.getInstance()
@@ -86,9 +93,12 @@ class MapThingFragment : Fragment(), OnMapReadyCallback {
                         }
                     }
                 })
+
             })
             getData.start()
-            // setMapLongClick(map = p0)
+            enableMyLocation()
+            setMapLongClick()
+
 
         }
 
@@ -105,8 +115,47 @@ class MapThingFragment : Fragment(), OnMapReadyCallback {
         )
     }
 
+    private fun isPermissionGranted(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+    }
 
-    private fun setMapLongClick(map: GoogleMap) {
+    private fun enableMyLocation() {
+        if (isPermissionGranted()) {
+            if (ActivityCompat.checkSelfPermission(
+                    requireActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    requireActivity(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return
+            }
+            map.isMyLocationEnabled = true
+        } else {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION),
+                REQUEST_LOCATION_PERMISSION
+            )
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == REQUEST_LOCATION_PERMISSION) {
+            if (grantResults.contains(PackageManager.PERMISSION_GRANTED)) {
+                enableMyLocation()
+            }
+        }
+    }
+
+    private fun setMapLongClick() {
         map.setOnMapLongClickListener { latLng ->
             map.addMarker(
                 MarkerOptions()
