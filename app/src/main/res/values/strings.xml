@@ -40,4 +40,5 @@
     <string name="refreshInformation">Обновление информации</string>
     <string name="noAccount">Для начала нужно войти в свой аккаунт!</string>
     <string name="addGarageOnHome">Что то сдали? скорее добавьте информацию об этом!</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

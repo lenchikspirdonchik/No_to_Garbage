@@ -12,6 +12,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
@@ -21,15 +22,13 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 
-class MapThingFragment : Fragment() {
+class MapThingFragment : Fragment(), OnMapReadyCallback {
     private lateinit var msp: SharedPreferences
     private val KEY_THING = "thing"
-    private val callback = OnMapReadyCallback { googleMap -> mapCreate(googleMap) }
     private lateinit var txtMap: TextView
+
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_mapview, container, false)
 //        txtMap = root.findViewById(R.id.txtMapFragment)
@@ -39,62 +38,66 @@ class MapThingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-        mapFragment?.getMapAsync(callback)
+        mapFragment?.getMapAsync(this)
     }
 
-    private fun mapCreate(googleMap: GoogleMap) {
+    override fun onMapReady(p0: GoogleMap?) {
         msp = this.requireActivity().getSharedPreferences("things", Context.MODE_PRIVATE)
-        if (msp.contains(KEY_THING)) {
+        if (msp.contains(KEY_THING) && p0 != null) {
             val mainCategory = msp.getString(KEY_THING, "").toString()
-            val firebaseDate = FirebaseDatabase.getInstance()
-            val rootReference = firebaseDate.reference
-            val garbageReference = rootReference.child("GarbageInformation").child(mainCategory)
+            val getData = Thread(Runnable {
+                val firebaseDate = FirebaseDatabase.getInstance()
+                val rootReference = firebaseDate.reference
+                val garbageReference = rootReference.child("GarbageInformation").child(mainCategory)
+                garbageReference.addValueEventListener(object : ValueEventListener {
+                    override fun onCancelled(error: DatabaseError) {}
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val trueMapNumber = (snapshot.childrenCount - 2) / 2
 
+                        var mapNumber = 0
+                        while (mapNumber < trueMapNumber) {
+                            var hint = ""
+                            val geopointReference = garbageReference.child("map$mapNumber")
+                            val hintReference = garbageReference.child("mapHint$mapNumber")
 
-            garbageReference.addValueEventListener(object : ValueEventListener {
-                override fun onCancelled(error: DatabaseError) {}
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val trueMapNumber = (snapshot.childrenCount - 2) / 2
+                            hintReference.addValueEventListener(object : ValueEventListener {
+                                override fun onCancelled(error: DatabaseError) {}
 
-                    var mapNumber = 0
-                    while (mapNumber < trueMapNumber) {
-                        var hint = ""
-                        val geopointReference = garbageReference.child("map$mapNumber")
-                        val hintReference = garbageReference.child("mapHint$mapNumber")
+                                override fun onDataChange(snapshot: DataSnapshot) {
+                                    hint = snapshot.getValue(String::class.java)!!
+                                }
+                            })
 
-                        hintReference.addValueEventListener(object : ValueEventListener {
-                            override fun onCancelled(error: DatabaseError) {}
+                            geopointReference.addValueEventListener(object : ValueEventListener {
+                                override fun onCancelled(error: DatabaseError) {}
+                                override fun onDataChange(snapshot: DataSnapshot) {
+                                    val value: List<String> =
+                                        snapshot.getValue(String::class.java)!!.split(",")
+                                    createMarker(
+                                        p0,
+                                        LatLng(value[0].toDouble(), value[1].toDouble()),
+                                        hint
+                                    )
 
-                            override fun onDataChange(snapshot: DataSnapshot) {
-                                hint = snapshot.getValue(String::class.java)!!
-                            }
-                        })
+                                }
+                            })
 
-                        geopointReference.addValueEventListener(object : ValueEventListener {
-                            override fun onCancelled(error: DatabaseError) {}
-                            override fun onDataChange(snapshot: DataSnapshot) {
-                                val value: List<String> =
-                                    snapshot.getValue(String::class.java)!!.split(",")
-
-                                createMarker(
-                                    googleMap,
-                                    LatLng(value[0].toDouble(), value[1].toDouble()),
-                                    hint
-                                )
-
-                            }
-                        })
-
-                        mapNumber++
+                            mapNumber++
+                        }
                     }
-                }
+                })
             })
+            getData.start()
+            // setMapLongClick(map = p0)
 
         }
+
     }
 
     private fun createMarker(googleMap: GoogleMap, point: LatLng, hint: String) {
-        googleMap.addMarker(MarkerOptions().position(point).title(hint))
+        googleMap.addMarker(MarkerOptions().position(point).title(hint)).setIcon(
+            BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)
+        )
         googleMap.animateCamera(
             CameraUpdateFactory.newCameraPosition(
                 CameraPosition.Builder().target(point).zoom(12f).build()
@@ -102,5 +105,14 @@ class MapThingFragment : Fragment() {
         )
     }
 
+
+    private fun setMapLongClick(map: GoogleMap) {
+        map.setOnMapLongClickListener { latLng ->
+            map.addMarker(
+                MarkerOptions()
+                    .position(latLng).title(latLng.toString())
+            )
+        }
+    }
 
 }
