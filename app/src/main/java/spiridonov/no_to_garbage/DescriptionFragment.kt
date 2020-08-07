@@ -40,14 +40,16 @@ class DescriptionFragment : Fragment() {
                     headReference.addListenerForSingleValueEvent(object : ValueEventListener {
                         override fun onCancelled(error: DatabaseError) {}
                         override fun onDataChange(snapshot: DataSnapshot) {
-                            desc_head.text = snapshot.getValue(String::class.java)!!
+                            val txt: String? = snapshot.getValue(String::class.java)
+                            if (txt != null) desc_head.text = txt
                         }
                     })
 
                     bodyReference.addListenerForSingleValueEvent(object : ValueEventListener {
                         override fun onCancelled(error: DatabaseError) {}
                         override fun onDataChange(snapshot: DataSnapshot) {
-                            desc_body.text = snapshot.getValue(String::class.java)!!
+                            val txt: String? = snapshot.getValue(String::class.java)
+                            if (txt != null) desc_body.text = txt
                         }
                     })
                 }

@@ -9,9 +9,10 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import androidx.fragment.app.Fragment
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import spiridonov.no_to_garbage.AddGarbageActivity
 import spiridonov.no_to_garbage.R
+import spiridonov.no_to_garbage.StatisticsActivity
 import spiridonov.no_to_garbage.ThingsActivity
 
 
@@ -26,7 +27,6 @@ class HomeFragment : Fragment() {
         val bath = root.findViewById<Button>(R.id.btn_bathroom)
         val cabinet = root.findViewById<Button>(R.id.btn_cabinet)
         val wardrope = root.findViewById<Button>(R.id.btn_wardrope)
-        val fabb = root.findViewById<FloatingActionButton>(R.id.fab)
         val btnMain = View.OnClickListener { v ->
             val rotate: Animation = AnimationUtils.loadAnimation(context, R.anim.rotate)
             v.startAnimation(rotate)
@@ -34,13 +34,23 @@ class HomeFragment : Fragment() {
             val btn: Button = v as Button
             mintent.putExtra("KEY_CATEGORY", btn.text)
             startActivity(mintent)
-        }
 
-        fabb.setOnClickListener {
-            val mintent = Intent(context, AddGarbageActivity::class.java)
-            startActivity(mintent)
         }
+        val naviga_hom = root.findViewById<BottomNavigationView>(R.id.naviga_home)
+        naviga_hom.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.navigation_statistics -> {
+                    val mintent = Intent(context, StatisticsActivity::class.java)
+                    startActivity(mintent)
+                }
+                R.id.navigation_addGarbage -> {
+                    val mintent = Intent(context, AddGarbageActivity::class.java)
+                    startActivity(mintent)
+                }
+            }
 
+            false
+        }
 
 
         kitchen.setOnClickListener(btnMain)

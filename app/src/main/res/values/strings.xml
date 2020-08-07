@@ -11,7 +11,7 @@
     <string name="BTN_Bottles">Бутылки</string>
     <string name="BTN_GoodClothes">Одежда в хорошем состоянии</string>
     <string name="BTN_BadClothes">Одежда в плохом состоянии</string>
-    <string name="BTN_Jars">Стекляные банки</string>
+    <string name="BTN_Jars">Стеклянные банки</string>
     <string name="BTN_Сontainers">Контейнеры</string>
     <string name="BTN_Box">Коробки</string>
     <string name="title_activity_thing">ScrollingActivity</string>
@@ -39,6 +39,8 @@
     <string name="undo">Отмена!</string>
     <string name="refreshInformation">Обновление информации</string>
     <string name="noAccount">Для начала нужно войти в свой аккаунт!</string>
-    <string name="addGarageOnHome">Что то сдали? скорее добавьте информацию об этом!</string>
+    <string name="addGarageOnHome">Добавить</string>
     <string name="title_activity_maps">Map</string>
+    <string name="mapHome">Карта всех мусорок</string>
+    <string name="statistics">Статистика</string>
 </resources>

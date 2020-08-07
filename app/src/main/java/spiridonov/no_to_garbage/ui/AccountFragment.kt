@@ -24,7 +24,7 @@ class AccountFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        var allGarbage = arrayOf(
+        val allGarbage = arrayOf(
             resources.getString(R.string.BTN_Jars),
             getString(R.string.BTN_Bottles),
             getString(R.string.BTN_Сontainers),
