@@ -3,7 +3,7 @@ package spiridonov.no_to_garbage
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.widget.TextView
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -22,8 +22,6 @@ import com.google.firebase.database.ValueEventListener
 
 class AllMapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
-    private val KEY_THING = "thing"
-    private lateinit var txtMap: TextView
     private val REQUEST_LOCATION_PERMISSION = 1
     private lateinit var map: GoogleMap
 
@@ -31,6 +29,9 @@ class AllMapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_all_maps)
+        val actionBar = supportActionBar
+        actionBar?.setHomeButtonEnabled(true)
+        actionBar?.setDisplayHomeAsUpEnabled(true)
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -183,6 +184,16 @@ class AllMapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 MarkerOptions()
                     .position(latLng).title(latLng.toString())
             )
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
