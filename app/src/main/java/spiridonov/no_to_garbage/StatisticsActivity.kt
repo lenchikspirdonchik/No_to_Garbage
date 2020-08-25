@@ -3,6 +3,7 @@ package spiridonov.no_to_garbage
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +19,9 @@ class StatisticsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_statistics)
+        val actionBar = supportActionBar
+        actionBar?.setHomeButtonEnabled(true)
+        actionBar?.setDisplayHomeAsUpEnabled(true)
         val mPieChart = findViewById<View>(R.id.piechart) as PieChart
         val mAuth = FirebaseAuth.getInstance()
         val firebaseUser = mAuth.currentUser
@@ -45,6 +49,8 @@ class StatisticsActivity : AppCompatActivity() {
             "#8EAF0C",
             "#FFD600"
         )
+
+
         if (firebaseUser != null) {
             val garbageReference =
                 rootReference.child("Users").child(firebaseUser.uid).child("Garbage")
@@ -79,6 +85,20 @@ class StatisticsActivity : AppCompatActivity() {
             Toast.makeText(this, getString(R.string.noAccount), Toast.LENGTH_LONG).show()
             val mintent = Intent(this, LoginActivity::class.java)
             startActivity(mintent)
+        }
+        mPieChart.setOnItemFocusChangedListener { _Position: Int ->
+            Toast.makeText(this, allGarbage[_Position], Toast.LENGTH_LONG).show()
+
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 }

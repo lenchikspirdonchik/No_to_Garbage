@@ -10,10 +10,7 @@ import android.view.animation.AnimationUtils
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import spiridonov.no_to_garbage.AddGarbageActivity
-import spiridonov.no_to_garbage.R
-import spiridonov.no_to_garbage.StatisticsActivity
-import spiridonov.no_to_garbage.ThingsActivity
+import spiridonov.no_to_garbage.*
 
 
 class HomeFragment : Fragment() {
@@ -45,6 +42,10 @@ class HomeFragment : Fragment() {
                 }
                 R.id.navigation_addGarbage -> {
                     val mintent = Intent(context, AddGarbageActivity::class.java)
+                    startActivity(mintent)
+                }
+                R.id.navigation_MapHome -> {
+                    val mintent = Intent(context, AllMapsActivity::class.java)
                     startActivity(mintent)
                 }
             }

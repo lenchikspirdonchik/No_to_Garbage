@@ -46,13 +46,13 @@ class AddGarbageActivity : AppCompatActivity() {
             ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, allGarbage)
         adaptermain.setDropDownViewResource(layout.simple_spinner_dropdown_item)
         spinnerGarbage.adapter = adaptermain
-
+        if (firebaseUser == null) {
+            Toast.makeText(this, getString(R.string.noAccount), Toast.LENGTH_LONG).show()
+            val mintent = Intent(this, LoginActivity::class.java)
+            startActivity(mintent)
+        }
         btnAddGarbage.setOnClickListener {
-            if (firebaseUser == null) {
-                Toast.makeText(this, getString(R.string.noAccount), Toast.LENGTH_LONG).show()
-                val mintent = Intent(this, LoginActivity::class.java)
-                startActivity(mintent)
-            } else {
+            if (firebaseUser != null) {
                 if (editTextNumber.text.toString() != "") {
                     Log.d("TAG", "Value is: ${spinnerGarbage.selectedItem}")
                     var flag = true
@@ -84,6 +84,15 @@ class AddGarbageActivity : AppCompatActivity() {
                                         flag = false
                                     }
                                 }.setActionTextColor(Color.RED).show()
+                            Toast.makeText(
+                                applicationContext,
+                                getString(R.string.done),
+                                Toast.LENGTH_LONG
+                            ).show()
+                            editTextNumber.setText(getString(R.string.done))
+                            editTextNumber.isEnabled = false
+                            btnAddGarbage.isEnabled = false
+
                         }
                     })
 
