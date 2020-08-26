@@ -1,4 +1,4 @@
-package spiridonov.no_to_garbage
+package spiridonov.no_to_garbage.homeMenu
 
 import android.R.layout
 import android.content.Intent
@@ -16,6 +16,8 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_add_garbage.*
+import spiridonov.no_to_garbage.R
+import spiridonov.no_to_garbage.account.LoginActivity
 
 
 class AddGarbageActivity : AppCompatActivity() {

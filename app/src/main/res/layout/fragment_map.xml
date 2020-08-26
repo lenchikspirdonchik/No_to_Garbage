@@ -11,7 +11,7 @@
 
         <fragment
             android:id="@+id/fragment"
-            android:name="spiridonov.no_to_garbage.MapThingFragment"
+            android:name="spiridonov.no_to_garbage.descriptionMenu.MapThingFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="10" />

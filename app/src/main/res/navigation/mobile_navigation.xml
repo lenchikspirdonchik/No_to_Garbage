@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/navigation_description"
-        android:name="spiridonov.no_to_garbage.DescriptionFragment"
+        android:name="spiridonov.no_to_garbage.descriptionMenu.DescriptionFragment"
         android:label="@string/description"
         tools:layout="@layout/fragment_description" />
 
     <fragment
         android:id="@+id/navigation_Map"
-        android:name="spiridonov.no_to_garbage.MapFragment"
+        android:name="spiridonov.no_to_garbage.descriptionMenu.MapFragment"
         android:label="@string/Map"
         tools:layout="@layout/fragment_map" />
 

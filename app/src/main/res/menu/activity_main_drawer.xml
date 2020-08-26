@@ -12,5 +12,10 @@
             android:id="@+id/nav_account"
             android:icon="@drawable/account"
             android:title="@string/menu_account" />
+
+        <item
+            android:id="@+id/nav_addMap"
+            android:icon="@drawable/account"
+            android:title="@string/menu_addMap" />
     </group>
 </menu>

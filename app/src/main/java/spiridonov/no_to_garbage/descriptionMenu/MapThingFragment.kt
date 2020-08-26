@@ -1,4 +1,4 @@
-package spiridonov.no_to_garbage
+package spiridonov.no_to_garbage.descriptionMenu
 
 import android.Manifest
 import android.content.Context
@@ -24,6 +24,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import spiridonov.no_to_garbage.R
 
 
 class MapThingFragment : Fragment(), OnMapReadyCallback {

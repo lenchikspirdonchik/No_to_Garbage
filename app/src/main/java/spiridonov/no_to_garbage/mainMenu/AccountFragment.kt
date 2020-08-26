@@ -1,4 +1,4 @@
-package spiridonov.no_to_garbage.ui
+package spiridonov.no_to_garbage.mainMenu
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
@@ -12,8 +12,8 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import spiridonov.no_to_garbage.LoginActivity
 import spiridonov.no_to_garbage.R
+import spiridonov.no_to_garbage.account.LoginActivity
 
 
 class AccountFragment : Fragment() {

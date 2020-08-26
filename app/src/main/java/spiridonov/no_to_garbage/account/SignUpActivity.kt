@@ -1,4 +1,4 @@
-package spiridonov.no_to_garbage
+package spiridonov.no_to_garbage.account
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,6 +8,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_sign_up.*
+import spiridonov.no_to_garbage.MainActivity
+import spiridonov.no_to_garbage.R
 
 
 class SignUpActivity : AppCompatActivity() {

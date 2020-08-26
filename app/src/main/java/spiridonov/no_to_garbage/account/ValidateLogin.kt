@@ -1,4 +1,4 @@
-package spiridonov.no_to_garbage
+package spiridonov.no_to_garbage.account
 
 import android.util.Patterns
 

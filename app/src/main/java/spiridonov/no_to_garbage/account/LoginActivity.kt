@@ -1,4 +1,4 @@
-package spiridonov.no_to_garbage
+package spiridonov.no_to_garbage.account
 
 import android.app.Activity
 import android.content.Intent
@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_login.*
+import spiridonov.no_to_garbage.R
 
 
 class LoginActivity : AppCompatActivity() {

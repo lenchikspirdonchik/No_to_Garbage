@@ -1,4 +1,4 @@
-package spiridonov.no_to_garbage
+package spiridonov.no_to_garbage.homeMenu
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -19,6 +19,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import spiridonov.no_to_garbage.R
 
 class AllMapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -32,8 +33,7 @@ class AllMapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val actionBar = supportActionBar
         actionBar?.setHomeButtonEnabled(true)
         actionBar?.setDisplayHomeAsUpEnabled(true)
-        val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
     }
 
@@ -133,7 +133,7 @@ class AllMapsActivity : AppCompatActivity(), OnMapReadyCallback {
         )
         googleMap.animateCamera(
             CameraUpdateFactory.newCameraPosition(
-                CameraPosition.Builder().target(point).zoom(12f).build()
+                CameraPosition.Builder().target(point).zoom(14f).build()
             )
         )
     }

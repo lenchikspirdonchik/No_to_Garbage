@@ -1,4 +1,4 @@
-package spiridonov.no_to_garbage
+package spiridonov.no_to_garbage.homeMenu
 
 import android.content.Intent
 import android.graphics.Color
@@ -14,6 +14,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import org.eazegraph.lib.charts.PieChart
 import org.eazegraph.lib.models.PieModel
+import spiridonov.no_to_garbage.R
+import spiridonov.no_to_garbage.account.LoginActivity
 
 class StatisticsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,7 +89,7 @@ class StatisticsActivity : AppCompatActivity() {
             startActivity(mintent)
         }
         mPieChart.setOnItemFocusChangedListener { _Position: Int ->
-            Toast.makeText(this, allGarbage[_Position], Toast.LENGTH_LONG).show()
+            // Toast.makeText(this, allGarbage[_Position], Toast.LENGTH_LONG).show()
 
         }
     }

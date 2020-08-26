@@ -1,4 +1,4 @@
-package spiridonov.no_to_garbage
+package spiridonov.no_to_garbage.descriptionMenu
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -12,6 +12,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.fragment_description.*
+import spiridonov.no_to_garbage.R
 
 class DescriptionFragment : Fragment() {
 

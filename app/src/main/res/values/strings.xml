@@ -21,6 +21,7 @@
     <string name="whereGarbage">Признавайся, где намусорил?</string>
     <string name="menu_home">Главная</string>
     <string name="menu_account">Личный кабинет</string>
+    <string name="menu_addMap">Добавить место сбора мусора</string>
     <string name="email">Введите почту</string>
     <string name="password">Введите пароль</string>
     <string name="logActivity">Войти</string>
@@ -44,4 +45,6 @@
     <string name="mapHome">Карта всех мусорок</string>
     <string name="statistics">Статистика</string>
     <string name="title_activity_all_maps">Map</string>
+    <string name="addSnippet">Добавьте описание</string>
+
 </resources>

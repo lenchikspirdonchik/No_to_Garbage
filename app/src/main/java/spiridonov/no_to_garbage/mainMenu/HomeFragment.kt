@@ -1,4 +1,4 @@
-package spiridonov.no_to_garbage.ui
+package spiridonov.no_to_garbage.mainMenu
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,7 +10,11 @@ import android.view.animation.AnimationUtils
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import spiridonov.no_to_garbage.*
+import spiridonov.no_to_garbage.R
+import spiridonov.no_to_garbage.descriptionMenu.ThingsActivity
+import spiridonov.no_to_garbage.homeMenu.AddGarbageActivity
+import spiridonov.no_to_garbage.homeMenu.AllMapsActivity
+import spiridonov.no_to_garbage.homeMenu.StatisticsActivity
 
 
 class HomeFragment : Fragment() {
