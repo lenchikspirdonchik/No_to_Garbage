@@ -41,10 +41,8 @@
     <string name="refreshInformation">Обновление информации</string>
     <string name="noAccount">Для начала нужно войти в свой аккаунт!</string>
     <string name="addGarageOnHome">Добавить</string>
-    <string name="title_activity_maps">Map</string>
     <string name="mapHome">Карта всех мусорок</string>
     <string name="statistics">Статистика</string>
-    <string name="title_activity_all_maps">Map</string>
     <string name="addSnippet">Добавьте описание</string>
 
 </resources>
