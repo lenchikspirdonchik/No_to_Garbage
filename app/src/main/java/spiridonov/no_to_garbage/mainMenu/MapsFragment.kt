@@ -79,6 +79,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
                 parent: AdapterView<*>?,
                 itemSelected: View, selectedItemPosition: Int, selectedId: Long
             ) {
+                hint.setText("")
                 showExistMap(allGarbage[selectedItemPosition], colors[selectedItemPosition])
                 category = allGarbage[selectedItemPosition]
             }
@@ -101,7 +102,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
                 map.setValue("$latitude,$longitude")
                 hintDatabase.setValue(hint.text.toString())
                 Toast.makeText(requireContext(), getString(R.string.done), Toast.LENGTH_LONG).show()
-                btn.isEnabled = false
+
             }
         }
         return root
