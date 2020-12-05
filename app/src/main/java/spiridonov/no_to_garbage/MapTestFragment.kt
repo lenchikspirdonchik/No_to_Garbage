@@ -17,8 +17,6 @@ class MapTestFragment : Fragment() {
     ): View? {
 
         val root = inflater.inflate(R.layout.fragment_map_test, container, false)
-        val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as MapFragment
-        mapFragment.setup(apiKey = "6b2fec7c-c070-49b3-a037-dfab58bccb95")
 
 
         return root

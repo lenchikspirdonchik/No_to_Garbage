@@ -31,10 +31,6 @@ class DescriptionFragment : Fragment() {
             val rootReference = firebaseDate.reference
             val garbageReference = rootReference.child("GarbageInformation").child(mainCategory)
 
-            garbageReference.addValueEventListener(object : ValueEventListener {
-                override fun onCancelled(error: DatabaseError) {}
-
-                override fun onDataChange(snapshot: DataSnapshot) {
                     val headReference = garbageReference.child("head")
                     val bodyReference = garbageReference.child("body")
 
@@ -53,8 +49,6 @@ class DescriptionFragment : Fragment() {
                             if (txt != null) desc_body.text = txt
                         }
                     })
-                }
-            })
 
         }
         return root

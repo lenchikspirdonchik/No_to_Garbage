@@ -4,14 +4,13 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import spiridonov.no_to_garbage.AdminActivity
 import spiridonov.no_to_garbage.R
 import spiridonov.no_to_garbage.account.LoginActivity
 
@@ -109,7 +108,22 @@ class AccountFragment : Fragment() {
         if (resultCode == RESULT_OK) {
             activity?.recreate()
         }
+    }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.admin_account, menu)
+        return super.onCreateOptionsMenu(menu, inflater)
+    }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.navigation_admin -> {
+                val mintent = Intent(context, AdminActivity::class.java)
+                startActivity(mintent)
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 }
