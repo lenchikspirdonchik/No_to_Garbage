@@ -69,23 +69,18 @@ class AccountFragment : Fragment() {
             val garbage = Thread(Runnable {
                 garbageReference =
                     rootReference.child("Users").child(firebaseUser.uid).child("Garbage")
-                garbageReference.addValueEventListener(object : ValueEventListener {
-                    override fun onCancelled(error: DatabaseError) {}
-
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        for (i in 0..allGarbage.lastIndex) {
-                            val databaseReference = garbageReference.child(allGarbage[i])
-                            databaseReference.addValueEventListener(object : ValueEventListener {
-                                override fun onCancelled(error: DatabaseError) {}
-                                override fun onDataChange(datasnapshot: DataSnapshot) {
-                                    val garbage = datasnapshot.getValue(String::class.java)!!
-                                    textView.text = "${textView.text}\n ${allGarbage[i]} : $garbage"
-                                }
-
-                            })
+                for (i in 0..allGarbage.lastIndex) {
+                    val databaseReference = garbageReference.child(allGarbage[i])
+                    databaseReference.addValueEventListener(object : ValueEventListener {
+                        override fun onCancelled(error: DatabaseError) {}
+                        override fun onDataChange(datasnapshot: DataSnapshot) {
+                            val garbage = datasnapshot.getValue(String::class.java)!!
+                            textView.text = "${textView.text}\n ${allGarbage[i]} : $garbage"
                         }
-                    }
-                })
+
+                    })
+                }
+
             })
 
             name.start()

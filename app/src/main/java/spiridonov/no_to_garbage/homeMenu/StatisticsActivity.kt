@@ -56,33 +56,28 @@ class StatisticsActivity : AppCompatActivity() {
         if (firebaseUser != null) {
             val garbageReference =
                 rootReference.child("Users").child(firebaseUser.uid).child("Garbage")
-            garbageReference.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    for (i in allGarbage.indices) {
-                        val databaseReference =
-                            garbageReference.child(allGarbage[i])
-                        databaseReference.addValueEventListener(object : ValueEventListener {
-                            override fun onDataChange(snapshot: DataSnapshot) {
-                                val garbage = snapshot.getValue(String::class.java)
-                                if (garbage != null) {
-                                    mPieChart.addPieSlice(
-                                        PieModel(
-                                            allGarbage[i],
-                                            garbage.toFloat(),
-                                            Color.parseColor(colors[i])
-                                        )
-                                    )
-                                    if (i == allGarbage.size - 1) mPieChart.startAnimation()
-                                }
-                            }
-
-                            override fun onCancelled(error: DatabaseError) {}
-                        })
+            for (i in allGarbage.indices) {
+                val databaseReference =
+                    garbageReference.child(allGarbage[i])
+                databaseReference.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val garbage = snapshot.getValue(String::class.java)
+                        if (garbage != null) {
+                            mPieChart.addPieSlice(
+                                PieModel(
+                                    allGarbage[i],
+                                    garbage.toFloat(),
+                                    Color.parseColor(colors[i])
+                                )
+                            )
+                            if (i == allGarbage.size - 1) mPieChart.startAnimation()
+                        }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {}
-            })
+                    override fun onCancelled(error: DatabaseError) {}
+                })
+            }
+
         } else {
             Toast.makeText(this, getString(R.string.noAccount), Toast.LENGTH_LONG).show()
             val mintent = Intent(this, LoginActivity::class.java)

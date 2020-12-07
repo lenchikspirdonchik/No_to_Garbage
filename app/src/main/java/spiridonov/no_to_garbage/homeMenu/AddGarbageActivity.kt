@@ -30,7 +30,7 @@ class AddGarbageActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_garbage)
-        var allGarbage = arrayOf(
+        val allGarbage = arrayOf(
             resources.getString(R.string.BTN_Jars),
             getString(R.string.BTN_Bottles),
             getString(R.string.BTN_Сontainers),
@@ -48,6 +48,7 @@ class AddGarbageActivity : AppCompatActivity() {
             ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, allGarbage)
         adaptermain.setDropDownViewResource(layout.simple_spinner_dropdown_item)
         spinnerGarbage.adapter = adaptermain
+
         if (firebaseUser == null) {
             Toast.makeText(this, getString(R.string.noAccount), Toast.LENGTH_LONG).show()
             val mintent = Intent(this, LoginActivity::class.java)
@@ -55,37 +56,40 @@ class AddGarbageActivity : AppCompatActivity() {
         }
         btnAddGarbage.setOnClickListener {
             if (firebaseUser != null) {
-                if (editTextNumber.text.toString() != "") {
-                    Log.d("TAG", "Value is: ${spinnerGarbage.selectedItem}")
+                val numberGar = editTextNumber.text.toString()
+                var oldNumberGar: String
+                if (numberGar != "") {
                     var flag = true
                     val garbageReference =
                         rootReference.child("Users").child(firebaseUser.uid).child("Garbage")
                             .child(spinnerGarbage.selectedItem.toString())
+
                     garbageReference.addValueEventListener(object : ValueEventListener {
                         override fun onCancelled(error: DatabaseError) {}
 
                         override fun onDataChange(snapshot: DataSnapshot) {
                             val kolvoString = snapshot.getValue(String::class.java)!!
+                            oldNumberGar = kolvoString
                             if (flag && kolvoString != "") {
                                 var kolvo = kolvoString.toInt()
-                                kolvo += editTextNumber.text.toString().toInt()
+                                kolvo += numberGar.toInt()
                                 garbageReference.setValue(kolvo.toString())
                                 flag = false
                             }
+
+
                             Snackbar.make(
                                 findViewById(android.R.id.content),
                                 resources.getString(R.string.refreshInformation),
                                 Snackbar.LENGTH_LONG
                             )
                                 .setAction(resources.getString(R.string.undo)) {
-                                    val kolvoString2 = snapshot.getValue(String::class.java)!!
-                                    if (kolvoString2 != "") {
-                                        var kolvo = kolvoString2.toInt()
-                                        kolvo -= editTextNumber.text.toString().toInt()
-                                        garbageReference.setValue(kolvo.toString())
-                                        flag = false
-                                    }
+                                    garbageReference.setValue(oldNumberGar)
+                                    flag = false
+
                                 }.setActionTextColor(Color.RED).show()
+
+
                             Toast.makeText(
                                 applicationContext,
                                 getString(R.string.done),
