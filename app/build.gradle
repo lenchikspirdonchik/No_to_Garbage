@@ -56,5 +56,5 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.github.blackfizz:eazegraph:1.2.2@aar'
     implementation 'com.nineoldandroids:library:2.4.0'
-    implementation 'ru.dublgis.dgismobile.mapsdk:mapsdk:latest.release'
+    implementation 'com.yandex.android:maps.mobile:4.0.0-lite'
 }
