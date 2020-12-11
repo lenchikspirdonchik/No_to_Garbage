@@ -11,6 +11,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.yandex.mapkit.MapKitFactory
 import kotlinx.android.synthetic.main.nav_header_main.*
 
 
@@ -32,7 +33,8 @@ class MainActivity : AppCompatActivity() {
                 setOf(R.id.nav_home, R.id.nav_account, R.id.nav_addMap, R.id.nav_mapTest),
                 drawerLayout
             )
-
+        MapKitFactory.setApiKey("fd59b9d8-89f7-4bc6-aac0-48391066dd80")
+        MapKitFactory.initialize(this)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
