@@ -1,4 +1,4 @@
-package spiridonov.no_to_garbage.descriptionMenu
+package spiridonov.no_to_garbage
 
 import android.content.Context
 import android.content.Intent
@@ -10,8 +10,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import spiridonov.no_to_garbage.OnethingActivity
-import spiridonov.no_to_garbage.R
+import spiridonov.no_to_garbage.descriptionMenu.OnethingActivity
 
 
 class ThingsActivity : AppCompatActivity() {

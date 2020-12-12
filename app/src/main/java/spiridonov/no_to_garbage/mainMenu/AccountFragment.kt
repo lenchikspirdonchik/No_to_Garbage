@@ -92,6 +92,7 @@ class AccountFragment : Fragment() {
             mAuth.signOut()
 
             activity?.recreate()
+
         }
         return root
 

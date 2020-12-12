@@ -11,7 +11,7 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import spiridonov.no_to_garbage.R
-import spiridonov.no_to_garbage.descriptionMenu.ThingsActivity
+import spiridonov.no_to_garbage.ThingsActivity
 import spiridonov.no_to_garbage.homeMenu.AddGarbageActivity
 import spiridonov.no_to_garbage.homeMenu.AllMapsActivity
 import spiridonov.no_to_garbage.homeMenu.StatisticsActivity

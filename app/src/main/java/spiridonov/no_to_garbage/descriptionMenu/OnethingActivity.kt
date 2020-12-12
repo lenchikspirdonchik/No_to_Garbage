@@ -1,4 +1,4 @@
-package spiridonov.no_to_garbage
+package spiridonov.no_to_garbage.descriptionMenu
 
 import android.os.Bundle
 import android.view.MenuItem
@@ -7,11 +7,11 @@ import androidx.navigation.Navigation
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import spiridonov.no_to_garbage.R
 
 
 class OnethingActivity : AppCompatActivity() {
 
-    private val TAG = "DocSnippets"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_onething)
@@ -37,4 +37,5 @@ class OnethingActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
 }

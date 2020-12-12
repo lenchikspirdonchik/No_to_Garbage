@@ -26,8 +26,7 @@ class MapTestFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        //  MapKitFactory.setApiKey("fd59b9d8-89f7-4bc6-aac0-48391066dd80")
-        // MapKitFactory.initialize(context)
+
         val root = inflater.inflate(R.layout.fragment_map_test, container, false)
 
         mapview = root.findViewById(R.id.mapview) as MapView

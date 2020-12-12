@@ -1,6 +1,9 @@
 package spiridonov.no_to_garbage
 
+
 import android.os.Bundle
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
@@ -12,12 +15,13 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.yandex.mapkit.MapKitFactory
-import kotlinx.android.synthetic.main.nav_header_main.*
+import com.yandex.mapkit.mapview.MapView
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var mAuth: FirebaseAuth
+    private var mapview: MapView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -26,24 +30,31 @@ class MainActivity : AppCompatActivity() {
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.main_nav_view)
         val navController = findNavController(R.id.main_nav_host_fragment)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         appBarConfiguration =
             AppBarConfiguration(
                 setOf(R.id.nav_home, R.id.nav_account, R.id.nav_addMap, R.id.nav_mapTest),
                 drawerLayout
             )
-        MapKitFactory.setApiKey("fd59b9d8-89f7-4bc6-aac0-48391066dd80")
-        MapKitFactory.initialize(this)
+
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        val mAuth = FirebaseAuth.getInstance()
+        mAuth = FirebaseAuth.getInstance()
         val firebaseUser = mAuth.currentUser
-        if (firebaseUser != null && header_name != null) {
-            header_name.text = firebaseUser.email
+        val header = findViewById<TextView>(R.id.header_name)
+        /*  if (firebaseUser != null && header != null) {
+              header.text = firebaseUser.email
+          }*/
+        val navigationView =
+            findViewById<NavigationView>(R.id.main_mobile_navigation) as NavigationView?
+        if (navigationView != null) {
+            val mHeaderView: View = navigationView.getHeaderView(0)
+            mHeaderView.findViewById<TextView>(R.id.header_name).text = "Test Company Name, LLC"
         }
+        mapview = findViewById<MapView>(R.id.mapview)
 
+        MapKitFactory.setApiKey("fd59b9d8-89f7-4bc6-aac0-48391066dd80")
+        MapKitFactory.initialize(this)
 
     }
 
@@ -56,6 +67,24 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.main_nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        if (mapview != null) {
+            mapview!!.onStop()
+            MapKitFactory.getInstance().onStop()
+        }
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (mapview != null) {
+            mapview!!.onStart()
+            MapKitFactory.getInstance().onStart()
+        }
     }
 
 }

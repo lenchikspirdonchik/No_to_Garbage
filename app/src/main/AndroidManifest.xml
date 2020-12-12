@@ -23,9 +23,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".AdminActivity"></activity>
 
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+
 
         <activity
             android:name=".homeMenu.AllMapsActivity"
@@ -46,9 +44,9 @@
             android:name=".account.LoginActivity"
             android:label="@string/logActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".OnethingActivity" />
+        <activity android:name=".descriptionMenu.OnethingActivity" />
         <activity
-            android:name=".descriptionMenu.ThingsActivity"
+            android:name=".ThingsActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme" />
         <activity
