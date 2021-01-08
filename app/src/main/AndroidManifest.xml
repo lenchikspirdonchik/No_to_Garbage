@@ -45,10 +45,12 @@
             android:label="@string/logActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".descriptionMenu.OnethingActivity" />
+
         <activity
             android:name=".ThingsActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme" />
+
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"

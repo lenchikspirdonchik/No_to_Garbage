@@ -46,7 +46,7 @@ class DescriptionFragment : Fragment() {
                         override fun onCancelled(error: DatabaseError) {}
                         override fun onDataChange(snapshot: DataSnapshot) {
                             val txt: String? = snapshot.getValue(String::class.java)
-                            if (txt != null) desc_body.text = txt
+                            if (txt != null) desc_body.text = txt.replace("_n", "\n")
                         }
                     })
 

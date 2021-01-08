@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name">No_to_Garbage</string>
+    <string name="app_name">Скажи мусору да!</string>
     <string name="BTN_Kitchen">Кухня</string>
     <string name="BTN_Сabinet">Кабинет</string>
     <string name="BTN_Bathroom">Ванная</string>
     <string name="BTN_Wardrobe">Гардеробная</string>
-    <string name="title_activity_main">Правильная утилизация мусора</string>
+    <string name="title_activity_main">Скажи мусору да!</string>
     <string name="BTN_Battery">Батарейки</string>
     <string name="BTN_Paper">Бумага</string>
     <string name="BTN_Technic">Техника</string>
@@ -18,7 +18,7 @@
     <string name="action_settings">Settings</string>
     <string name="description">Описание</string>
     <string name="Map">Карта</string>
-    <string name="whereGarbage">Признавайся, где намусорил?</string>
+    <string name="whereGarbage">Источник мусора</string>
     <string name="menu_home">Главная</string>
     <string name="menu_account">Личный кабинет</string>
     <string name="menu_addMap">Добавить место сбора мусора</string>
@@ -45,7 +45,7 @@
     <string name="statistics">Статистика</string>
     <string name="addSnippet">Добавьте описание</string>
     <string name="adminAccount">Вход для администратора</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="aboutApp">О приложении</string>
+    <string name="copyright">благодарим движение "Раздельный мусор" за подробный справочник материалов для переработки, который был частично использован нами при работе над приложением. https://rsbor-msk.ru/.</string>
 
 </resources>

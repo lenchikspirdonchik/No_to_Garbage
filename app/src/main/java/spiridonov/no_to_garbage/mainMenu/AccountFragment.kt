@@ -38,12 +38,15 @@ class AccountFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_account, container, false)
         val mAuth = FirebaseAuth.getInstance()
         val btn_signOu = root.findViewById<Button>(R.id.btn_signOut)
+        val btn_null = root.findViewById<Button>(R.id.btn_null)
         val textView = root.findViewById<TextView>(R.id.textView4)
         val firebaseUser = mAuth.currentUser
         val firebaseDate = FirebaseDatabase.getInstance()
         val rootReference = firebaseDate.reference
 
         if (firebaseUser == null) {
+            btn_null.isEnabled = false
+            btn_signOu.isEnabled = false
             val mintent: Intent? = Intent(context, LoginActivity::class.java)
             startActivityForResult(mintent, 1)
         } else {
@@ -85,15 +88,40 @@ class AccountFragment : Fragment() {
 
             name.start()
             garbage.start()
+            btn_null.isEnabled = true
+            btn_signOu.isEnabled = true
+
+            btn_null.setOnClickListener {
+                val allGarbage = arrayOf(
+                    resources.getString(R.string.BTN_Jars),
+                    getString(R.string.BTN_Bottles),
+                    getString(R.string.BTN_Сontainers),
+                    getString(R.string.BTN_Box),
+                    getString(R.string.BTN_GoodClothes),
+                    getString(R.string.BTN_BadClothes),
+                    getString(R.string.BTN_Battery),
+                    getString(R.string.BTN_Paper),
+                    getString(R.string.BTN_Technic)
+                )
+
+                val garbageReference =
+                    rootReference.child("Users").child(firebaseUser.uid).child("Garbage")
+                for (i in 0..allGarbage.lastIndex) {
+                    val databaseReference = garbageReference.child(allGarbage[i])
+                    databaseReference.setValue("0")
+                }
+            }
 
 
+            btn_signOu.setOnClickListener {
+                mAuth.signOut()
+
+                activity?.recreate()
+
+            }
         }
-        btn_signOu.setOnClickListener {
-            mAuth.signOut()
 
-            activity?.recreate()
 
-        }
         return root
 
     }

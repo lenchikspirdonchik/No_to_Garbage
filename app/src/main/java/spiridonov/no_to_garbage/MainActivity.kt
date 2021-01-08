@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.main_nav_host_fragment)
         appBarConfiguration =
             AppBarConfiguration(
-                setOf(R.id.nav_home, R.id.nav_account, R.id.nav_addMap, R.id.nav_mapTest),
+                setOf(R.id.nav_home, R.id.nav_account, R.id.nav_addMap, R.id.nav_aboutApp),
                 drawerLayout
             )
 

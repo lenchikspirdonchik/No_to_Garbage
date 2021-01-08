@@ -57,7 +57,7 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun createGarbageInDatabase(user: FirebaseUser) {
-        var allGarbage = arrayOf(
+        val allGarbage = arrayOf(
             resources.getString(R.string.BTN_Jars),
             getString(R.string.BTN_Bottles),
             getString(R.string.BTN_Сontainers),

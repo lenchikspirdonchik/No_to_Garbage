@@ -21,9 +21,9 @@
         android:label="@string/menu_addMap"
         tools:layout="@layout/fragment_maps" />
     <fragment
-        android:id="@+id/nav_mapTest"
-        android:name="spiridonov.no_to_garbage.MapTestFragment"
-        android:label="fragment_map_test"
-        tools:layout="@layout/fragment_map_test" />
+        android:id="@+id/nav_aboutApp"
+        android:name="spiridonov.no_to_garbage.AboutAppFragment"
+        android:label="@string/aboutApp"
+        tools:layout="@layout/fragment_mapview" />
 
 </navigation>
