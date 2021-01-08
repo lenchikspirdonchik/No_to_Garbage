@@ -1,9 +1,9 @@
 package spiridonov.no_to_garbage.mainMenu
 
+import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.TextView
@@ -53,19 +53,16 @@ class AccountFragment : Fragment() {
             val name = Thread(Runnable {
                 nameReference = rootReference.child("Users").child(firebaseUser.uid).child("Name")
                 nameReference.addValueEventListener(object : ValueEventListener {
+                    @SuppressLint("SetTextI18n")
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         val value =
                             dataSnapshot.getValue(String::class.java)!!
-                        Log.d("TAG", "Value is: $value")
                         textView.text = "добрый день, " +
-                                "$value" +
+                                value +
                                 "\nyour email: ${firebaseUser.email}"
                     }
 
-                    override fun onCancelled(error: DatabaseError) {
-                        // Failed to read value
-                        Log.w("TAG", "Failed to read value.", error.toException())
-                    }
+                    override fun onCancelled(error: DatabaseError) {}
                 })
 
             })
@@ -76,6 +73,8 @@ class AccountFragment : Fragment() {
                     val databaseReference = garbageReference.child(allGarbage[i])
                     databaseReference.addValueEventListener(object : ValueEventListener {
                         override fun onCancelled(error: DatabaseError) {}
+
+                        @SuppressLint("SetTextI18n")
                         override fun onDataChange(datasnapshot: DataSnapshot) {
                             val garbage = datasnapshot.getValue(String::class.java)!!
                             textView.text = "${textView.text}\n ${allGarbage[i]} : $garbage"
@@ -110,6 +109,7 @@ class AccountFragment : Fragment() {
                     val databaseReference = garbageReference.child(allGarbage[i])
                     databaseReference.setValue("0")
                 }
+                activity?.recreate()
             }
 
 
