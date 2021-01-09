@@ -44,8 +44,8 @@
     <string name="mapHome">Карта всех мусорок</string>
     <string name="statistics">Статистика</string>
     <string name="addSnippet">Добавьте описание</string>
-    <string name="adminAccount">Вход для администратора</string>
+    <string name="adminAccount">Панель администратора</string>
     <string name="aboutApp">О приложении</string>
-    <string name="copyright">благодарим движение "Раздельный мусор" за подробный справочник материалов для переработки, который был частично использован нами при работе над приложением. https://rsbor-msk.ru/.</string>
+    <string name="copyright">Благодарим движение "Раздельный мусор" за подробный справочник материалов для переработки, который был частично использован нами при работе над приложением. https://rsbor-msk.ru</string>
 
 </resources>

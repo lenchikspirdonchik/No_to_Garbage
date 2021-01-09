@@ -21,10 +21,10 @@
         android:roundIcon="@mipmap/launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AdminActivity"></activity>
-
-
-
+        <activity android:name=".ValidateActivity"></activity>
+        <activity
+            android:name=".AdminActivity"
+            android:label="@string/adminAccount" />
         <activity
             android:name=".homeMenu.AllMapsActivity"
             android:label="@string/mapHome" />
@@ -45,12 +45,10 @@
             android:label="@string/logActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".descriptionMenu.OnethingActivity" />
-
         <activity
             android:name=".ThingsActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme" />
-
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"

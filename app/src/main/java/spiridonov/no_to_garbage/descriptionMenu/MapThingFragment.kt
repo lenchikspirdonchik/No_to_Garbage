@@ -78,6 +78,8 @@ class MapThingFragment : Fragment() {
                                     Animation(Animation.Type.SMOOTH, 0F),
                                     null
                                 )
+
+
                             }
                         })
 

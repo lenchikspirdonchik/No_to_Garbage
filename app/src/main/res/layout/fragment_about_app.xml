@@ -7,7 +7,7 @@
     tools:context=".AboutAppFragment">
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/imgLogo"
         android:layout_width="52dp"
         android:layout_height="52dp"
         android:layout_marginTop="24dp"
@@ -29,14 +29,14 @@
         android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView4" />
+        app:layout_constraintTop_toBottomOf="@+id/imgLogo" />
 
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Version 6.0"
+        android:text="Version 8.0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />

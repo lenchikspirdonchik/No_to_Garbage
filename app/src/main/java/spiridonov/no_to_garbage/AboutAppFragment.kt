@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 
@@ -21,6 +22,7 @@ class AboutAppFragment : Fragment() {
         val VK = root.findViewById<TextView>(R.id.txtVK)
         val In = root.findViewById<TextView>(R.id.txtIn)
         val Gmail = root.findViewById<TextView>(R.id.txtGmail)
+        val img = root.findViewById<ImageView>(R.id.imgLogo)
         VK.setOnClickListener {
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://vk.com/leonid.spiri"))
             startActivity(browserIntent)
@@ -42,6 +44,11 @@ class AboutAppFragment : Fragment() {
             startActivity(Intent.createChooser(emailIntent, "Отправка сообщения"))
         }
 
+        img.setOnLongClickListener {
+            val mintent = Intent(context, AdminActivity::class.java)
+            startActivity(mintent)
+            true
+        }
 
 
         return root
