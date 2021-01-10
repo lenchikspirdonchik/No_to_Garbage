@@ -8,6 +8,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.yandex.mapkit.Animation
+import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
 import com.yandex.runtime.image.ImageProvider
 import kotlinx.android.synthetic.main.activity_all_maps.*
@@ -18,6 +19,8 @@ class AllMapsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MapKitFactory.setApiKey("fd59b9d8-89f7-4bc6-aac0-48391066dd80")
+        MapKitFactory.initialize(this)
         setContentView(R.layout.activity_all_maps)
         val actionBar = supportActionBar
         actionBar?.setHomeButtonEnabled(true)
@@ -106,6 +109,19 @@ class AllMapsActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    override fun onStop() {
+        super.onStop()
+        mapview.onStop()
+        MapKitFactory.getInstance().onStop()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mapview.onStart()
+        MapKitFactory.getInstance().onStart()
+    }
+
 
 }
 

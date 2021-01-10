@@ -15,7 +15,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:layout_margin="10dp"
-            android:textColor="@color/design_default_color_primary"
+            android:textColor="@color/colorPrimary"
             android:textSize="25sp"
             android:textStyle="italic" />
 
@@ -38,7 +38,7 @@
                     android:layout_margin="10dp"
                     android:scrollbars="horizontal"
                     android:scrollHorizontally="true"
-                    android:textColor="@color/design_default_color_primary"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="18sp"
                     android:textStyle="italic" />
             </LinearLayout>

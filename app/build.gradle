@@ -4,14 +4,14 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     defaultConfig {
         applicationId "spiridonov.no_to_garbage"
         minSdkVersion 21
-        targetSdkVersion 29
-        versionCode 8
-        versionName "8-admin"
+        targetSdkVersion 30
+        versionCode 9
+        versionName "9-debug"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
