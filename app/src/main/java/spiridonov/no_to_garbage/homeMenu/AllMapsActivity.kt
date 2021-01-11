@@ -39,6 +39,11 @@ class AllMapsActivity : AppCompatActivity() {
 
 
 
+
+
+
+
+
         for (i in 0..allGarbage.lastIndex) {
             val firebaseDate = FirebaseDatabase.getInstance()
             val rootReference = firebaseDate.reference
