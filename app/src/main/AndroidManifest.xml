@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="spiridonov.no_to_garbage">
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -20,10 +21,11 @@
         android:largeHeap="true"
         android:roundIcon="@mipmap/launcher"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".ValidateActivity"></activity>
+        android:theme="@style/AppTheme"
+        tools:replace="android:icon">
+        <activity android:name=".Admin.ValidateActivity"></activity>
         <activity
-            android:name=".AdminActivity"
+            android:name=".Admin.AdminActivity"
             android:label="@string/adminAccount" />
         <activity
             android:name=".homeMenu.AllMapsActivity"

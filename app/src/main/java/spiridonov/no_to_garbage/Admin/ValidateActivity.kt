@@ -1,4 +1,4 @@
-package spiridonov.no_to_garbage
+package spiridonov.no_to_garbage.Admin
 
 import android.app.Activity
 import android.content.Intent
@@ -9,6 +9,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_validate.*
+import spiridonov.no_to_garbage.R
 
 class ValidateActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

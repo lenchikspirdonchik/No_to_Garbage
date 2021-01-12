@@ -1,12 +1,15 @@
 package spiridonov.no_to_garbage.mainMenu
 
+import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.fragment.app.Fragment
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -14,13 +17,19 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.geometry.Point
+import com.yandex.mapkit.layers.GeoObjectTapEvent
+import com.yandex.mapkit.layers.GeoObjectTapListener
+import com.yandex.mapkit.map.GeoObjectSelectionMetadata
+import com.yandex.mapkit.map.InputListener
+import com.yandex.mapkit.map.Map
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.runtime.image.ImageProvider
 import spiridonov.no_to_garbage.R
 import java.util.*
 
-class MapsFragment : Fragment() {
-    private var coordinates: LatLng? = null
+
+class MapsFragment : Fragment(), GeoObjectTapListener, InputListener {
+    var myCoordinates: LatLng? = null
     private lateinit var mapV: MapView
     private var number = 0L
 
@@ -29,7 +38,7 @@ class MapsFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val allGarbage = arrayOf(
             getString(R.string.BTN_Jars),
             getString(R.string.BTN_Bottles),
@@ -47,6 +56,8 @@ class MapsFragment : Fragment() {
         var category = allGarbage[0]
         val hint = root.findViewById<EditText>(R.id.editTextMap)
         mapV = root.findViewById<MapView>(R.id.mapview)
+
+
         val adaptermain: ArrayAdapter<String> =
             ArrayAdapter<String>(
                 requireActivity(),
@@ -54,7 +65,6 @@ class MapsFragment : Fragment() {
                 allGarbage
             )
         adaptermain.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
         spinner.adapter = adaptermain
         spinner.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(
@@ -69,8 +79,17 @@ class MapsFragment : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
+
+        mapV.map.addTapListener(this);
+        mapV.map.addInputListener(this);
+
+
+
+
+
+
         btn.setOnClickListener {
-            if (hint.text.toString() == "" || coordinates == null) {
+            if (hint.text.toString() == "" || myCoordinates == null) {
                 Toast.makeText(requireContext(), getString(R.string.addSnippet), Toast.LENGTH_LONG)
                     .show()
             } else {
@@ -79,15 +98,29 @@ class MapsFragment : Fragment() {
                 val garbageReference = rootReference.child("GarbageInformation").child(category)
                 val map = garbageReference.child("map$number")
                 val hintDatabase = garbageReference.child("mapHint$number")
-                val latitude = String.format(Locale.ENGLISH, "%.6f", coordinates!!.latitude)
-                val longitude = String.format(Locale.ENGLISH, "%.6f", coordinates!!.longitude)
+                val latitude = String.format(Locale.ENGLISH, "%.6f", myCoordinates!!.latitude)
+                val longitude = String.format(Locale.ENGLISH, "%.6f", myCoordinates!!.longitude)
                 map.setValue("$latitude,$longitude")
                 hintDatabase.setValue(hint.text.toString())
-                Toast.makeText(requireContext(), getString(R.string.done), Toast.LENGTH_LONG).show()
+                val pDialog = SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
+                pDialog.progressHelper.barColor = Color.parseColor("#264599")
+                pDialog.titleText = "Вы успешно добавили место"
+                pDialog.contentText = "Спасибо, что делаете приложение лучше!"
+                pDialog.confirmText = "Готово"
+                pDialog.progressHelper.rimColor = Color.parseColor("#264599")
+                pDialog.setCancelable(false)
+                pDialog.setConfirmClickListener {
+                    btn.setBackgroundColor(Color.RED)
+                    btn.isEnabled = false
+                    pDialog.dismiss()
+                }
+                pDialog.progressHelper.spin()
+                pDialog.show()
 
             }
         }
         return root
+
     }
 
 
@@ -147,5 +180,35 @@ class MapsFragment : Fragment() {
         })
 
     }
+
+
+    override fun onObjectTap(geoObjectTapEvent: GeoObjectTapEvent): Boolean {
+        Log.d("map", "onObjectTap")
+        val selectionMetadata = geoObjectTapEvent
+            .geoObject
+            .metadataContainer
+            .getItem(GeoObjectSelectionMetadata::class.java)
+        if (selectionMetadata != null) {
+            mapV.map.selectGeoObject(selectionMetadata.id, selectionMetadata.layerId)
+            //mapV.map.mapObjects.addPlacemark(geoObjectTapEvent.geoObject.)
+            Log.d("map", selectionMetadata.toString())
+        }
+        return selectionMetadata != null
+    }
+
+    override fun onMapTap(p0: Map, point: Point) {
+        Log.d("map", "onMapTap")
+        mapV.map.mapObjects.addPlacemark(
+            Point(point.latitude, point.longitude),
+            ImageProvider.fromResource(context, R.drawable.marker55)
+        )
+        myCoordinates = LatLng(point.latitude, point.longitude)
+        mapV.map.deselectGeoObject()
+    }
+
+    override fun onMapLongTap(p0: Map, p1: Point) {
+        Log.d("map", "onMapLongTap")
+    }
+
 
 }

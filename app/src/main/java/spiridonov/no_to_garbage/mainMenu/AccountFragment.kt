@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import spiridonov.no_to_garbage.AdminActivity
+import spiridonov.no_to_garbage.Admin.AdminActivity
 import spiridonov.no_to_garbage.R
 import spiridonov.no_to_garbage.account.LoginActivity
 
