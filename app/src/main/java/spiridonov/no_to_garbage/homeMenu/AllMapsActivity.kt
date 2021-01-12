@@ -1,8 +1,13 @@
 package spiridonov.no_to_garbage.homeMenu
 
+import android.content.Intent
+import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -13,9 +18,10 @@ import com.yandex.mapkit.geometry.Point
 import com.yandex.runtime.image.ImageProvider
 import kotlinx.android.synthetic.main.activity_all_maps.*
 import spiridonov.no_to_garbage.R
+import java.util.*
+
 
 class AllMapsActivity : AppCompatActivity() {
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,9 +44,32 @@ class AllMapsActivity : AppCompatActivity() {
         )
 
 
+        mapview.map.mapObjects.addTapListener { varin, point ->
+            val data: UserMapData = varin.userData as UserMapData
 
-
-
+            val pDialog = SweetAlertDialog(this, SweetAlertDialog.BUTTON_POSITIVE)
+            pDialog.progressHelper.barColor = Color.parseColor("#264599")
+            pDialog.titleText = data.category
+            pDialog.contentText = data.hint
+            pDialog.confirmText = "Готово"
+            pDialog.cancelText = "Открыть в картах"
+            pDialog.progressHelper.rimColor = Color.parseColor("#264599")
+            pDialog.setCancelable(false)
+            pDialog.setConfirmClickListener {
+                pDialog.dismiss()
+            }
+            pDialog.setCancelClickListener {
+                Log.d("pDialog", "Открытие карт")
+                val mapUri: Uri =
+                    Uri.parse("geo:0,0?q=${point.latitude},${point.longitude}(${data.category})")
+                val mapIntent = Intent(Intent.ACTION_VIEW, mapUri)
+                mapIntent.setPackage("com.google.android.apps.maps")
+                startActivity(mapIntent)
+            }
+            pDialog.progressHelper.spin()
+            pDialog.show()
+            true
+        }
 
 
 
@@ -59,7 +88,7 @@ class AllMapsActivity : AppCompatActivity() {
 
                         val geopointReference = garbageReference.child("map$mapNumber")
 
-                        /*val hintReference = garbageReference.child("mapHint$mapNumber")
+                        val hintReference = garbageReference.child("mapHint$mapNumber")
                         var hint = ""
                         hintReference.addValueEventListener(object : ValueEventListener {
                             override fun onCancelled(error: DatabaseError) {}
@@ -67,21 +96,26 @@ class AllMapsActivity : AppCompatActivity() {
                             override fun onDataChange(snapshot: DataSnapshot) {
                                 hint = snapshot.getValue(String::class.java)!!
                             }
-                        })*/
+                        })
 
                         geopointReference.addValueEventListener(object :
                             ValueEventListener {
                             override fun onCancelled(error: DatabaseError) {}
                             override fun onDataChange(snapshot: DataSnapshot) {
+
                                 val value: List<String> =
                                     snapshot.getValue(String::class.java)!!.split(",")
+                                val data = UserMapData(category = allGarbage[i], hint = hint)
                                 mapview.map.mapObjects.addPlacemark(
                                     Point(value[0].toDouble(), value[1].toDouble()),
                                     ImageProvider.fromResource(
                                         this@AllMapsActivity,
                                         R.drawable.marker55
                                     )
-                                )
+                                ).userData = data
+
+
+
                                 mapview.map.move(
                                     com.yandex.mapkit.map.CameraPosition(
                                         Point(
@@ -130,3 +164,5 @@ class AllMapsActivity : AppCompatActivity() {
 
 }
 
+
+class UserMapData(val category: String, val hint: String)

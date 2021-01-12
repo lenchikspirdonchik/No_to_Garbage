@@ -1,6 +1,8 @@
 package spiridonov.no_to_garbage.mainMenu
 
+import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -25,6 +27,7 @@ import com.yandex.mapkit.map.Map
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.runtime.image.ImageProvider
 import spiridonov.no_to_garbage.R
+import spiridonov.no_to_garbage.homeMenu.UserMapData
 import java.util.*
 
 
@@ -82,7 +85,32 @@ class MapsFragment : Fragment(), GeoObjectTapListener, InputListener {
 
         mapV.map.addTapListener(this);
         mapV.map.addInputListener(this);
+        mapV.map.mapObjects.addTapListener { varin, point ->
+            val data: UserMapData = varin.userData as UserMapData
 
+            val pDialog = SweetAlertDialog(context, SweetAlertDialog.BUTTON_POSITIVE)
+            pDialog.progressHelper.barColor = Color.parseColor("#264599")
+            pDialog.titleText = data.category
+            pDialog.contentText = data.hint
+            pDialog.confirmText = "Готово"
+            pDialog.cancelText = "Открыть в картах"
+            pDialog.progressHelper.rimColor = Color.parseColor("#264599")
+            pDialog.setCancelable(false)
+            pDialog.setConfirmClickListener {
+                pDialog.dismiss()
+            }
+            pDialog.setCancelClickListener {
+                Log.d("pDialog", "Открытие карт")
+                val mapUri: Uri =
+                    Uri.parse("geo:0,0?q=${point.latitude},${point.longitude}(${data.category})")
+                val mapIntent = Intent(Intent.ACTION_VIEW, mapUri)
+                mapIntent.setPackage("com.google.android.apps.maps")
+                startActivity(mapIntent)
+            }
+            pDialog.progressHelper.spin()
+            pDialog.show()
+            true
+        }
 
 
 
@@ -140,15 +168,15 @@ class MapsFragment : Fragment(), GeoObjectTapListener, InputListener {
                 while (mapNumber < trueMapNumber) {
                     var hint = ""
                     val geopointReference = garbageReference.child("map$mapNumber")
-                    /* val hintReference = garbageReference.child("mapHint$mapNumber")
+                    val hintReference = garbageReference.child("mapHint$mapNumber")
 
-                         hintReference.addValueEventListener(object : ValueEventListener {
-                             override fun onCancelled(error: DatabaseError) {}
+                    hintReference.addValueEventListener(object : ValueEventListener {
+                        override fun onCancelled(error: DatabaseError) {}
 
-                             override fun onDataChange(snapshot: DataSnapshot) {
-                                 hint = snapshot.getValue(String::class.java)!!
-                             }
-                         })*/
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            hint = snapshot.getValue(String::class.java)!!
+                        }
+                    })
 
                     geopointReference.addValueEventListener(object :
                         ValueEventListener {
@@ -156,10 +184,13 @@ class MapsFragment : Fragment(), GeoObjectTapListener, InputListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
                             val value: List<String> =
                                 snapshot.getValue(String::class.java)!!.split(",")
+
+                            val data = UserMapData(category = category, hint = hint)
                             mapV.map.mapObjects.addPlacemark(
                                 Point(value[0].toDouble(), value[1].toDouble()),
                                 ImageProvider.fromResource(context, R.drawable.marker55)
-                            )
+                            ).userData = data
+
                             mapV.map.move(
                                 com.yandex.mapkit.map.CameraPosition(
                                     Point(

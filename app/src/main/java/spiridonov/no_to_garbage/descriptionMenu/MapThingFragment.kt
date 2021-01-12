@@ -1,13 +1,18 @@
 package spiridonov.no_to_garbage.descriptionMenu
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -18,6 +23,7 @@ import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.runtime.image.ImageProvider
 import spiridonov.no_to_garbage.R
+import spiridonov.no_to_garbage.homeMenu.UserMapData
 
 
 class MapThingFragment : Fragment() {
@@ -32,6 +38,35 @@ class MapThingFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_mapview, container, false)
         mapview = root.findViewById(R.id.mapview) as MapView
 //        txtMap = root.findViewById(R.id.txtMapFragment)
+
+        mapview.map.mapObjects.addTapListener { varin, point ->
+            val data: UserMapData = varin.userData as UserMapData
+
+            val pDialog = SweetAlertDialog(context, SweetAlertDialog.BUTTON_POSITIVE)
+            pDialog.progressHelper.barColor = Color.parseColor("#264599")
+            pDialog.titleText = data.category
+            pDialog.contentText = data.hint
+            pDialog.confirmText = "Готово"
+            pDialog.cancelText = "Открыть в картах"
+            pDialog.progressHelper.rimColor = Color.parseColor("#264599")
+            pDialog.setCancelable(false)
+            pDialog.setConfirmClickListener {
+                pDialog.dismiss()
+            }
+            pDialog.setCancelClickListener {
+                Log.d("pDialog", "Открытие карт")
+                val mapUri: Uri =
+                    Uri.parse("geo:0,0?q=${point.latitude},${point.longitude}(${data.category})")
+                val mapIntent = Intent(Intent.ACTION_VIEW, mapUri)
+                mapIntent.setPackage("com.google.android.apps.maps")
+                startActivity(mapIntent)
+            }
+            pDialog.progressHelper.spin()
+            pDialog.show()
+            true
+        }
+
+
 
         msp = this.requireActivity().getSharedPreferences("things", Context.MODE_PRIVATE)
         if (msp.contains(KEY_THING)) {
@@ -64,10 +99,13 @@ class MapThingFragment : Fragment() {
                             override fun onDataChange(snapshot: DataSnapshot) {
                                 val value: List<String> =
                                     snapshot.getValue(String::class.java)!!.split(",")
+
+                                val data = UserMapData(category = mainCategory, hint = hint)
                                 mapview.map.mapObjects.addPlacemark(
                                     Point(value[0].toDouble(), value[1].toDouble()),
                                     ImageProvider.fromResource(context, R.drawable.marker55)
-                                )
+                                ).userData = data
+
                                 mapview.map.move(
                                     com.yandex.mapkit.map.CameraPosition(
                                         Point(
