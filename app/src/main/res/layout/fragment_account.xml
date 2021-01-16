@@ -43,6 +43,18 @@
             android:textAllCaps="false"
             android:textSize="20sp" />
 
+        <Button
+            android:id="@+id/btn_delete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="52dp"
+
+            android:background="@drawable/button"
+            android:text="Удалить аккаунт"
+            android:textAllCaps="false"
+            android:textSize="20sp" />
+
     </LinearLayout>
 
 </FrameLayout>

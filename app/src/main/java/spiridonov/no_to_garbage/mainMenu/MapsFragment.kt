@@ -163,18 +163,19 @@ class MapsFragment : Fragment(), GeoObjectTapListener, InputListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 var trueMapNumber = (snapshot.childrenCount - 2) / 2
                 if (trueMapNumber < 0) trueMapNumber = 0
-                number = trueMapNumber
                 var mapNumber = 0
                 while (mapNumber < trueMapNumber) {
                     var hint = ""
                     val geopointReference = garbageReference.child("map$mapNumber")
                     val hintReference = garbageReference.child("mapHint$mapNumber")
 
+
                     hintReference.addValueEventListener(object : ValueEventListener {
                         override fun onCancelled(error: DatabaseError) {}
 
                         override fun onDataChange(snapshot: DataSnapshot) {
-                            hint = snapshot.getValue(String::class.java)!!
+                            val value = snapshot.getValue(String::class.java)
+                            if (value != null) hint = value
                         }
                     })
 
@@ -182,26 +183,28 @@ class MapsFragment : Fragment(), GeoObjectTapListener, InputListener {
                         ValueEventListener {
                         override fun onCancelled(error: DatabaseError) {}
                         override fun onDataChange(snapshot: DataSnapshot) {
-                            val value: List<String> =
-                                snapshot.getValue(String::class.java)!!.split(",")
+                            val snap: String? =
+                                snapshot.getValue(String::class.java)
+                            if (snap != null) {
+                                val value = snap.split(",")
 
-                            val data = UserMapData(category = category, hint = hint)
-                            mapV.map.mapObjects.addPlacemark(
-                                Point(value[0].toDouble(), value[1].toDouble()),
-                                ImageProvider.fromResource(context, R.drawable.marker55)
-                            ).userData = data
+                                val data = UserMapData(category = category, hint = hint)
+                                mapV.map.mapObjects.addPlacemark(
+                                    Point(value[0].toDouble(), value[1].toDouble()),
+                                    ImageProvider.fromResource(context, R.drawable.marker55)
+                                ).userData = data
 
-                            mapV.map.move(
-                                com.yandex.mapkit.map.CameraPosition(
-                                    Point(
-                                        value[0].toDouble(),
-                                        value[1].toDouble()
-                                    ), 14.0f, 0.0f, 0.0f
-                                ),
-                                Animation(Animation.Type.SMOOTH, 0F),
-                                null
-                            )
-
+                                mapV.map.move(
+                                    com.yandex.mapkit.map.CameraPosition(
+                                        Point(
+                                            value[0].toDouble(),
+                                            value[1].toDouble()
+                                        ), 14.0f, 0.0f, 0.0f
+                                    ),
+                                    Animation(Animation.Type.SMOOTH, 0F),
+                                    null
+                                )
+                            }
                         }
                     })
 
@@ -221,7 +224,6 @@ class MapsFragment : Fragment(), GeoObjectTapListener, InputListener {
             .getItem(GeoObjectSelectionMetadata::class.java)
         if (selectionMetadata != null) {
             mapV.map.selectGeoObject(selectionMetadata.id, selectionMetadata.layerId)
-            //mapV.map.mapObjects.addPlacemark(geoObjectTapEvent.geoObject.)
             Log.d("map", selectionMetadata.toString())
         }
         return selectionMetadata != null

@@ -22,8 +22,13 @@
         tools:layout="@layout/fragment_maps" />
     <fragment
         android:id="@+id/nav_aboutApp"
-        android:name="spiridonov.no_to_garbage.Admin.AboutAppFragment"
+        android:name="spiridonov.no_to_garbage.mainMenu.AboutAppFragment"
         android:label="@string/aboutApp"
         tools:layout="@layout/fragment_mapview" />
+    <fragment
+        android:id="@+id/nav_delete"
+        android:name="spiridonov.no_to_garbage.DeleteMapFragment"
+        android:label="fragment_delete_map"
+        tools:layout="@layout/fragment_delete_map" />
 
 </navigation>
