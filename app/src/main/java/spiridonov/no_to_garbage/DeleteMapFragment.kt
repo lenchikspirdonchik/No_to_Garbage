@@ -7,6 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -33,21 +36,35 @@ class DeleteMapFragment : Fragment() {
             getString(R.string.BTN_Paper),
             getString(R.string.BTN_Technic)
         )
-        val img = root.findViewById<ImageView>(R.id.imgView)
-        mStorageRef = FirebaseStorage.getInstance().reference
-        val riversRef: StorageReference = mStorageRef.child("battery.png")
-        val localFile = File.createTempFile("images", "png")
-        riversRef.getFile(localFile)
-            .addOnSuccessListener {
-                // Successfully downloaded data to local file
-                val bitmap = BitmapFactory.decodeFile(localFile.path)
-                img.setImageBitmap(bitmap)
-            }.addOnFailureListener {
-                // Handle failed download
-                // ...
-            }.addOnProgressListener {
-                Log.d("Progress", "Download")
+        val gallery = root.findViewById<LinearLayout>(R.id.gallery)
+        val inflater = LayoutInflater.from(context)
+
+        for (i in 1..14) {
+            val view = inflater.inflate(R.layout.gallery_item, gallery, false)
+            val text = view.findViewById<TextView>(R.id.txtGallery)
+            text.text = ""
+            val img = view.findViewById<ImageView>(R.id.imgGallery)
+            img.setOnClickListener {
+                Toast.makeText(context, "Click!", Toast.LENGTH_SHORT).show()
             }
+            mStorageRef = FirebaseStorage.getInstance().reference
+            val riversRef: StorageReference = mStorageRef.child("$i.png")
+            Log.d("photo", "$i.png")
+            val localFile = File.createTempFile("images", "png")
+            riversRef.getFile(localFile)
+                .addOnSuccessListener {
+                    // Successfully downloaded data to local file
+                    val bitmap = BitmapFactory.decodeFile(localFile.path)
+                    img.setImageBitmap(bitmap)
+                }.addOnFailureListener {
+                    // Handle failed download
+                    // ...
+                }.addOnProgressListener {
+                    Log.d("Progress", "Download")
+                }
+            gallery.addView(view)
+        }
+
 
 
 

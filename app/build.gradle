@@ -10,8 +10,8 @@ android {
         applicationId "spiridonov.no_to_garbage"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 10
-        versionName "10-maps"
+        versionCode 11
+        versionName "11-gallery"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
