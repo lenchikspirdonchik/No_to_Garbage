@@ -26,30 +26,34 @@ import java.io.File
 class DescriptionFragment : Fragment() {
     private lateinit var mStorageRef: StorageReference
     private lateinit var msp: SharedPreferences
-
+    private lateinit var mainCategory: String
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_description, container, false)
-
+        msp = this.requireActivity().getSharedPreferences("things", Context.MODE_PRIVATE)
+        if (msp.contains("thing")) {
+            mainCategory = msp.getString("thing", "").toString()
+        }
         val gallery = root.findViewById<LinearLayout>(R.id.trueGallery)
         val inflater = LayoutInflater.from(context)
         val threadPhoto = Thread {
-            for (i in 1..14) {
-                val view = inflater.inflate(R.layout.gallery_item, gallery, false)
-                val text = view.findViewById<TextView>(R.id.txtGallery)
-                text.text = ""
-                val img = view.findViewById<ImageView>(R.id.imgGallery)
-                img.setOnClickListener {
-                    Toast.makeText(context, "Click!", Toast.LENGTH_SHORT).show()
-                }
-                mStorageRef = FirebaseStorage.getInstance().reference
-                val riversRef: StorageReference = mStorageRef.child("$i.png")
-                Log.d("photo", "$i.png")
-                val localFile = File.createTempFile("images", "png")
-                riversRef.getFile(localFile)
+            mStorageRef = FirebaseStorage.getInstance().reference
+            val garbageRef: StorageReference =
+                mStorageRef.child("Garbage").child(mainCategory).child("0.png")
+            val view = inflater.inflate(R.layout.gallery_item, gallery, false)
+            val text = view.findViewById<TextView>(R.id.txtGallery)
+            text.text = ""
+            val img = view.findViewById<ImageView>(R.id.imgGallery)
+            img.setOnClickListener {
+                Toast.makeText(context, "Click!", Toast.LENGTH_SHORT).show()
+            }
+
+
+            val localFile = File.createTempFile("images", "png")
+            garbageRef.getFile(localFile)
                     .addOnSuccessListener {
                         // Successfully downloaded data to local file
                         val bitmap = BitmapFactory.decodeFile(localFile.path)
@@ -61,16 +65,14 @@ class DescriptionFragment : Fragment() {
                         Log.d("Progress", "Download")
                     }
                 gallery.addView(view)
-            }
+
 
         }
 
 
         val threadDescription = Thread {
-            msp = this.requireActivity().getSharedPreferences("things", Context.MODE_PRIVATE)
-            if (msp.contains("thing")) {
-                val mainCategory = msp.getString("thing", "").toString()
-                val firebaseDate = FirebaseDatabase.getInstance()
+
+        val firebaseDate = FirebaseDatabase.getInstance()
                 val rootReference = firebaseDate.reference
                 val garbageReference = rootReference.child("GarbageInformation").child(mainCategory)
 
@@ -93,7 +95,7 @@ class DescriptionFragment : Fragment() {
                     }
                 })
 
-            }
+
         }
         threadPhoto.start()
         threadDescription.start()
