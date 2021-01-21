@@ -67,67 +67,70 @@ class MapThingFragment : Fragment() {
         }
 
 
+        val thread = Thread {
+            msp = this.requireActivity().getSharedPreferences("things", Context.MODE_PRIVATE)
+            if (msp.contains(KEY_THING)) {
+                val mainCategory = msp.getString(KEY_THING, "").toString()
 
-        msp = this.requireActivity().getSharedPreferences("things", Context.MODE_PRIVATE)
-        if (msp.contains(KEY_THING)) {
-            val mainCategory = msp.getString(KEY_THING, "").toString()
+                val firebaseDate = FirebaseDatabase.getInstance()
+                val rootReference = firebaseDate.reference
+                val garbageReference = rootReference.child("GarbageInformation").child(mainCategory)
+                garbageReference.addValueEventListener(object : ValueEventListener {
+                    override fun onCancelled(error: DatabaseError) {}
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val trueMapNumber = (snapshot.childrenCount - 2) / 2
 
-            val firebaseDate = FirebaseDatabase.getInstance()
-            val rootReference = firebaseDate.reference
-            val garbageReference = rootReference.child("GarbageInformation").child(mainCategory)
-            garbageReference.addValueEventListener(object : ValueEventListener {
-                override fun onCancelled(error: DatabaseError) {}
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val trueMapNumber = (snapshot.childrenCount - 2) / 2
+                        var mapNumber = 0
+                        while (mapNumber < trueMapNumber) {
+                            var hint = ""
+                            val geopointReference = garbageReference.child("map$mapNumber")
+                            val hintReference = garbageReference.child("mapHint$mapNumber")
 
-                    var mapNumber = 0
-                    while (mapNumber < trueMapNumber) {
-                        var hint = ""
-                        val geopointReference = garbageReference.child("map$mapNumber")
-                        val hintReference = garbageReference.child("mapHint$mapNumber")
+                            hintReference.addValueEventListener(object : ValueEventListener {
+                                override fun onCancelled(error: DatabaseError) {}
 
-                        hintReference.addValueEventListener(object : ValueEventListener {
-                            override fun onCancelled(error: DatabaseError) {}
+                                override fun onDataChange(snapshot: DataSnapshot) {
+                                    hint = snapshot.getValue(String::class.java)!!
+                                }
+                            })
 
-                            override fun onDataChange(snapshot: DataSnapshot) {
-                                hint = snapshot.getValue(String::class.java)!!
-                            }
-                        })
+                            geopointReference.addValueEventListener(object : ValueEventListener {
+                                override fun onCancelled(error: DatabaseError) {}
+                                override fun onDataChange(snapshot: DataSnapshot) {
+                                    val value: List<String> =
+                                        snapshot.getValue(String::class.java)!!.split(",")
 
-                        geopointReference.addValueEventListener(object : ValueEventListener {
-                            override fun onCancelled(error: DatabaseError) {}
-                            override fun onDataChange(snapshot: DataSnapshot) {
-                                val value: List<String> =
-                                    snapshot.getValue(String::class.java)!!.split(",")
+                                    val data = UserMapData(category = mainCategory, hint = hint)
+                                    mapview.map.mapObjects.addPlacemark(
+                                        Point(value[0].toDouble(), value[1].toDouble()),
+                                        ImageProvider.fromResource(context, R.drawable.marker55)
+                                    ).userData = data
 
-                                val data = UserMapData(category = mainCategory, hint = hint)
-                                mapview.map.mapObjects.addPlacemark(
-                                    Point(value[0].toDouble(), value[1].toDouble()),
-                                    ImageProvider.fromResource(context, R.drawable.marker55)
-                                ).userData = data
-
-                                mapview.map.move(
-                                    com.yandex.mapkit.map.CameraPosition(
-                                        Point(
-                                            value[0].toDouble(),
-                                            value[1].toDouble()
-                                        ), 14.0f, 0.0f, 0.0f
-                                    ),
-                                    Animation(Animation.Type.SMOOTH, 0F),
-                                    null
-                                )
+                                    mapview.map.move(
+                                        com.yandex.mapkit.map.CameraPosition(
+                                            Point(
+                                                value[0].toDouble(),
+                                                value[1].toDouble()
+                                            ), 14.0f, 0.0f, 0.0f
+                                        ),
+                                        Animation(Animation.Type.SMOOTH, 0F),
+                                        null
+                                    )
 
 
-                            }
-                        })
+                                }
+                            })
 
-                        mapNumber++
+                            mapNumber++
+                        }
                     }
-                }
-            })
+                })
 
 
+            }
         }
+
+        thread.start()
         return root
     }
 

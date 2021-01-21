@@ -72,70 +72,71 @@ class AllMapsActivity : AppCompatActivity() {
         }
 
 
+        val thread = Thread {
+            for (i in 0..allGarbage.lastIndex) {
+                val firebaseDate = FirebaseDatabase.getInstance()
+                val rootReference = firebaseDate.reference
+                val garbageReference =
+                    rootReference.child("GarbageInformation").child(allGarbage[i])
+                garbageReference.addValueEventListener(object : ValueEventListener {
+                    override fun onCancelled(error: DatabaseError) {}
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val trueMapNumber = (snapshot.childrenCount - 2) / 2
 
-        for (i in 0..allGarbage.lastIndex) {
-            val firebaseDate = FirebaseDatabase.getInstance()
-            val rootReference = firebaseDate.reference
-            val garbageReference =
-                rootReference.child("GarbageInformation").child(allGarbage[i])
-            garbageReference.addValueEventListener(object : ValueEventListener {
-                override fun onCancelled(error: DatabaseError) {}
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val trueMapNumber = (snapshot.childrenCount - 2) / 2
+                        var mapNumber = 0
+                        while (mapNumber < trueMapNumber) {
 
-                    var mapNumber = 0
-                    while (mapNumber < trueMapNumber) {
+                            val geopointReference = garbageReference.child("map$mapNumber")
 
-                        val geopointReference = garbageReference.child("map$mapNumber")
+                            val hintReference = garbageReference.child("mapHint$mapNumber")
+                            var hint = ""
+                            hintReference.addValueEventListener(object : ValueEventListener {
+                                override fun onCancelled(error: DatabaseError) {}
 
-                        val hintReference = garbageReference.child("mapHint$mapNumber")
-                        var hint = ""
-                        hintReference.addValueEventListener(object : ValueEventListener {
-                            override fun onCancelled(error: DatabaseError) {}
+                                override fun onDataChange(snapshot: DataSnapshot) {
+                                    hint = snapshot.getValue(String::class.java)!!
+                                }
+                            })
 
-                            override fun onDataChange(snapshot: DataSnapshot) {
-                                hint = snapshot.getValue(String::class.java)!!
-                            }
-                        })
+                            geopointReference.addValueEventListener(object :
+                                ValueEventListener {
+                                override fun onCancelled(error: DatabaseError) {}
+                                override fun onDataChange(snapshot: DataSnapshot) {
 
-                        geopointReference.addValueEventListener(object :
-                            ValueEventListener {
-                            override fun onCancelled(error: DatabaseError) {}
-                            override fun onDataChange(snapshot: DataSnapshot) {
+                                    val value: List<String> =
+                                        snapshot.getValue(String::class.java)!!.split(",")
+                                    val data = UserMapData(category = allGarbage[i], hint = hint)
+                                    mapview.map.mapObjects.addPlacemark(
+                                        Point(value[0].toDouble(), value[1].toDouble()),
+                                        ImageProvider.fromResource(
+                                            this@AllMapsActivity,
+                                            R.drawable.marker55
+                                        )
+                                    ).userData = data
 
-                                val value: List<String> =
-                                    snapshot.getValue(String::class.java)!!.split(",")
-                                val data = UserMapData(category = allGarbage[i], hint = hint)
-                                mapview.map.mapObjects.addPlacemark(
-                                    Point(value[0].toDouble(), value[1].toDouble()),
-                                    ImageProvider.fromResource(
-                                        this@AllMapsActivity,
-                                        R.drawable.marker55
+
+
+                                    mapview.map.move(
+                                        com.yandex.mapkit.map.CameraPosition(
+                                            Point(
+                                                value[0].toDouble(),
+                                                value[1].toDouble()
+                                            ), 14.0f, 0.0f, 0.0f
+                                        ),
+                                        Animation(Animation.Type.SMOOTH, 0F),
+                                        null
                                     )
-                                ).userData = data
 
+                                }
+                            })
 
-
-                                mapview.map.move(
-                                    com.yandex.mapkit.map.CameraPosition(
-                                        Point(
-                                            value[0].toDouble(),
-                                            value[1].toDouble()
-                                        ), 14.0f, 0.0f, 0.0f
-                                    ),
-                                    Animation(Animation.Type.SMOOTH, 0F),
-                                    null
-                                )
-
-                            }
-                        })
-
-                        mapNumber++
+                            mapNumber++
+                        }
                     }
-                }
-            })
+                })
+            }
         }
-
+        thread.start()
     }
 
 
