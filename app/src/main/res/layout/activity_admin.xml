@@ -27,7 +27,7 @@
             android:enabled="false"
             android:text="@string/addGarbage"
             android:textAlignment="center"
-            android:textColor="@color/colorMain"
+            android:textColor="@color/colorPrimary"
             android:textSize="25sp"
             android:textStyle="bold"
             android:visibility="invisible" />

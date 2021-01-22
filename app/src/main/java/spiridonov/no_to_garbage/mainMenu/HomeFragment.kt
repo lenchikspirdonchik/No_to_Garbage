@@ -37,6 +37,8 @@ class HomeFragment : Fragment() {
             startActivity(mintent)
 
         }
+
+
         val naviga_hom = root.findViewById<BottomNavigationView>(R.id.naviga_home)
         naviga_hom.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {

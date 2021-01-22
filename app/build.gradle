@@ -58,4 +58,8 @@ dependencies {
     implementation 'com.nineoldandroids:library:2.4.0'
     implementation 'com.yandex.android:maps.mobile:4.0.0-lite'
     implementation 'com.github.f0ris.sweetalert:library:1.5.1'
+    apply plugin: 'com.google.firebase.crashlytics'
+    implementation platform('com.google.firebase:firebase-bom:26.3.0')
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
 }

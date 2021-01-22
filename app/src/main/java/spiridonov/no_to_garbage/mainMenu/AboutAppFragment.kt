@@ -25,6 +25,8 @@ class AboutAppFragment : Fragment() {
         val In = root.findViewById<TextView>(R.id.txtIn)
         val Gmail = root.findViewById<TextView>(R.id.txtGmail)
         val img = root.findViewById<ImageView>(R.id.imgLogo)
+
+
         VK.setOnClickListener {
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://vk.com/leonid.spiri"))
             startActivity(browserIntent)
