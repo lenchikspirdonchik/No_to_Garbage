@@ -10,8 +10,8 @@ android {
         applicationId "spiridonov.no_to_garbage"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 12
-        versionName "12-debug-gallery"
+        versionCode 14
+        versionName "14-debug"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
