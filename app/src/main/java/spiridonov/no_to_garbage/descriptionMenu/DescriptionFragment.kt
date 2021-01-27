@@ -86,8 +86,8 @@ class DescriptionFragment : Fragment() {
                     it
                     Toast.makeText(context, "Click on ${it.id}!", Toast.LENGTH_SHORT).show()
                 }
-                
-                val localFile = File.createTempFile("images", "png")
+
+                val localFile = File.createTempFile("images", null)
                 imageRef.getFile(localFile)
                     .addOnSuccessListener {
                         // Successfully downloaded data to local file
