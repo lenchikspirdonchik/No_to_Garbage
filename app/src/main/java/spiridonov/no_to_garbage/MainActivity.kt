@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
                     R.id.nav_home,
                     R.id.nav_account,
                     R.id.nav_addMap,
-                    R.id.nav_delete,
+                    R.id.nav_addImage,
                     R.id.nav_aboutApp
                 ),
                 drawerLayout

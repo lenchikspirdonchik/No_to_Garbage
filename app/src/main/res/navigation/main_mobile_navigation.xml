@@ -26,9 +26,9 @@
         android:label="@string/aboutApp"
         tools:layout="@layout/fragment_mapview" />
     <fragment
-        android:id="@+id/nav_delete"
-        android:name="spiridonov.no_to_garbage.DeleteMapFragment"
-        android:label="fragment_delete_map"
-        tools:layout="@layout/fragment_delete_map" />
+        android:id="@+id/nav_addImage"
+        android:name="spiridonov.no_to_garbage.mainMenu.AddImageFragment"
+        android:label="@string/uploadImage"
+        tools:layout="@layout/fragment_add_image" />
 
 </navigation>
