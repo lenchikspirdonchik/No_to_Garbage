@@ -1,13 +1,13 @@
 package spiridonov.no_to_garbage
 
 
+
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,9 +20,9 @@ import java.io.InputStream
 class DeleteMapFragment : Fragment() {
     val CAMERA_CODE = 0
     val GALLERY_CODE = 1
-    val Items = arrayOf("Camera", "Gallery")
+    val Items = arrayOf("Камера", "Галерея")
     lateinit var img: ImageView
-    lateinit var bitmapImage: Bitmap
+    var bitmapImage: Bitmap? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -53,7 +53,6 @@ class DeleteMapFragment : Fragment() {
                 R.layout.support_simple_spinner_dropdown_item,
                 allGarbage
             )
-
         adaptermain.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adaptermain
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -72,14 +71,12 @@ class DeleteMapFragment : Fragment() {
 
         AddBtn.setOnClickListener {
             val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-            builder.setTitle("Title")
+            builder.setTitle("Выбор фотографии")
             builder.setItems(Items) { _, which ->
-                if (Items[which] == "Camera") {
+                if (Items[which] == "Камера") {
                     val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                    Log.i("CameraCode", "" + CAMERA_CODE)
                     startActivityForResult(cameraIntent, CAMERA_CODE)
-                } else if (Items[which].equals("Gallery")) {
-                    Log.i("GalleryCode", "" + GALLERY_CODE)
+                } else if (Items[which] == "Галерея") {
                     val galleryIntent =
                         Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                     galleryIntent.type = "image/*"
@@ -100,23 +97,19 @@ class DeleteMapFragment : Fragment() {
 
         when (requestCode) {
             0 -> {
-                Log.i("CameraCode", "" + CAMERA_CODE)
                 val bundle: Bundle? = data?.extras
-                bitmapImage = bundle?.get("data") as Bitmap
+                bitmapImage = bundle?.get("data") as Bitmap?
                 img.setImageBitmap(bitmapImage)
 
             }
             1 -> {
-                Log.i("GalleryCode", "" + requestCode)
-
                 if (data != null) {
                     try {
-
                         val imageUri = data.data
                         val imageStream: InputStream? =
                             context?.contentResolver?.openInputStream(imageUri!!)
                         bitmapImage = BitmapFactory.decodeStream(imageStream)
-                        img.setImageBitmap(bitmapImage)
+                        if (bitmapImage != null) img.setImageBitmap(bitmapImage)
                     } catch (e: FileNotFoundException) {
                         //e.getMessage()
                     }
@@ -124,9 +117,9 @@ class DeleteMapFragment : Fragment() {
             }
         }
 
+
         super.onActivityResult(requestCode, resultCode, data)
     }
-
 
 }
 
