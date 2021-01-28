@@ -6,13 +6,18 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import cn.pedant.SweetAlert.SweetAlertDialog
+import com.google.firebase.storage.FirebaseStorage
+import java.io.ByteArrayOutputStream
 import java.io.FileNotFoundException
 import java.io.InputStream
 
@@ -22,6 +27,8 @@ class DeleteMapFragment : Fragment() {
     val GALLERY_CODE = 1
     val Items = arrayOf("Камера", "Галерея")
     lateinit var img: ImageView
+    lateinit var AddBtn: Button
+    lateinit var uploadBtn: Button
     var bitmapImage: Bitmap? = null
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,8 +48,8 @@ class DeleteMapFragment : Fragment() {
             getString(R.string.BTN_Technic)
         )
         val spinner = root.findViewById<Spinner>(R.id.spinnerImage)
-        val uploadBtn = root.findViewById<Button>(R.id.btnUploadImage)
-        val AddBtn = root.findViewById<Button>(R.id.btnAddImage)
+        uploadBtn = root.findViewById<Button>(R.id.btnUploadImage)
+        AddBtn = root.findViewById<Button>(R.id.btnAddImage)
         var category = allGarbage[0]
         img = root.findViewById(R.id.imageView2)
 
@@ -67,6 +74,44 @@ class DeleteMapFragment : Fragment() {
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
+
+
+        uploadBtn.setOnClickListener {
+            val storageRef = FirebaseStorage.getInstance().reference
+            val random = (1000000..9999999).random()
+            val imageRef = storageRef.child("Garbage/$category").child(random.toString())
+            val baos = ByteArrayOutputStream()
+            val bitmap = bitmapImage
+            if (bitmap != null) {
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                val data = baos.toByteArray()
+                val uploadTask = imageRef.putBytes(data)
+                uploadTask.addOnFailureListener {
+                    // Handle unsuccessful uploads
+                }.addOnSuccessListener { taskSnapshot ->
+                    // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
+                    // ...
+                    Log.d("addOnSuccessListener", taskSnapshot.metadata.toString())
+
+                    val pDialog = SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
+                    pDialog.progressHelper.barColor = Color.parseColor("#264599")
+                    pDialog.titleText = "Вы успешно добавили Фотографию"
+                    pDialog.contentText = "Спасибо, что делаете приложение лучше!"
+                    pDialog.confirmText = "Готово"
+                    pDialog.progressHelper.rimColor = Color.parseColor("#264599")
+                    pDialog.setCancelable(false)
+                    pDialog.setConfirmClickListener {
+                        uploadBtn.isEnabled = false
+                        pDialog.dismiss()
+                    }
+                    pDialog.progressHelper.spin()
+                    pDialog.show()
+                }
+
+            }
+
+        }
+
 
 
         AddBtn.setOnClickListener {
@@ -99,7 +144,6 @@ class DeleteMapFragment : Fragment() {
             0 -> {
                 val bundle: Bundle? = data?.extras
                 bitmapImage = bundle?.get("data") as Bitmap?
-                img.setImageBitmap(bitmapImage)
 
             }
             1 -> {
@@ -109,12 +153,16 @@ class DeleteMapFragment : Fragment() {
                         val imageStream: InputStream? =
                             context?.contentResolver?.openInputStream(imageUri!!)
                         bitmapImage = BitmapFactory.decodeStream(imageStream)
-                        if (bitmapImage != null) img.setImageBitmap(bitmapImage)
+
                     } catch (e: FileNotFoundException) {
                         //e.getMessage()
                     }
                 }
             }
+        }
+        if (bitmapImage != null) {
+            img.setImageBitmap(bitmapImage)
+            uploadBtn.isEnabled = true
         }
 
 
