@@ -48,7 +48,6 @@
     <string name="aboutApp">О приложении</string>
     <string name="menu_delete">Удалить место сбора</string>
     <string name="copyright">Благодарим движение "Раздельный мусор" за подробный справочник материалов для переработки, который был частично использован нами при работе над приложением. https://rsbor-msk.ru</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="uploadImage">Загрузить фотографию</string>
 
 </resources>

@@ -75,11 +75,22 @@ class MapThingFragment : Fragment() {
                 val firebaseDate = FirebaseDatabase.getInstance()
                 val rootReference = firebaseDate.reference
                 val garbageReference = rootReference.child("GarbageInformation").child(mainCategory)
+
+
+
+
+
+
+
+
+
+
+
+
                 garbageReference.addValueEventListener(object : ValueEventListener {
                     override fun onCancelled(error: DatabaseError) {}
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val trueMapNumber = (snapshot.childrenCount - 2) / 2
-
                         var mapNumber = 0
                         while (mapNumber < trueMapNumber) {
                             var hint = ""
