@@ -81,7 +81,7 @@ class AddImageFragment : Fragment() {
             val storageRef = FirebaseStorage.getInstance().reference
             val random = (1000000..9999999).random()
 
-            val imageRef = storageRef.child("Garbage/$category").child(random.toString())
+            val imageRef = storageRef.child("Garbage/$category").child("${random.toString()}.jpeg")
             val baos = ByteArrayOutputStream()
             val bitmap = bitmapImage
             if (bitmap != null) {
