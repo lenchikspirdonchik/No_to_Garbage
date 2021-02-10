@@ -18,11 +18,15 @@
             android:icon="@drawable/add_map"
             android:title="@string/menu_addMap" />
 
-        <!---->
+
         <item
             android:id="@+id/nav_addImage"
             android:icon="@drawable/add_image"
             android:title="@string/uploadImage" />
+
+        <item
+            android:id="@+id/nav_database"
+            android:title="База Данных" />
 
         <item
             android:id="@+id/nav_aboutApp"
