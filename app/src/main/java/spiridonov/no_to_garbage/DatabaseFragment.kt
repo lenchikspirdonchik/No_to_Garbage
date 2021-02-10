@@ -7,7 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import java.sql.*
+import java.sql.Connection
+import java.sql.DriverManager
+import java.sql.ResultSet
+import java.sql.Statement
 
 class DatabaseFragment : Fragment() {
 
@@ -40,14 +43,15 @@ private class ConnectMySQL : AsyncTask<String, Void, String>() {
             println("Databaseection success")
             var result = "Database Connection Successful\n"
             val st: Statement = con.createStatement()
-            val rs: ResultSet = st.executeQuery("select category from no2garbage")
-            val rsmd: ResultSetMetaData = rs.getMetaData()
+            val rs: ResultSet = st.executeQuery("select * from no2garbage")
             while (rs.next()) {
-                result += rs.getString(1).toString().toString() + "\n"
-
+                Log.d(" ID ", rs.getString("id").toString())
+                Log.d(" UUID ", rs.getString("uuid").toString())
+                Log.d(" Date ", rs.getString("date").toString())
+                Log.d(" Category ", rs.getString("category").toString())
+                Log.d(" Amount ", rs.getString("amount").toString())
+                Log.d(" END ", "---------------------")
             }
-            res = result
-            Log.d("Database", res)
         } catch (e: Exception) {
             e.printStackTrace()
             res = e.toString()
