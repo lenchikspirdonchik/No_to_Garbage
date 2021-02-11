@@ -17,5 +17,14 @@
         app:egValueTextSize="36sp"
         tools:ignore="MissingConstraints" />
 
+    <TextView
+        android:id="@+id/textViewStatistics"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="TextView"
+        app:layout_constraintTop_toBottomOf="@+id/piechart"
+        tools:layout_editor_absoluteX="8dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

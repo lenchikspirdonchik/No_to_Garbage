@@ -14,6 +14,7 @@ import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.ResultSet
 import java.sql.Statement
+import java.util.*
 
 
 class DatabaseFragment : Fragment() {
@@ -24,6 +25,21 @@ class DatabaseFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_database, container, false)
         val mAuth = FirebaseAuth.getInstance()
 
+
+        val photo = arrayOf(
+            "Батарейки" to "battery",
+            "Бумага" to "paper",
+            "Техника" to "technic",
+            "Бутылки" to "kitchenbottles",
+            "Бутылки " to "bathbottles",
+            "Одежда в плохом состоянии" to "badclothes",
+            "Одежда в хорошем состоянии" to "goodclothes",
+            "Стеклянные банки" to "jars",
+            "Контейнеры" to "containers",
+            "Коробки" to "box"
+        )
+
+
         val uuid = mAuth.currentUser?.uid
         var res = ""
         val handler = Handler()
@@ -31,16 +47,21 @@ class DatabaseFragment : Fragment() {
         val textView = root.findViewById<TextView>(R.id.textFragment)
         val user = "spiridonovproduction"
         val password = "H+4ynXm20/5Yf-T"
+        val p = Properties()
+        p.setProperty("user", user)
+        p.setProperty("password", password)
+        p.setProperty("useUnicode", "true")
+        p.setProperty("characterEncoding", "cp1251")
         val thread = Thread {
             try {
                 Class.forName("com.mysql.jdbc.Driver")
-                val con: Connection = DriverManager.getConnection(url, user, password)
+                val con: Connection = DriverManager.getConnection(url, p)
                 var result = "Database Connection Successful\n"
                 val st: Statement = con.createStatement()
                 val rs: ResultSet
                 if (uuid != null) {
                     //rs = st.executeQuery("select * from no2garbage where uuid='${uuid}'")
-                    rs = st.executeQuery("select * from no2garbage where category='test'")
+                    rs = st.executeQuery(" select * from no2garbage where category='Батарейки'")
                 } else {
                     rs = st.executeQuery("select * from no2garbage")
                 }

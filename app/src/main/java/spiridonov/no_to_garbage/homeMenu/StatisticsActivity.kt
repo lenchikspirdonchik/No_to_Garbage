@@ -14,6 +14,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.android.synthetic.main.activity_statistics.*
 import org.eazegraph.lib.charts.PieChart
 import org.eazegraph.lib.models.PieModel
 import spiridonov.no_to_garbage.R
@@ -22,6 +23,7 @@ import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.ResultSet
 import java.sql.Statement
+import java.util.*
 
 class StatisticsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,7 +64,7 @@ class StatisticsActivity : AppCompatActivity() {
         if (firebaseUser != null) {
             val garbageReference =
                 rootReference.child("Users").child(firebaseUser.uid).child("Garbage")
-            for (i in allGarbage.indices) {
+            for (i in 0..allGarbage.lastIndex) {
                 val databaseReference =
                     garbageReference.child(allGarbage[i])
                 databaseReference.addValueEventListener(object : ValueEventListener {
@@ -76,6 +78,7 @@ class StatisticsActivity : AppCompatActivity() {
                                     Color.parseColor(colors[i])
                                 )
                             )
+
                             if (i == allGarbage.size - 1) mPieChart.startAnimation()
                         }
                     }
@@ -89,31 +92,32 @@ class StatisticsActivity : AppCompatActivity() {
             val mintent = Intent(this, LoginActivity::class.java)
             startActivity(mintent)
         }
+
+
         mPieChart.setOnItemFocusChangedListener { _Position: Int ->
 
+            Log.d(" mPieChart ", mPieChart.emptyDataText.toString())
 
-            val mAuth = FirebaseAuth.getInstance()
-            val category = allGarbage[_Position]
+            val category = allGarbage[mPieChart.currentItem]
             Toast.makeText(this, category, Toast.LENGTH_SHORT).show()
             val uuid = mAuth.currentUser?.uid
-            var res = ""
             val handler = Handler()
             val url = "jdbc:mysql://198.199.73.149:3306/spiridonovproduction"
-
-            val user = "spiridonovproduction"
-            val password = "H+4ynXm20/5Yf-T"
-
+            val p = Properties()
+            p.setProperty("user", "spiridonovproduction")
+            p.setProperty("password", "H+4ynXm20/5Yf-T")
+            p.setProperty("useUnicode", "true")
+            p.setProperty("characterEncoding", "cp1251")
 
             val thread = Thread {
+                var res = ""
                 try {
                     Class.forName("com.mysql.jdbc.Driver")
-                    val con: Connection = DriverManager.getConnection(url, user, password)
-                    var result = "Database Connection Successful\n"
+                    val con: Connection = DriverManager.getConnection(url, p)
+                    var result = ""
                     val st: Statement = con.createStatement()
-                    val rs: ResultSet
-                    // if (uuid != null) {
-                    rs =
-                        st.executeQuery("select * from no2garbage where category='test'") //uuid='${uuid}' and
+                    val rs: ResultSet =
+                        st.executeQuery("select * from no2garbage where category='${category}' AND uuid='${uuid}'")
 
                     while (rs.next()) {
 
@@ -123,19 +127,20 @@ class StatisticsActivity : AppCompatActivity() {
                         Log.d(" END ", "---------------------")
 
 
-                        result += " Date: ${rs.getString("date").toString()}\n"
-                        result += " Category: ${rs.getString("category").toString()}\n"
-                        result += " Amount: ${rs.getString("amount").toString()}\n"
+                        result += " Дата: ${rs.getString("date").toString()}\n"
+                        result += " Категория: ${rs.getString("category").toString()}\n"
+                        result += " Количество: ${rs.getString("amount").toString()}\n"
+                        result += "---------------------\n"
                     }
                     res = result
-                    // }
+
                 } catch (e: Exception) {
                     e.printStackTrace()
                     res = e.toString()
                 }
 
                 handler.post {
-
+                    textViewStatistics.text = res
                 }
 
 
