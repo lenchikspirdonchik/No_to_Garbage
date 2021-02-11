@@ -39,10 +39,12 @@ class DatabaseFragment : Fragment() {
                 val st: Statement = con.createStatement()
                 val rs: ResultSet
                 if (uuid != null) {
-                    rs = st.executeQuery("select * from no2garbage where uuid='${uuid}'")
+                    //rs = st.executeQuery("select * from no2garbage where uuid='${uuid}'")
+                    rs = st.executeQuery("select * from no2garbage where category='test'")
                 } else {
                     rs = st.executeQuery("select * from no2garbage")
                 }
+
                 while (rs.next()) {
                     Log.d(" ID ", rs.getString("id").toString())
                     Log.d(" UUID ", rs.getString("uuid").toString())
