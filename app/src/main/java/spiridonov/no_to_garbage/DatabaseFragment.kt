@@ -78,7 +78,7 @@ private class ConnectMySQL : AsyncTask<String, Void, String>() {
                 result += " Category: ${rs.getString("category").toString()}\n"
                 result += " Amount: ${rs.getString("amount").toString()}\n"
             }
-
+            res = result
         } catch (e: Exception) {
             e.printStackTrace()
             res = e.toString()
