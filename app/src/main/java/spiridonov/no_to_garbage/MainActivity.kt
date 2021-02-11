@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
 
         mAuth = FirebaseAuth.getInstance()
-
         val navigationView =
             findViewById<NavigationView>(R.id.main_mobile_navigation) as NavigationView?
         if (navigationView != null) {
