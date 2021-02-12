@@ -149,7 +149,6 @@ class StatisticsActivity : AppCompatActivity() {
 
         }
 
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -161,4 +160,6 @@ class StatisticsActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+
 }

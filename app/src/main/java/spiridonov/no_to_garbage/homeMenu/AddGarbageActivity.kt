@@ -17,6 +17,10 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_add_garbage.*
 import spiridonov.no_to_garbage.R
 import spiridonov.no_to_garbage.account.LoginActivity
+import java.sql.Connection
+import java.sql.DriverManager
+import java.sql.Statement
+import java.util.*
 
 
 class AddGarbageActivity : AppCompatActivity() {
@@ -58,6 +62,11 @@ class AddGarbageActivity : AppCompatActivity() {
                 val numberGar = editTextNumber.text.toString()
                 var oldNumberGar: String
                 if (numberGar != "") {
+                    Save2SQL(
+                        spinnerGarbage.selectedItem.toString(),
+                        numberGar.toInt(),
+                        firebaseUser.uid.toString()
+                    )
                     var flag = true
                     val garbageReference =
                         rootReference.child("Users").child(firebaseUser.uid).child("Garbage")
@@ -101,6 +110,7 @@ class AddGarbageActivity : AppCompatActivity() {
                         }
                     })
 
+
                 }
             }
         }
@@ -123,5 +133,39 @@ class AddGarbageActivity : AppCompatActivity() {
         if (resultCode == RESULT_OK) {
             recreate()
         }
+    }
+
+
+    private fun Save2SQL(category: String, amount: Int, uuid: String) {
+        val url = "jdbc:mysql://198.199.73.149:3306/spiridonovproduction"
+        val user = "spiridonovproduction"
+        val password = "H+4ynXm20/5Yf-T"
+
+        val startDate = Calendar.getInstance()
+        val day = startDate.get(Calendar.DAY_OF_MONTH).toString()
+        val month = (startDate.get(Calendar.MONTH) + 1).toString()
+        val year = startDate.get(Calendar.YEAR).toString()
+
+        val p = Properties()
+        p.setProperty("user", user)
+        p.setProperty("password", password)
+        p.setProperty("useUnicode", "true")
+        p.setProperty("characterEncoding", "cp1251")
+        val thread = Thread {
+            try {
+                Class.forName("com.mysql.jdbc.Driver")
+                val con: Connection = DriverManager.getConnection(url, p)
+                val st: Statement = con.createStatement()
+                st.execute(
+                    " insert into no2garbage (uuid, date, category, amount)\n" +
+                            "VALUES ('$uuid', STR_TO_DATE('$month/$day/$year', '%m/%d/%Y'), '$category', $amount);"
+                )
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+        }
+        thread.start()
     }
 }
