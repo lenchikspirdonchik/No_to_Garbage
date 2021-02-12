@@ -1,12 +1,11 @@
 package spiridonov.no_to_garbage
 
-import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
@@ -24,29 +23,18 @@ class DatabaseFragment : Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_database, container, false)
         val mAuth = FirebaseAuth.getInstance()
-
-
-        val photo = arrayOf(
-            "Батарейки" to "battery",
-            "Бумага" to "paper",
-            "Техника" to "technic",
-            "Бутылки" to "kitchenbottles",
-            "Бутылки " to "bathbottles",
-            "Одежда в плохом состоянии" to "badclothes",
-            "Одежда в хорошем состоянии" to "goodclothes",
-            "Стеклянные банки" to "jars",
-            "Контейнеры" to "containers",
-            "Коробки" to "box"
-        )
-
-
         val uuid = mAuth.currentUser?.uid
-        var res = ""
-        val handler = Handler()
+
+
         val url = "jdbc:mysql://198.199.73.149:3306/spiridonovproduction"
-        val textView = root.findViewById<TextView>(R.id.textFragment)
         val user = "spiridonovproduction"
         val password = "H+4ynXm20/5Yf-T"
+
+        val handler = Handler()
+        val recyclerView = root.findViewById<LinearLayout>(R.id.myLin)
+        val myinflater = LayoutInflater.from(context)
+
+
         val p = Properties()
         p.setProperty("user", user)
         p.setProperty("password", password)
@@ -56,47 +44,39 @@ class DatabaseFragment : Fragment() {
             try {
                 Class.forName("com.mysql.jdbc.Driver")
                 val con: Connection = DriverManager.getConnection(url, p)
-                var result = "Database Connection Successful\n"
                 val st: Statement = con.createStatement()
-                val rs: ResultSet
+
                 if (uuid != null) {
-                    //rs = st.executeQuery("select * from no2garbage where uuid='${uuid}'")
-                    rs = st.executeQuery(" select * from no2garbage where category='Батарейки'")
-                } else {
-                    rs = st.executeQuery("select * from no2garbage")
-                }
+                    val rs: ResultSet =
+                        st.executeQuery(" select * from no2garbage where category='Батарейки' AND uuid='${uuid}' order by date desc")
 
-                while (rs.next()) {
-                    Log.d(" ID ", rs.getString("id").toString())
-                    Log.d(" UUID ", rs.getString("uuid").toString())
-                    Log.d(" Date ", rs.getString("date").toString())
-                    Log.d(" Category ", rs.getString("category").toString())
-                    Log.d(" Amount ", rs.getString("amount").toString())
-                    Log.d(" END ", "---------------------")
+                    while (rs.next()) {
+                        val dbdate: String = rs.getString("date").toString()
+                        val dbcategory = rs.getString("category").toString()
+                        val dbamount = rs.getString("amount").toString()
 
-                    result += " ID: ${rs.getString("id").toString()}\n"
-                    result += " UUID: ${rs.getString("uuid").toString()}\n"
-                    result += " Date: ${rs.getString("date").toString()}\n"
-                    result += " Category: ${rs.getString("category").toString()}\n"
-                    result += " Amount: ${rs.getString("amount").toString()}\n"
+                        handler.post {
+                            val view =
+                                myinflater.inflate(R.layout.note_card, recyclerView, false)
+                            val date = view.findViewById<TextView>(R.id.note_date)
+                            val category = view.findViewById<TextView>(R.id.note_category)
+                            val amount = view.findViewById<TextView>(R.id.note_amount)
+                            date.text = dbdate
+                            category.text = dbcategory
+                            amount.text = dbamount
+                            recyclerView.addView(view)
+
+                        }
+                    }
+
                 }
-                res = result
             } catch (e: Exception) {
                 e.printStackTrace()
-                res = e.toString()
-            }
-
-            handler.post {
-                textView?.text = res
             }
 
 
         }
         thread.start()
-
-
-        //val connect2Data = ConnectMySQL(mAuth.currentUser?.uid, root.findViewById(R.id.textFragment))
-        //connect2Data.execute()
 
 
         return root
@@ -106,59 +86,3 @@ class DatabaseFragment : Fragment() {
 }
 
 
-private class ConnectMySQL(var uuid: String?, var text: TextView?) :
-    AsyncTask<String, Void, String>() {
-    private var res = ""
-
-
-    override fun onPostExecute(result: String?) {
-        super.onPostExecute(result)
-
-        text?.text = res
-    }
-
-    override fun onPreExecute() {
-        super.onPreExecute()
-        text?.text = "Загрузка"
-    }
-
-    override fun doInBackground(vararg params: String?): String {
-        val url = "jdbc:mysql://198.199.73.149:3306/spiridonovproduction"
-
-        val user = "spiridonovproduction"
-        val password = "H+4ynXm20/5Yf-T"
-        try {
-            Class.forName("com.mysql.jdbc.Driver")
-            val con: Connection = DriverManager.getConnection(url, user, password)
-            var result = "Database Connection Successful\n"
-            val st: Statement = con.createStatement()
-            val rs: ResultSet
-            if (uuid != null) {
-                rs = st.executeQuery("select * from no2garbage where uuid='${uuid}'")
-            } else {
-                rs = st.executeQuery("select * from no2garbage")
-            }
-            while (rs.next()) {
-                Log.d(" ID ", rs.getString("id").toString())
-                Log.d(" UUID ", rs.getString("uuid").toString())
-                Log.d(" Date ", rs.getString("date").toString())
-                Log.d(" Category ", rs.getString("category").toString())
-                Log.d(" Amount ", rs.getString("amount").toString())
-                Log.d(" END ", "---------------------")
-
-                result += " ID: ${rs.getString("id").toString()}\n"
-                result += " UUID: ${rs.getString("uuid").toString()}\n"
-                result += " Date: ${rs.getString("date").toString()}\n"
-                result += " Category: ${rs.getString("category").toString()}\n"
-                result += " Amount: ${rs.getString("amount").toString()}\n"
-            }
-            res = result
-        } catch (e: Exception) {
-            e.printStackTrace()
-            res = e.toString()
-        }
-
-        return res
-    }
-
-}

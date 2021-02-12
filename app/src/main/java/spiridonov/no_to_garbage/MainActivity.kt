@@ -64,4 +64,15 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-}
+}/*val photo = arrayOf(
+            "Батарейки" to "battery",
+            "Бумага" to "paper",
+            "Техника" to "technic",
+            "Бутылки" to "kitchenbottles",
+            "Бутылки " to "bathbottles",
+            "Одежда в плохом состоянии" to "badclothes",
+            "Одежда в хорошем состоянии" to "goodclothes",
+            "Стеклянные банки" to "jars",
+            "Контейнеры" to "containers",
+            "Коробки" to "box"
+        )*/

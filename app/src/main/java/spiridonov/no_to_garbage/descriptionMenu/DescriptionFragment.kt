@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -84,19 +83,17 @@ class DescriptionFragment : Fragment() {
                 val img = view.findViewById<ImageView>(R.id.imgGallery)
                 img.setOnClickListener {
                     it
-                    Toast.makeText(context, "Click on ${it.id}!", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(context, "Click on ${it.id}!", Toast.LENGTH_SHORT).show()
                 }
 
                 val localFile = File.createTempFile("images", null)
                 imageRef.getFile(localFile)
                     .addOnSuccessListener {
-                        // Successfully downloaded data to local file
                         val bitmap = BitmapFactory.decodeFile(localFile.path)
                         img.setImageBitmap(bitmap)
 
                     }.addOnFailureListener {
-                        // Handle failed download
-                        // ...
+
 
                     }.addOnProgressListener {
                         Log.d("Progress", "Download")
