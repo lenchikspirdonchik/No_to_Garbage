@@ -5,16 +5,15 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import kotlinx.android.synthetic.main.activity_statistics.*
 import org.eazegraph.lib.charts.PieChart
 import org.eazegraph.lib.models.PieModel
 import spiridonov.no_to_garbage.R
@@ -36,6 +35,15 @@ class StatisticsActivity : AppCompatActivity() {
         val mAuth = FirebaseAuth.getInstance()
         val firebaseUser = mAuth.currentUser
         val firebaseDate = FirebaseDatabase.getInstance()
+        val url = "jdbc:mysql://198.199.73.149:3306/spiridonovproduction"
+        val user = "spiridonovproduction"
+        val password = "H+4ynXm20/5Yf-T"
+
+        val p = Properties()
+        p.setProperty("user", user)
+        p.setProperty("password", password)
+        p.setProperty("useUnicode", "true")
+        p.setProperty("characterEncoding", "cp1251")
         val rootReference = firebaseDate.reference
         val allGarbage = arrayOf(
             getString(R.string.BTN_Jars),
@@ -59,32 +67,74 @@ class StatisticsActivity : AppCompatActivity() {
             "#8EAF0C",
             "#FFD600"
         )
+        val buffArray = arrayListOf<String>()
+        val linearLayout = findViewById<LinearLayout>(R.id.staticLayout)
+        val myinflater = LayoutInflater.from(this)
+
 
 
         if (firebaseUser != null) {
-            val garbageReference =
-                rootReference.child("Users").child(firebaseUser.uid).child("Garbage")
+            val handler = Handler()
+            //val garbageReference = rootReference.child("Users").child(firebaseUser.uid).child("Garbage")
+
             for (i in 0..allGarbage.lastIndex) {
-                val databaseReference =
-                    garbageReference.child(allGarbage[i])
-                databaseReference.addValueEventListener(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val garbage = snapshot.getValue(String::class.java)
-                        if (garbage != null) {
-                            mPieChart.addPieSlice(
-                                PieModel(
-                                    allGarbage[i],
-                                    garbage.toFloat(),
-                                    Color.parseColor(colors[i])
+                Log.d("FIRST i=", i.toString())
+                /* val databaseReference =
+                     garbageReference.child(allGarbage[i])
+                 databaseReference.addValueEventListener(object : ValueEventListener {
+                     override fun onDataChange(snapshot: DataSnapshot) {
+                         val garbage = snapshot.getValue(String::class.java)
+                         if (garbage != null) {
+                             Log.d("i=", i.toString())
+                             Log.d("category", allGarbage[i])
+                             Log.d("amount", garbage)
+                             mPieChart.addPieSlice(
+                                 PieModel(
+                                     allGarbage[i],
+                                     garbage.toFloat(),
+                                     Color.parseColor(colors[i])
+                                 )
+                             )
+
+                             if (i == allGarbage.lastIndex) mPieChart.startAnimation()
+                         }
+                     }*
+
+                     override fun onCancelled(error: DatabaseError) {}
+                 })*/
+
+                val thread = Thread {
+                    try {
+                        Class.forName("com.mysql.jdbc.Driver")
+                        val con: Connection = DriverManager.getConnection(url, p)
+                        val st: Statement = con.createStatement()
+
+                        val rs: ResultSet =
+                            st.executeQuery(" select SUM(amount) from no2garbage where category='${allGarbage[i]}' AND uuid='${firebaseUser.uid}'")
+
+                        while (rs.next()) {
+                            val dbdate: String = rs.getString(1).toString()
+                            handler.post {
+                                mPieChart.addPieSlice(
+                                    PieModel(
+                                        allGarbage[i],
+                                        dbdate.toFloat(),
+                                        Color.parseColor(colors[i])
+                                    )
                                 )
-                            )
+                                buffArray.add(allGarbage[i])
+                                if (i == allGarbage.lastIndex) mPieChart.startAnimation()
 
-                            if (i == allGarbage.size - 1) mPieChart.startAnimation()
+                            }
+
                         }
-                    }
 
-                    override fun onCancelled(error: DatabaseError) {}
-                })
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+                thread.start()
+                continue
             }
 
         } else {
@@ -95,11 +145,11 @@ class StatisticsActivity : AppCompatActivity() {
 
 
         mPieChart.setOnItemFocusChangedListener { _Position: Int ->
+            linearLayout.removeAllViews()
+            val category: String
+            if (buffArray.size < 8) category = "Бутылки"
+            else category = buffArray[_Position]
 
-            Log.d(" mPieChart ", mPieChart.emptyDataText.toString())
-
-            val category = allGarbage[mPieChart.currentItem]
-            Toast.makeText(this, category, Toast.LENGTH_SHORT).show()
             val uuid = mAuth.currentUser?.uid
             val handler = Handler()
             val url = "jdbc:mysql://198.199.73.149:3306/spiridonovproduction"
@@ -108,39 +158,40 @@ class StatisticsActivity : AppCompatActivity() {
             p.setProperty("password", "H+4ynXm20/5Yf-T")
             p.setProperty("useUnicode", "true")
             p.setProperty("characterEncoding", "cp1251")
-
+            linearLayout.removeAllViews()
             val thread = Thread {
-                var res = ""
                 try {
                     Class.forName("com.mysql.jdbc.Driver")
                     val con: Connection = DriverManager.getConnection(url, p)
-                    var result = ""
                     val st: Statement = con.createStatement()
-                    val rs: ResultSet =
-                        st.executeQuery("select * from no2garbage where category='${category}' AND uuid='${uuid}'")
 
-                    while (rs.next()) {
+                    if (uuid != null) {
+                        val rs: ResultSet =
+                            st.executeQuery(" select * from no2garbage where category='$category' AND uuid='$uuid' order by date desc")
 
-                        Log.d(" Date ", rs.getString("date").toString())
-                        Log.d(" Category ", rs.getString("category").toString())
-                        Log.d(" Amount ", rs.getString("amount").toString())
-                        Log.d(" END ", "---------------------")
+                        while (rs.next()) {
+                            val dbdate: String = rs.getString("date").toString()
+                            val dbcategory = rs.getString("category").toString()
+                            val dbamount = rs.getString("amount").toString()
 
+                            handler.post {
 
-                        result += " Дата: ${rs.getString("date").toString()}\n"
-                        result += " Категория: ${rs.getString("category").toString()}\n"
-                        result += " Количество: ${rs.getString("amount").toString()}\n"
-                        result += "---------------------\n"
+                                val view =
+                                    myinflater.inflate(R.layout.note_card, linearLayout, false)
+                                val date = view.findViewById<TextView>(R.id.note_date)
+                                val category = view.findViewById<TextView>(R.id.note_category)
+                                val amount = view.findViewById<TextView>(R.id.note_amount)
+                                date.text = dbdate
+                                category.text = dbcategory
+                                amount.text = dbamount
+                                linearLayout.addView(view)
+
+                            }
+                        }
+
                     }
-                    res = result
-
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    res = e.toString()
-                }
-
-                handler.post {
-                    textViewStatistics.text = res
                 }
 
 
@@ -149,7 +200,9 @@ class StatisticsActivity : AppCompatActivity() {
 
         }
 
+
     }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
