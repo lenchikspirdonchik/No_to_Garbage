@@ -5,6 +5,7 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.view.*
 import android.widget.Button
 import android.widget.TextView
@@ -15,34 +16,33 @@ import com.google.firebase.database.*
 import spiridonov.no_to_garbage.Admin.AdminActivity
 import spiridonov.no_to_garbage.R
 import spiridonov.no_to_garbage.account.LoginActivity
+import java.sql.DriverManager
+import java.sql.ResultSet
+import java.sql.Statement
 
 
 class AccountFragment : Fragment() {
     private lateinit var nameReference: DatabaseReference
-    private lateinit var garbageReference: DatabaseReference
+    private val host = "ec2-108-128-104-50.eu-west-1.compute.amazonaws.com"
+    private val database = "dvvl3t4j8k5q7"
+    private val port = 5432
+    private val user = "mpzdfkfaoiwywz"
+    private val pass = "c37ce7e3b99d480a04b8943b89ba6e7abb94cb86c56bfa4c6ace4fab4cbc287d"
+    private var url = "jdbc:postgresql://%s:%d/%s"
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val allGarbage = arrayOf(
-            resources.getString(R.string.BTN_Jars),
-            getString(R.string.BTN_Bottles),
-            getString(R.string.BTN_Сontainers),
-            getString(R.string.BTN_Box),
-            getString(R.string.BTN_GoodClothes),
-            getString(R.string.BTN_BadClothes),
-            getString(R.string.BTN_Battery),
-            getString(R.string.BTN_Paper),
-            getString(R.string.BTN_Technic)
-        )
+
 
         val root = inflater.inflate(R.layout.fragment_account, container, false)
         val mAuth = FirebaseAuth.getInstance()
         val btn_signOu = root.findViewById<Button>(R.id.btn_signOut)
         val btn_null = root.findViewById<Button>(R.id.btn_null)
         val btn_del = root.findViewById<Button>(R.id.btn_delete)
-        val textView = root.findViewById<TextView>(R.id.textView4)
+        val textView = root.findViewById<TextView>(R.id.txtName)
+        val txtGarbage = root.findViewById<TextView>(R.id.txtGarbage)
         val firebaseUser = mAuth.currentUser
         val firebaseDate = FirebaseDatabase.getInstance()
         val rootReference = firebaseDate.reference
@@ -53,7 +53,7 @@ class AccountFragment : Fragment() {
             val mintent: Intent? = Intent(context, LoginActivity::class.java)
             startActivityForResult(mintent, 1)
         } else {
-            val name = Thread(Runnable {
+            val name = Thread {
                 nameReference = rootReference.child("Users").child(firebaseUser.uid).child("Name")
                 nameReference.addValueEventListener(object : ValueEventListener {
                     @SuppressLint("SetTextI18n")
@@ -62,29 +62,36 @@ class AccountFragment : Fragment() {
                         if (value != null)
                             textView.text = "добрый день, " +
                                     value +
-                                    "\nyour email: ${firebaseUser.email}"
+                                    "\nВаша почта: ${firebaseUser.email}"
                     }
 
                     override fun onCancelled(error: DatabaseError) {}
                 })
 
-            })
+            }
+            
+            val handler = Handler()
             val garbage = Thread {
-                garbageReference =
-                    rootReference.child("Users").child(firebaseUser.uid).child("Garbage")
-                for (i in 0..allGarbage.lastIndex) {
-                    val databaseReference = garbageReference.child(allGarbage[i])
-                    databaseReference.addValueEventListener(object : ValueEventListener {
-                        override fun onCancelled(error: DatabaseError) {}
 
-                        @SuppressLint("SetTextI18n")
-                        override fun onDataChange(datasnapshot: DataSnapshot) {
-                            val garbage: String? = datasnapshot.getValue(String::class.java)
-                            if (garbage != null)
-                                textView.text = "${textView.text}\n ${allGarbage[i]} : $garbage"
+                this.url = String.format(this.url, this.host, this.port, this.database);
+                try {
+                    Class.forName("org.postgresql.Driver");
+                    val connection = DriverManager.getConnection(url, user, pass);
+                    val st: Statement = connection.createStatement()
+                    val rs: ResultSet =
+                        st.executeQuery("select category, SUM(amount) from no2garbage where uuid = '${firebaseUser.uid}' group by category")
+
+                    while (rs.next()) {
+                        val dbCategory: String = rs.getString("category").toString()
+                        val dbSum = rs.getString("sum").toString()
+                        handler.post {
+                            txtGarbage.text = "${txtGarbage.text}\n$dbCategory:   $dbSum"
                         }
 
-                    })
+                    }
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
 
             }
@@ -95,24 +102,7 @@ class AccountFragment : Fragment() {
             btn_signOu.isEnabled = true
 
             btn_null.setOnClickListener {
-                val allGarbage = arrayOf(
-                    resources.getString(R.string.BTN_Jars),
-                    getString(R.string.BTN_Bottles),
-                    getString(R.string.BTN_Сontainers),
-                    getString(R.string.BTN_Box),
-                    getString(R.string.BTN_GoodClothes),
-                    getString(R.string.BTN_BadClothes),
-                    getString(R.string.BTN_Battery),
-                    getString(R.string.BTN_Paper),
-                    getString(R.string.BTN_Technic)
-                )
-
-                val garbageReference =
-                    rootReference.child("Users").child(firebaseUser.uid).child("Garbage")
-                for (i in 0..allGarbage.lastIndex) {
-                    val databaseReference = garbageReference.child(allGarbage[i])
-                    databaseReference.setValue("0")
-                }
+                deleteDB(firebaseUser.uid)
                 activity?.recreate()
             }
 
@@ -132,9 +122,8 @@ class AccountFragment : Fragment() {
                 }
                 pDialog.setCancelClickListener {
                     activity?.recreate()
+                    deleteDB(firebaseUser.uid)
                     firebaseUser.delete()
-                    val userReference = rootReference.child("Users").child(firebaseUser.uid)
-                    userReference.removeValue()
 
                 }
                 pDialog.progressHelper.spin()
@@ -155,6 +144,25 @@ class AccountFragment : Fragment() {
 
     }
 
+    private fun deleteDB(uid: String) {
+        val thread = Thread {
+            this.url = String.format(this.url, this.host, this.port, this.database);
+            try {
+                Class.forName("org.postgresql.Driver");
+                val connection = DriverManager.getConnection(url, user, pass);
+                val st: Statement = connection.createStatement()
+                st.execute(
+                    "DELETE FROM no2garbage\n" +
+                            "WHERE  uuid = '$uid';"
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+        }
+
+        thread.start()
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

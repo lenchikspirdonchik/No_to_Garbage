@@ -11,10 +11,18 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/txtName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Загрузка данных... Ждите"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtGarbage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:textColor="@color/colorPrimary"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -36,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_marginTop="52dp"
+            android:layout_marginTop="22dp"
 
             android:background="@drawable/button"
             android:text="Выйти"
@@ -48,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_marginTop="52dp"
+            android:layout_marginTop="22dp"
 
             android:background="@drawable/button"
             android:text="Удалить аккаунт"
