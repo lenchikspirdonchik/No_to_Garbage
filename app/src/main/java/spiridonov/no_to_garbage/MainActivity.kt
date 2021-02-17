@@ -35,8 +35,7 @@ class MainActivity : AppCompatActivity() {
                     R.id.nav_account,
                     R.id.nav_addMap,
                     R.id.nav_addImage,
-                    R.id.nav_aboutApp,
-                    R.id.nav_database
+                    R.id.nav_aboutApp//, R.id.nav_database
                 ),
                 drawerLayout
             )
