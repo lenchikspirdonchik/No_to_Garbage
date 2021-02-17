@@ -43,7 +43,6 @@ class DescriptionFragment : Fragment() {
             val firebaseDate = FirebaseDatabase.getInstance()
             val rootReference = firebaseDate.reference
             val garbageReference = rootReference.child("GarbageInformation").child(mainCategory)
-
             val headReference = garbageReference.child("head")
             val bodyReference = garbageReference.child("body")
 

@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,10 +14,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import cn.pedant.SweetAlert.SweetAlertDialog
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
@@ -24,6 +21,9 @@ import com.yandex.mapkit.mapview.MapView
 import com.yandex.runtime.image.ImageProvider
 import spiridonov.no_to_garbage.R
 import spiridonov.no_to_garbage.homeMenu.UserMapData
+import java.sql.DriverManager
+import java.sql.ResultSet
+import java.sql.Statement
 
 
 class MapThingFragment : Fragment() {
@@ -31,6 +31,12 @@ class MapThingFragment : Fragment() {
     private val KEY_THING = "thing"
     private lateinit var txtMap: TextView
     private lateinit var mapview: MapView
+    private val host = "ec2-108-128-104-50.eu-west-1.compute.amazonaws.com"
+    private val database = "dvvl3t4j8k5q7"
+    private val port = 5432
+    private val user = "mpzdfkfaoiwywz"
+    private val pass = "c37ce7e3b99d480a04b8943b89ba6e7abb94cb86c56bfa4c6ace4fab4cbc287d"
+    private var url = "jdbc:postgresql://%s:%d/%s"
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -66,27 +72,73 @@ class MapThingFragment : Fragment() {
             true
         }
 
-
+        val handler = Handler()
         val thread = Thread {
             msp = this.requireActivity().getSharedPreferences("things", Context.MODE_PRIVATE)
             if (msp.contains(KEY_THING)) {
                 val mainCategory = msp.getString(KEY_THING, "").toString()
+                this.url = String.format(this.url, this.host, this.port, this.database);
+                try {
+                    Class.forName("org.postgresql.Driver");
+                    val connection = DriverManager.getConnection(url, user, pass);
+                    val st: Statement = connection.createStatement()
+                    Log.d("mainCategory", mainCategory)
+                    val rs: ResultSet =
+                        st.executeQuery("select * from no2garbage_map where category='$mainCategory'")
 
-                val firebaseDate = FirebaseDatabase.getInstance()
-                val rootReference = firebaseDate.reference
-                val garbageReference = rootReference.child("GarbageInformation").child(mainCategory)
+                    while (rs.next()) {
+                        val dbWhoAdd: String? = rs.getString("who_add")?.toString()
+                        val dbLatLang: List<String> = rs.getString("lat_lang").split(",")
+                        val dbHint = rs.getString("hint").toString()
+                        handler.post {
+                            val data = UserMapData(category = mainCategory, hint = dbHint)
+                            mapview.map.mapObjects.addPlacemark(
+                                Point(dbLatLang[0].toDouble(), dbLatLang[1].toDouble()),
+                                ImageProvider.fromResource(context, R.drawable.marker55)
+                            ).userData = data
 
+                            mapview.map.move(
+                                com.yandex.mapkit.map.CameraPosition(
+                                    Point(
+                                        dbLatLang[0].toDouble(),
+                                        dbLatLang[1].toDouble()
+                                    ), 14.0f, 0.0f, 0.0f
+                                ),
+                                Animation(Animation.Type.SMOOTH, 0F),
+                                null
+                            )
+                        }
 
+                    }
+                    
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
 
+            }
 
+        }
 
+        thread.start()
+        return root
+    }
 
+    override fun onStop() {
+        super.onStop()
+        mapview.onStop()
+        MapKitFactory.getInstance().onStop()
+    }
 
-
-
-
-
-
+    override fun onStart() {
+        super.onStart()
+        mapview.onStart()
+        MapKitFactory.getInstance().onStart()
+    }
+}
+/*
+            val firebaseDate = FirebaseDatabase.getInstance()
+            val rootReference = firebaseDate.reference
+            val garbageReference = rootReference.child("GarbageInformation").child(mainCategory)
                 garbageReference.addValueEventListener(object : ValueEventListener {
                     override fun onCancelled(error: DatabaseError) {}
                     override fun onDataChange(snapshot: DataSnapshot) {
@@ -129,33 +181,11 @@ class MapThingFragment : Fragment() {
                                     )
 
 
+
                                 }
                             })
 
                             mapNumber++
                         }
                     }
-                })
-
-
-            }
-        }
-
-        thread.start()
-        return root
-    }
-
-    override fun onStop() {
-        super.onStop()
-        mapview.onStop()
-        MapKitFactory.getInstance().onStop()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        mapview.onStart()
-        MapKitFactory.getInstance().onStart()
-    }
-
-
-}
+                })}*/
