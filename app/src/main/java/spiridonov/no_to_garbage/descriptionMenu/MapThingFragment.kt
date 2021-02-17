@@ -47,7 +47,6 @@ class MapThingFragment : Fragment() {
 
         mapview.map.mapObjects.addTapListener { varin, point ->
             val data: UserMapData = varin.userData as UserMapData
-
             val pDialog = SweetAlertDialog(context, SweetAlertDialog.BUTTON_POSITIVE)
             pDialog.progressHelper.barColor = Color.parseColor("#264599")
             pDialog.titleText = data.category
@@ -59,6 +58,8 @@ class MapThingFragment : Fragment() {
             pDialog.setConfirmClickListener {
                 pDialog.dismiss()
             }
+
+
             pDialog.setCancelClickListener {
                 Log.d("pDialog", "Открытие карт")
                 val mapUri: Uri =
@@ -70,6 +71,7 @@ class MapThingFragment : Fragment() {
             pDialog.progressHelper.spin()
             pDialog.show()
             true
+
         }
 
         val handler = Handler()
@@ -110,7 +112,7 @@ class MapThingFragment : Fragment() {
                         }
 
                     }
-                    
+
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
