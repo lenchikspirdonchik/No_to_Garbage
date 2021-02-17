@@ -69,7 +69,7 @@ class AccountFragment : Fragment() {
                 })
 
             })
-            val garbage = Thread(Runnable {
+            val garbage = Thread {
                 garbageReference =
                     rootReference.child("Users").child(firebaseUser.uid).child("Garbage")
                 for (i in 0..allGarbage.lastIndex) {
@@ -87,7 +87,7 @@ class AccountFragment : Fragment() {
                     })
                 }
 
-            })
+            }
 
             name.start()
             garbage.start()

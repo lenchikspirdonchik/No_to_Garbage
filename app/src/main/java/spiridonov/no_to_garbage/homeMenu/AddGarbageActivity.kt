@@ -17,14 +17,18 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_add_garbage.*
 import spiridonov.no_to_garbage.R
 import spiridonov.no_to_garbage.account.LoginActivity
-import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.Statement
 import java.util.*
 
 
 class AddGarbageActivity : AppCompatActivity() {
-
+    private val host = "ec2-108-128-104-50.eu-west-1.compute.amazonaws.com"
+    private val database = "dvvl3t4j8k5q7"
+    private val port = 5432
+    private val user = "mpzdfkfaoiwywz"
+    private val pass = "c37ce7e3b99d480a04b8943b89ba6e7abb94cb86c56bfa4c6ace4fab4cbc287d"
+    private var url = "jdbc:postgresql://%s:%d/%s"
     private val mAuth = FirebaseAuth.getInstance()
     private val firebaseUser = mAuth.currentUser
     private val firebaseDate = FirebaseDatabase.getInstance()
@@ -61,6 +65,7 @@ class AddGarbageActivity : AppCompatActivity() {
             if (firebaseUser != null) {
                 val numberGar = editTextNumber.text.toString()
                 var oldNumberGar: String
+                this.url = String.format(this.url, this.host, this.port, this.database);
                 if (numberGar != "") {
                     Save2SQL(
                         spinnerGarbage.selectedItem.toString(),
@@ -137,28 +142,20 @@ class AddGarbageActivity : AppCompatActivity() {
 
 
     private fun Save2SQL(category: String, amount: Int, uuid: String) {
-        val url = "jdbc:mysql://198.199.73.149:3306/spiridonovproduction"
-        val user = "spiridonovproduction"
-        val password = "H+4ynXm20/5Yf-T"
-
         val startDate = Calendar.getInstance()
         val day = startDate.get(Calendar.DAY_OF_MONTH).toString()
         val month = (startDate.get(Calendar.MONTH) + 1).toString()
         val year = startDate.get(Calendar.YEAR).toString()
 
-        val p = Properties()
-        p.setProperty("user", user)
-        p.setProperty("password", password)
-        p.setProperty("useUnicode", "true")
-        p.setProperty("characterEncoding", "cp1251")
+
         val thread = Thread {
             try {
-                Class.forName("com.mysql.jdbc.Driver")
-                val con: Connection = DriverManager.getConnection(url, p)
-                val st: Statement = con.createStatement()
+                Class.forName("org.postgresql.Driver");
+                val connection = DriverManager.getConnection(url, user, pass);
+                val st: Statement = connection.createStatement()
                 st.execute(
                     " insert into no2garbage (uuid, date, category, amount)\n" +
-                            "VALUES ('$uuid', STR_TO_DATE('$month/$day/$year', '%m/%d/%Y'), '$category', $amount);"
+                            "VALUES ('$uuid', date('$month/$day/$year'), '$category', $amount);"
                 )
 
             } catch (e: Exception) {

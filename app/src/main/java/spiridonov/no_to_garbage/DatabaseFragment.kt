@@ -8,14 +8,21 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
-import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.ResultSet
 import java.sql.Statement
-import java.util.*
 
 
 class DatabaseFragment : Fragment() {
+
+    private val host = "ec2-108-128-104-50.eu-west-1.compute.amazonaws.com"
+    private val database = "dvvl3t4j8k5q7"
+    private val port = 5432
+    private val user = "mpzdfkfaoiwywz"
+    private val pass = "c37ce7e3b99d480a04b8943b89ba6e7abb94cb86c56bfa4c6ace4fab4cbc287d"
+    private var url = "jdbc:postgresql://%s:%d/%s"
+    private var status = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -60,27 +67,19 @@ class DatabaseFragment : Fragment() {
     private fun buildCard(root: View, category: String) {
         val mAuth = FirebaseAuth.getInstance()
         val uuid = mAuth.currentUser?.uid
-
-
-        val url = "jdbc:mysql://198.199.73.149:3306/spiridonovproduction"
-        val user = "spiridonovproduction"
-        val password = "H+4ynXm20/5Yf-T"
+        this.url = String.format(this.url, this.host, this.port, this.database);
 
         val handler = Handler()
         val linearLayout = root.findViewById<LinearLayout>(R.id.myLin)
         val myinflater = LayoutInflater.from(context)
         linearLayout.removeAllViews()
 
-        val p = Properties()
-        p.setProperty("user", user)
-        p.setProperty("password", password)
-        p.setProperty("useUnicode", "true")
-        p.setProperty("characterEncoding", "cp1251")
         val thread = Thread {
             try {
-                Class.forName("com.mysql.jdbc.Driver")
-                val con: Connection = DriverManager.getConnection(url, p)
-                val st: Statement = con.createStatement()
+                Class.forName("org.postgresql.Driver");
+                val connection = DriverManager.getConnection(url, user, pass);
+                status = true
+                val st: Statement = connection.createStatement()
 
                 if (uuid != null) {
                     val rs: ResultSet =

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -18,13 +17,18 @@ import org.eazegraph.lib.charts.PieChart
 import org.eazegraph.lib.models.PieModel
 import spiridonov.no_to_garbage.R
 import spiridonov.no_to_garbage.account.LoginActivity
-import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.ResultSet
 import java.sql.Statement
-import java.util.*
 
 class StatisticsActivity : AppCompatActivity() {
+    private val host = "ec2-108-128-104-50.eu-west-1.compute.amazonaws.com"
+    private val database = "dvvl3t4j8k5q7"
+    private val port = 5432
+    private val user = "mpzdfkfaoiwywz"
+    private val pass = "c37ce7e3b99d480a04b8943b89ba6e7abb94cb86c56bfa4c6ace4fab4cbc287d"
+    private var url = "jdbc:postgresql://%s:%d/%s"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_statistics)
@@ -35,15 +39,7 @@ class StatisticsActivity : AppCompatActivity() {
         val mAuth = FirebaseAuth.getInstance()
         val firebaseUser = mAuth.currentUser
         val firebaseDate = FirebaseDatabase.getInstance()
-        val url = "jdbc:mysql://198.199.73.149:3306/spiridonovproduction"
-        val user = "spiridonovproduction"
-        val password = "H+4ynXm20/5Yf-T"
 
-        val p = Properties()
-        p.setProperty("user", user)
-        p.setProperty("password", password)
-        p.setProperty("useUnicode", "true")
-        p.setProperty("characterEncoding", "cp1251")
         val rootReference = firebaseDate.reference
         val allGarbage = arrayOf(
             getString(R.string.BTN_Jars),
@@ -74,11 +70,12 @@ class StatisticsActivity : AppCompatActivity() {
 
 
         if (firebaseUser != null) {
+            this.url = String.format(this.url, this.host, this.port, this.database);
+
             val handler = Handler()
             //val garbageReference = rootReference.child("Users").child(firebaseUser.uid).child("Garbage")
 
             for (i in 0..allGarbage.lastIndex) {
-                Log.d("FIRST i=", i.toString())
                 /* val databaseReference =
                      garbageReference.child(allGarbage[i])
                  databaseReference.addValueEventListener(object : ValueEventListener {
@@ -105,9 +102,9 @@ class StatisticsActivity : AppCompatActivity() {
 
                 val thread = Thread {
                     try {
-                        Class.forName("com.mysql.jdbc.Driver")
-                        val con: Connection = DriverManager.getConnection(url, p)
-                        val st: Statement = con.createStatement()
+                        Class.forName("org.postgresql.Driver");
+                        val connection = DriverManager.getConnection(url, user, pass);
+                        val st: Statement = connection.createStatement()
 
                         val rs: ResultSet =
                             st.executeQuery(" select SUM(amount) from no2garbage where category='${allGarbage[i]}' AND uuid='${firebaseUser.uid}'")
@@ -152,18 +149,12 @@ class StatisticsActivity : AppCompatActivity() {
 
             val uuid = mAuth.currentUser?.uid
             val handler = Handler()
-            val url = "jdbc:mysql://198.199.73.149:3306/spiridonovproduction"
-            val p = Properties()
-            p.setProperty("user", "spiridonovproduction")
-            p.setProperty("password", "H+4ynXm20/5Yf-T")
-            p.setProperty("useUnicode", "true")
-            p.setProperty("characterEncoding", "cp1251")
             linearLayout.removeAllViews()
             val thread = Thread {
                 try {
-                    Class.forName("com.mysql.jdbc.Driver")
-                    val con: Connection = DriverManager.getConnection(url, p)
-                    val st: Statement = con.createStatement()
+                    Class.forName("org.postgresql.Driver");
+                    val connection = DriverManager.getConnection(url, user, pass)
+                    val st: Statement = connection.createStatement()
 
                     if (uuid != null) {
                         val rs: ResultSet =

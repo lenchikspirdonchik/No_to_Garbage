@@ -62,8 +62,5 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:26.3.0')
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-analytics-ktx'
-    implementation 'mysql:mysql-connector-java:5.1.46'
-    implementation "org.igniterealtime.smack:smack-android-extensions:4.1.0"
-    implementation "org.igniterealtime.smack:smack-experimental:4.1.0"
-    implementation "org.igniterealtime.smack:smack-tcp:4.1.0"
+    implementation 'org.postgresql:postgresql:42.2.5.jre7'
 }
