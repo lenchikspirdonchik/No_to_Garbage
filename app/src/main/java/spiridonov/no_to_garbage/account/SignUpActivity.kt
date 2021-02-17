@@ -10,10 +10,19 @@ import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import spiridonov.no_to_garbage.MainActivity
 import spiridonov.no_to_garbage.R
+import java.sql.DriverManager
+import java.sql.Statement
+import java.util.*
 
 
 class SignUpActivity : AppCompatActivity() {
     private lateinit var mAuth: FirebaseAuth
+    private val host = "ec2-108-128-104-50.eu-west-1.compute.amazonaws.com"
+    private val database = "dvvl3t4j8k5q7"
+    private val port = 5432
+    private val dbuser = "mpzdfkfaoiwywz"
+    private val pass = "c37ce7e3b99d480a04b8943b89ba6e7abb94cb86c56bfa4c6ace4fab4cbc287d"
+    private var url = "jdbc:postgresql://%s:%d/%s"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
@@ -69,12 +78,30 @@ class SignUpActivity : AppCompatActivity() {
             getString(R.string.BTN_Technic)
         )
 
-        val firebaseDate = FirebaseDatabase.getInstance()
-        val rootReference = firebaseDate.reference
-        val garbageReference = rootReference.child("Users").child(user.uid).child("Garbage")
+        this.url = String.format(this.url, this.host, this.port, this.database);
         for (i in 0..allGarbage.lastIndex) {
-            val databaseReference = garbageReference.child(allGarbage[i])
-            databaseReference.setValue("0")
+            val category = allGarbage[i]
+            val startDate = Calendar.getInstance()
+            val day = startDate.get(Calendar.DAY_OF_MONTH).toString()
+            val month = (startDate.get(Calendar.MONTH) + 1).toString()
+            val year = startDate.get(Calendar.YEAR).toString()
+            val thread = Thread {
+                try {
+                    Class.forName("org.postgresql.Driver");
+                    val connection = DriverManager.getConnection(url, dbuser, pass);
+                    val st: Statement = connection.createStatement()
+                    st.execute(
+                        " insert into no2garbage (uuid, date, category, amount)\n" +
+                                "VALUES ('${user.uid}', date('$month/$day/$year'), '$category', 1);"
+                    )
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+            }
+            thread.start()
+
         }
 
     }

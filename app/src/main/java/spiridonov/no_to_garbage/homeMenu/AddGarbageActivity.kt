@@ -2,18 +2,12 @@ package spiridonov.no_to_garbage.homeMenu
 
 import android.R.layout
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_add_garbage.*
 import spiridonov.no_to_garbage.R
 import spiridonov.no_to_garbage.account.LoginActivity
@@ -31,8 +25,6 @@ class AddGarbageActivity : AppCompatActivity() {
     private var url = "jdbc:postgresql://%s:%d/%s"
     private val mAuth = FirebaseAuth.getInstance()
     private val firebaseUser = mAuth.currentUser
-    private val firebaseDate = FirebaseDatabase.getInstance()
-    private val rootReference = firebaseDate.reference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,58 +56,16 @@ class AddGarbageActivity : AppCompatActivity() {
         btnAddGarbage.setOnClickListener {
             if (firebaseUser != null) {
                 val numberGar = editTextNumber.text.toString()
-                var oldNumberGar: String
                 this.url = String.format(this.url, this.host, this.port, this.database);
                 if (numberGar != "") {
                     Save2SQL(
                         spinnerGarbage.selectedItem.toString(),
                         numberGar.toInt(),
-                        firebaseUser.uid.toString()
+                        firebaseUser.uid
                     )
-                    var flag = true
-                    val garbageReference =
-                        rootReference.child("Users").child(firebaseUser.uid).child("Garbage")
-                            .child(spinnerGarbage.selectedItem.toString())
-
-                    garbageReference.addValueEventListener(object : ValueEventListener {
-                        override fun onCancelled(error: DatabaseError) {}
-
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            val kolvoString = snapshot.getValue(String::class.java)!!
-                            oldNumberGar = kolvoString
-                            if (flag && kolvoString != "") {
-                                var kolvo = kolvoString.toInt()
-                                kolvo += numberGar.toInt()
-                                garbageReference.setValue(kolvo.toString())
-                                flag = false
-                            }
-
-
-                            Snackbar.make(
-                                findViewById(android.R.id.content),
-                                resources.getString(R.string.refreshInformation),
-                                Snackbar.LENGTH_LONG
-                            )
-                                .setAction(resources.getString(R.string.undo)) {
-                                    garbageReference.setValue(oldNumberGar)
-                                    flag = false
-
-                                }.setActionTextColor(Color.RED).show()
-
-
-                            Toast.makeText(
-                                applicationContext,
-                                getString(R.string.done),
-                                Toast.LENGTH_LONG
-                            ).show()
-                            editTextNumber.setText(getString(R.string.done))
-                            editTextNumber.isEnabled = false
-                            btnAddGarbage.isEnabled = false
-
-                        }
-                    })
-
-
+                    editTextNumber.setText(getString(R.string.done))
+                    editTextNumber.isEnabled = false
+                    btnAddGarbage.isEnabled = false
                 }
             }
         }

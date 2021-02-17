@@ -19,6 +19,7 @@ import spiridonov.no_to_garbage.account.LoginActivity
 import java.sql.DriverManager
 import java.sql.ResultSet
 import java.sql.Statement
+import java.util.*
 
 
 class AccountFragment : Fragment() {
@@ -60,7 +61,7 @@ class AccountFragment : Fragment() {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         val value: String? = dataSnapshot.getValue(String::class.java)
                         if (value != null)
-                            textView.text = "добрый день, " +
+                            textView.text = "Добрый день, " +
                                     value +
                                     "\nВаша почта: ${firebaseUser.email}"
                     }
@@ -69,7 +70,7 @@ class AccountFragment : Fragment() {
                 })
 
             }
-            
+
             val handler = Handler()
             val garbage = Thread {
 
@@ -103,6 +104,41 @@ class AccountFragment : Fragment() {
 
             btn_null.setOnClickListener {
                 deleteDB(firebaseUser.uid)
+                val allGarbage = arrayOf(
+                    resources.getString(R.string.BTN_Jars),
+                    getString(R.string.BTN_Bottles),
+                    getString(R.string.BTN_Сontainers),
+                    getString(R.string.BTN_Box),
+                    getString(R.string.BTN_GoodClothes),
+                    getString(R.string.BTN_BadClothes),
+                    getString(R.string.BTN_Battery),
+                    getString(R.string.BTN_Paper),
+                    getString(R.string.BTN_Technic)
+                )
+                for (i in 0..allGarbage.lastIndex) {
+                    val category = allGarbage[i]
+                    val startDate = Calendar.getInstance()
+                    val day = startDate.get(Calendar.DAY_OF_MONTH).toString()
+                    val month = (startDate.get(Calendar.MONTH) + 1).toString()
+                    val year = startDate.get(Calendar.YEAR).toString()
+                    val thread = Thread {
+                        try {
+                            Class.forName("org.postgresql.Driver");
+                            val connection = DriverManager.getConnection(url, user, pass);
+                            val st: Statement = connection.createStatement()
+                            st.execute(
+                                " insert into no2garbage (uuid, date, category, amount)\n" +
+                                        "VALUES ('${firebaseUser.uid}', date('$month/$day/$year'), '$category', 1);"
+                            )
+
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+
+                    }
+                    thread.start()
+
+                }
                 activity?.recreate()
             }
 
@@ -123,8 +159,9 @@ class AccountFragment : Fragment() {
                 pDialog.setCancelClickListener {
                     activity?.recreate()
                     deleteDB(firebaseUser.uid)
+                    val userReference = rootReference.child("Users").child(firebaseUser.uid)
+                    userReference.removeValue()
                     firebaseUser.delete()
-
                 }
                 pDialog.progressHelper.spin()
                 pDialog.show()

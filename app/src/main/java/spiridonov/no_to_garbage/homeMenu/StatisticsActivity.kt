@@ -12,7 +12,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 import org.eazegraph.lib.charts.PieChart
 import org.eazegraph.lib.models.PieModel
 import spiridonov.no_to_garbage.R
@@ -38,9 +37,6 @@ class StatisticsActivity : AppCompatActivity() {
         val mPieChart = findViewById<View>(R.id.piechart) as PieChart
         val mAuth = FirebaseAuth.getInstance()
         val firebaseUser = mAuth.currentUser
-        val firebaseDate = FirebaseDatabase.getInstance()
-
-        val rootReference = firebaseDate.reference
         val allGarbage = arrayOf(
             getString(R.string.BTN_Jars),
             getString(R.string.BTN_Bottles),
@@ -67,39 +63,10 @@ class StatisticsActivity : AppCompatActivity() {
         val linearLayout = findViewById<LinearLayout>(R.id.staticLayout)
         val myinflater = LayoutInflater.from(this)
 
-
-
         if (firebaseUser != null) {
             this.url = String.format(this.url, this.host, this.port, this.database);
-
             val handler = Handler()
-            //val garbageReference = rootReference.child("Users").child(firebaseUser.uid).child("Garbage")
-
             for (i in 0..allGarbage.lastIndex) {
-                /* val databaseReference =
-                     garbageReference.child(allGarbage[i])
-                 databaseReference.addValueEventListener(object : ValueEventListener {
-                     override fun onDataChange(snapshot: DataSnapshot) {
-                         val garbage = snapshot.getValue(String::class.java)
-                         if (garbage != null) {
-                             Log.d("i=", i.toString())
-                             Log.d("category", allGarbage[i])
-                             Log.d("amount", garbage)
-                             mPieChart.addPieSlice(
-                                 PieModel(
-                                     allGarbage[i],
-                                     garbage.toFloat(),
-                                     Color.parseColor(colors[i])
-                                 )
-                             )
-
-                             if (i == allGarbage.lastIndex) mPieChart.startAnimation()
-                         }
-                     }*
-
-                     override fun onCancelled(error: DatabaseError) {}
-                 })*/
-
                 val thread = Thread {
                     try {
                         Class.forName("org.postgresql.Driver");
