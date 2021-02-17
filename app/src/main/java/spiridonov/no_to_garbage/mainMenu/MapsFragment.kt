@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,10 +14,7 @@ import android.widget.AdapterView.OnItemSelectedListener
 import androidx.fragment.app.Fragment
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.android.gms.maps.model.LatLng
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.auth.FirebaseAuth
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.layers.GeoObjectTapEvent
@@ -28,6 +26,9 @@ import com.yandex.mapkit.mapview.MapView
 import com.yandex.runtime.image.ImageProvider
 import spiridonov.no_to_garbage.R
 import spiridonov.no_to_garbage.homeMenu.UserMapData
+import java.sql.DriverManager
+import java.sql.ResultSet
+import java.sql.Statement
 import java.util.*
 
 
@@ -35,7 +36,12 @@ class MapsFragment : Fragment(), GeoObjectTapListener, InputListener {
     var myCoordinates: LatLng? = null
     private lateinit var mapV: MapView
     private var number = 0L
-
+    private val host = "ec2-108-128-104-50.eu-west-1.compute.amazonaws.com"
+    private val database = "dvvl3t4j8k5q7"
+    private val port = 5432
+    private val user = "mpzdfkfaoiwywz"
+    private val pass = "c37ce7e3b99d480a04b8943b89ba6e7abb94cb86c56bfa4c6ace4fab4cbc287d"
+    private var url = "jdbc:postgresql://%s:%d/%s"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,7 +65,8 @@ class MapsFragment : Fragment(), GeoObjectTapListener, InputListener {
         var category = allGarbage[0]
         val hint = root.findViewById<EditText>(R.id.editTextMap)
         mapV = root.findViewById<MapView>(R.id.mapview)
-
+        val mAuth = FirebaseAuth.getInstance()
+        val firebaseUser = mAuth.currentUser
 
         val adaptermain: ArrayAdapter<String> =
             ArrayAdapter<String>(
@@ -121,97 +128,102 @@ class MapsFragment : Fragment(), GeoObjectTapListener, InputListener {
                 Toast.makeText(requireContext(), getString(R.string.addSnippet), Toast.LENGTH_LONG)
                     .show()
             } else {
-                val firebaseDate = FirebaseDatabase.getInstance()
-                val rootReference = firebaseDate.reference
-                val garbageReference = rootReference.child("GarbageInformation").child(category)
-                val map = garbageReference.child("map$number")
-                val hintDatabase = garbageReference.child("mapHint$number")
-                val latitude = String.format(Locale.ENGLISH, "%.6f", myCoordinates!!.latitude)
-                val longitude = String.format(Locale.ENGLISH, "%.6f", myCoordinates!!.longitude)
-                map.setValue("$latitude,$longitude")
-                hintDatabase.setValue(hint.text.toString())
-                val pDialog = SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
-                pDialog.progressHelper.barColor = Color.parseColor("#264599")
-                pDialog.titleText = "Вы успешно добавили место"
-                pDialog.contentText = "Спасибо, что делаете приложение лучше!"
-                pDialog.confirmText = "Готово"
-                pDialog.progressHelper.rimColor = Color.parseColor("#264599")
-                pDialog.setCancelable(false)
-                pDialog.setConfirmClickListener {
-                    btn.setBackgroundColor(Color.RED)
-                    btn.isEnabled = false
-                    pDialog.dismiss()
+                if (firebaseUser != null) {
+                    val latitude = String.format(Locale.ENGLISH, "%.6f", myCoordinates!!.latitude)
+                    val longitude = String.format(Locale.ENGLISH, "%.6f", myCoordinates!!.longitude)
+                    val latLang = "$latitude,$longitude"
+                    Save2SQL(firebaseUser.uid, latLang, category, hint.text.toString())
+                    val pDialog = SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
+                    pDialog.progressHelper.barColor = Color.parseColor("#264599")
+                    pDialog.titleText = "Вы успешно добавили место"
+                    pDialog.contentText = "Спасибо, что делаете приложение лучше!"
+                    pDialog.confirmText = "Готово"
+                    pDialog.progressHelper.rimColor = Color.parseColor("#264599")
+                    pDialog.setCancelable(false)
+                    pDialog.setConfirmClickListener {
+                        btn.setBackgroundColor(Color.RED)
+                        btn.isEnabled = false
+                        pDialog.dismiss()
+                    }
+                    pDialog.progressHelper.spin()
+                    pDialog.show()
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "Для начала необходимо авторизоваться",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
-                pDialog.progressHelper.spin()
-                pDialog.show()
-
             }
         }
         return root
 
     }
 
+    private fun Save2SQL(uuid: String, latLang: String, category: String, hint: String) {
+        val thread = Thread {
+            try {
+                Class.forName("org.postgresql.Driver");
+                val connection = DriverManager.getConnection(url, user, pass);
+                val st: Statement = connection.createStatement()
+                st.execute(
+                    " insert into no2garbage_map (who_add, category, lat_lang, hint)\n" +
+                            "VALUES ('$uuid','$category', '$latLang', '$hint');"
+                )
 
-    private fun showExistMap(category: String) {
-        mapV.map.mapObjects.clear()
-        val firebaseDate = FirebaseDatabase.getInstance()
-        val rootReference = firebaseDate.reference
-        val garbageReference =
-            rootReference.child("GarbageInformation").child(category)
-        garbageReference.addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(error: DatabaseError) {}
-            override fun onDataChange(snapshot: DataSnapshot) {
-                var trueMapNumber = (snapshot.childrenCount - 2) / 2
-                if (trueMapNumber < 0) trueMapNumber = 0
-                var mapNumber = 0
-                while (mapNumber < trueMapNumber) {
-                    var hint = ""
-                    val geopointReference = garbageReference.child("map$mapNumber")
-                    val hintReference = garbageReference.child("mapHint$mapNumber")
-
-
-                    hintReference.addValueEventListener(object : ValueEventListener {
-                        override fun onCancelled(error: DatabaseError) {}
-
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            val value = snapshot.getValue(String::class.java)
-                            if (value != null) hint = value
-                        }
-                    })
-
-                    geopointReference.addValueEventListener(object :
-                        ValueEventListener {
-                        override fun onCancelled(error: DatabaseError) {}
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            val snap: String? =
-                                snapshot.getValue(String::class.java)
-                            if (snap != null) {
-                                val value = snap.split(",")
-
-                                val data = UserMapData(category = category, hint = hint)
-                                mapV.map.mapObjects.addPlacemark(
-                                    Point(value[0].toDouble(), value[1].toDouble()),
-                                    ImageProvider.fromResource(context, R.drawable.marker55)
-                                ).userData = data
-
-                                mapV.map.move(
-                                    com.yandex.mapkit.map.CameraPosition(
-                                        Point(
-                                            value[0].toDouble(),
-                                            value[1].toDouble()
-                                        ), 14.0f, 0.0f, 0.0f
-                                    ),
-                                    Animation(Animation.Type.SMOOTH, 0F),
-                                    null
-                                )
-                            }
-                        }
-                    })
-
-                    mapNumber++
-                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-        })
+
+        }
+        thread.start()
+    }
+
+
+    private fun showExistMap(mainCategory: String) {
+        mapV.map.mapObjects.clear()
+        val handler = Handler()
+        val thread = Thread {
+            this.url = String.format(this.url, this.host, this.port, this.database);
+            try {
+                Class.forName("org.postgresql.Driver");
+                val connection = DriverManager.getConnection(url, user, pass);
+                val st: Statement = connection.createStatement()
+                Log.d("mainCategory", mainCategory)
+                val rs: ResultSet =
+                    st.executeQuery("select * from no2garbage_map where category='$mainCategory'")
+
+                while (rs.next()) {
+                    val dbLatLang: List<String> = rs.getString("lat_lang").split(",")
+                    val dbHint = rs.getString("hint").toString()
+                    handler.post {
+                        val data = UserMapData(category = mainCategory, hint = dbHint)
+                        mapV.map.mapObjects.addPlacemark(
+                            Point(dbLatLang[0].toDouble(), dbLatLang[1].toDouble()),
+                            ImageProvider.fromResource(context, R.drawable.marker55)
+                        ).userData = data
+
+                        mapV.map.move(
+                            com.yandex.mapkit.map.CameraPosition(
+                                Point(
+                                    dbLatLang[0].toDouble(),
+                                    dbLatLang[1].toDouble()
+                                ), 14.0f, 0.0f, 0.0f
+                            ),
+                            Animation(Animation.Type.SMOOTH, 0F),
+                            null
+                        )
+                    }
+
+                }
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+        }
+
+        thread.start()
 
     }
 
