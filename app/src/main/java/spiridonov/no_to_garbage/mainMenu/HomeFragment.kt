@@ -1,20 +1,15 @@
 package spiridonov.no_to_garbage.mainMenu
 
-import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import android.widget.Button
+import android.widget.*
 import androidx.fragment.app.Fragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import spiridonov.no_to_garbage.R
-import spiridonov.no_to_garbage.ThingsActivity
-import spiridonov.no_to_garbage.homeMenu.AddGarbageActivity
-import spiridonov.no_to_garbage.homeMenu.AllMapsActivity
-import spiridonov.no_to_garbage.homeMenu.StatisticsActivity
 
 
 class HomeFragment : Fragment() {
@@ -24,6 +19,46 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root: View = inflater.inflate(R.layout.fragment_home, container, false)
+
+        val layout = root.findViewById<LinearLayout>(R.id.linearMain)
+        val myinflater = LayoutInflater.from(context)
+        val myview = myinflater.inflate(R.layout.category_row, layout, false)
+
+        for (j in 0..2) {
+            val table = myview.findViewById<TableLayout>(R.id.categoryTable)
+
+            val trName = table.findViewById<TableRow>(R.id.tableRawName)
+            val textCategory = trName.findViewById<TextView>(R.id.txtCategory)
+            textCategory.text = "category, j = $j"
+
+            val trPhoto = table.findViewById<TableRow>(R.id.tableRawPhoto)
+
+            for (i in 0..3) {
+
+                val layoutPhoto = trPhoto.findViewById<LinearLayout>(R.id.layoutCategory)
+                val scrollView = HorizontalScrollView(context)
+                val imageView = ImageView(context)
+                val mylayout= LinearLayout(context)
+                val bMap = BitmapFactory.decodeResource(resources, R.drawable.battery)
+                val bMapScaled = Bitmap.createScaledBitmap(bMap, 500, 500, true)
+                imageView.setImageBitmap(bMapScaled)
+                val space = TextView(context)
+                space.text = "        "
+
+                mylayout.addView(imageView)
+                mylayout.addView(space)
+                scrollView.addView(mylayout)
+                layoutPhoto.addView(scrollView)
+            }
+            table.removeAllViews()
+            table.addView(trName)
+            table.addView(trPhoto)
+            layout.removeAllViews()
+            layout.addView(myview)
+        }
+
+
+        /*
         val kitchen = root.findViewById<Button>(R.id.btn_kitchen)
         val bath = root.findViewById<Button>(R.id.btn_bathroom)
         val cabinet = root.findViewById<Button>(R.id.btn_cabinet)
@@ -63,10 +98,11 @@ class HomeFragment : Fragment() {
         kitchen.setOnClickListener(btnMain)
         bath.setOnClickListener(btnMain)
         cabinet.setOnClickListener(btnMain)
-        wardrope.setOnClickListener(btnMain)
+        wardrope.setOnClickListener(btnMain)*/
 
 
         return root
 
     }
+
 }
