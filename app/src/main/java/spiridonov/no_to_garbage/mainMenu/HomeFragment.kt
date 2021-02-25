@@ -2,12 +2,17 @@ package spiridonov.no_to_garbage.mainMenu
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.HorizontalScrollView
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TableLayout
+import android.widget.TableRow
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import spiridonov.no_to_garbage.R
 
@@ -21,36 +26,55 @@ class HomeFragment : Fragment() {
         val root: View = inflater.inflate(R.layout.fragment_home, container, false)
 
         val layout = root.findViewById<LinearLayout>(R.id.linearMain)
-        val myinflater = LayoutInflater.from(context)
-        val myview = myinflater.inflate(R.layout.category_row, layout, false)
+        val TLP = TableLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            TableLayout.LayoutParams.MATCH_PARENT
+        )
+        val table = TableLayout(context)
+        table.layoutParams = TLP
 
-        for (j in 0..2) {
-            val table = myview.findViewById<TableLayout>(R.id.categoryTable)
+        val ScrollParams = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        for (j in 0..10) {
+            val trName = TableRow(context)
+            trName.layoutParams = TLP
+            val textCategory = TextView(context)
+            textCategory.text = "\ncategory, j = $j"
+            textCategory.setTextColor(Color.BLACK)
+            textCategory.textSize = 18F
+            trName.addView(textCategory)
 
-            val trName = table.findViewById<TableRow>(R.id.tableRawName)
-            val textCategory = trName.findViewById<TextView>(R.id.txtCategory)
-            textCategory.text = "category, j = $j"
+            val trPhoto = TableRow(context)
+            trName.layoutParams = TLP
 
-            val trPhoto = table.findViewById<TableRow>(R.id.tableRawPhoto)
+            val horizontalScrollView = HorizontalScrollView(context)
+            horizontalScrollView.layoutParams = TLP
+
+            val linearscroll = LinearLayout(context)
+            linearscroll.orientation = LinearLayout.HORIZONTAL
+            linearscroll.layoutParams = TLP
+
             for (i in 0..3) {
-
-                val layoutPhoto = trPhoto.findViewById<LinearLayout>(R.id.layoutCategory)
                 val imageView = ImageView(context)
                 val bMap = BitmapFactory.decodeResource(resources, R.drawable.battery)
-                val bMapScaled = Bitmap.createScaledBitmap(bMap, 500, 500, true)
+                val bMapScaled = Bitmap.createScaledBitmap(bMap, 450, 450, true)
                 imageView.setImageBitmap(bMapScaled)
                 val space = TextView(context)
                 space.text = "        "
 
-                layoutPhoto.addView(imageView)
-                layoutPhoto.addView(space)
+                linearscroll.addView(imageView)
+                linearscroll.addView(space)
+                //trPhoto.addView(imageView)
+                //trPhoto.addView(space)
             }
-            table.removeAllViews()
+            horizontalScrollView.addView(linearscroll)
+            trPhoto.addView(horizontalScrollView)
             table.addView(trName)
             table.addView(trPhoto)
-
         }
-        layout.addView(myview)
+        layout.addView(table)
 
 
         /*
