@@ -32,30 +32,25 @@ class HomeFragment : Fragment() {
             textCategory.text = "category, j = $j"
 
             val trPhoto = table.findViewById<TableRow>(R.id.tableRawPhoto)
-
             for (i in 0..3) {
 
                 val layoutPhoto = trPhoto.findViewById<LinearLayout>(R.id.layoutCategory)
-                val scrollView = HorizontalScrollView(context)
                 val imageView = ImageView(context)
-                val mylayout= LinearLayout(context)
                 val bMap = BitmapFactory.decodeResource(resources, R.drawable.battery)
                 val bMapScaled = Bitmap.createScaledBitmap(bMap, 500, 500, true)
                 imageView.setImageBitmap(bMapScaled)
                 val space = TextView(context)
                 space.text = "        "
 
-                mylayout.addView(imageView)
-                mylayout.addView(space)
-                scrollView.addView(mylayout)
-                layoutPhoto.addView(scrollView)
+                layoutPhoto.addView(imageView)
+                layoutPhoto.addView(space)
             }
             table.removeAllViews()
             table.addView(trName)
             table.addView(trPhoto)
-            layout.removeAllViews()
-            layout.addView(myview)
+
         }
+        layout.addView(myview)
 
 
         /*
