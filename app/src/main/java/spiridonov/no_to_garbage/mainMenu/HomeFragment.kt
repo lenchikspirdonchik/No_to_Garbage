@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -26,35 +28,28 @@ class HomeFragment : Fragment() {
         val root: View = inflater.inflate(R.layout.fragment_home, container, false)
 
         val layout = root.findViewById<LinearLayout>(R.id.linearMain)
-        val TLP = TableLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            TableLayout.LayoutParams.MATCH_PARENT
-        )
+        val TLP = TableLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
         val table = TableLayout(context)
-        table.layoutParams = TLP
 
-        val ScrollParams = LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
+        val ScrollParams = LinearLayout.LayoutParams(WRAP_CONTENT, MATCH_PARENT)
         for (j in 0..10) {
             val trName = TableRow(context)
-            trName.layoutParams = TLP
-            val textCategory = TextView(context)
-            textCategory.text = "\ncategory, j = $j"
-            textCategory.setTextColor(Color.BLACK)
-            textCategory.textSize = 18F
-            trName.addView(textCategory)
-
             val trPhoto = TableRow(context)
             trName.layoutParams = TLP
+            trPhoto.layoutParams = TLP
+            val textCategory = TextView(context)
+            textCategory.setTextColor(Color.BLACK)
+            textCategory.textSize = 18F
+            table.layoutParams = TLP
+
+            textCategory.text = "\ncategory, j = $j"
+            trName.addView(textCategory)
 
             val horizontalScrollView = HorizontalScrollView(context)
             horizontalScrollView.layoutParams = TLP
-
             val linearscroll = LinearLayout(context)
             linearscroll.orientation = LinearLayout.HORIZONTAL
-            linearscroll.layoutParams = TLP
+            linearscroll.layoutParams = ScrollParams
 
             for (i in 0..3) {
                 val imageView = ImageView(context)
@@ -66,8 +61,8 @@ class HomeFragment : Fragment() {
 
                 linearscroll.addView(imageView)
                 linearscroll.addView(space)
-                //trPhoto.addView(imageView)
-                //trPhoto.addView(space)
+                // trPhoto.addView(imageView)
+                /// trPhoto.addView(space)
             }
             horizontalScrollView.addView(linearscroll)
             trPhoto.addView(horizontalScrollView)
