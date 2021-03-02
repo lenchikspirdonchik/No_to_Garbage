@@ -10,12 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.widget.HorizontalScrollView
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TableLayout
-import android.widget.TableRow
-import android.widget.TextView
+import android.widget.*
 import androidx.core.view.marginRight
 import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
@@ -32,13 +27,13 @@ class HomeFragment : Fragment() {
         val root: View = inflater.inflate(R.layout.fragment_home, container, false)
 
         val layout = root.findViewById<LinearLayout>(R.id.linearMain)
+
         val TLP = TableLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
         TLP.setMargins(15)
-        val myParams = LinearLayout.LayoutParams(0, WRAP_CONTENT, 1F)
-        myParams.setMargins(15)
         val table = TableLayout(context)
         table.layoutParams = TLP
         val handle = Handler()
+        layout.addView(table)
         for (j in 0..10) {
             val thread = Thread {
                 val trName = TableRow(context)
@@ -53,22 +48,18 @@ class HomeFragment : Fragment() {
                 val horizontalScrollView = HorizontalScrollView(context)
                 val linearscroll = LinearLayout(context)
                 linearscroll.orientation = LinearLayout.HORIZONTAL
-                linearscroll.layoutParams = myParams
                 horizontalScrollView.addView(linearscroll)
+                trPhoto.addView(horizontalScrollView)
                 for (i in 0..10) {
                     val imageView = ImageView(context)
-
                     val bMap = BitmapFactory.decodeResource(resources, R.drawable.battery)
                     val bMapScaled = Bitmap.createScaledBitmap(bMap, 200, 200, true)
                     imageView.setImageBitmap(bMapScaled)
-                    val space = TextView(context)
-                    space.text = "        "
-
+                    imageView.layoutParams = TLP
                     linearscroll.addView(imageView)
-                    linearscroll.addView(space)
                 }
 
-                trPhoto.addView(horizontalScrollView)
+
                 handle.post {
                     table.addView(trName)
                     table.addView(trPhoto)
@@ -76,7 +67,6 @@ class HomeFragment : Fragment() {
             }
             thread.start()
         }
-        layout.addView(table)
 
 
         /*
