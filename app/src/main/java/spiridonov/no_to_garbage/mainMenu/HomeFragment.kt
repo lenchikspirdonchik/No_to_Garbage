@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +16,10 @@ import android.widget.LinearLayout
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
+import androidx.core.view.marginRight
+import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
+import okhttp3.TlsVersion
 import spiridonov.no_to_garbage.R
 
 
@@ -29,45 +33,48 @@ class HomeFragment : Fragment() {
 
         val layout = root.findViewById<LinearLayout>(R.id.linearMain)
         val TLP = TableLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+        TLP.setMargins(15)
+        val myParams = LinearLayout.LayoutParams(0, WRAP_CONTENT, 1F)
+        myParams.setMargins(15)
         val table = TableLayout(context)
-
-        val ScrollParams = LinearLayout.LayoutParams(WRAP_CONTENT, MATCH_PARENT)
+        table.layoutParams = TLP
+        val handle = Handler()
         for (j in 0..10) {
-            val trName = TableRow(context)
-            val trPhoto = TableRow(context)
-            trName.layoutParams = TLP
-            trPhoto.layoutParams = TLP
-            val textCategory = TextView(context)
-            textCategory.setTextColor(Color.BLACK)
-            textCategory.textSize = 18F
-            table.layoutParams = TLP
+            val thread = Thread {
+                val trName = TableRow(context)
+                val trPhoto = TableRow(context)
+                val textCategory = TextView(context)
+                textCategory.setTextColor(Color.BLACK)
+                textCategory.textSize = 18F
+                table.layoutParams = TLP
 
-            textCategory.text = "\ncategory, j = $j"
-            trName.addView(textCategory)
+                textCategory.text = "\ncategory, j = $j"
+                trName.addView(textCategory)
+                val horizontalScrollView = HorizontalScrollView(context)
+                val linearscroll = LinearLayout(context)
+                linearscroll.orientation = LinearLayout.HORIZONTAL
+                linearscroll.layoutParams = myParams
+                horizontalScrollView.addView(linearscroll)
+                for (i in 0..10) {
+                    val imageView = ImageView(context)
 
-            val horizontalScrollView = HorizontalScrollView(context)
-            horizontalScrollView.layoutParams = TLP
-            val linearscroll = LinearLayout(context)
-            linearscroll.orientation = LinearLayout.HORIZONTAL
-            linearscroll.layoutParams = ScrollParams
+                    val bMap = BitmapFactory.decodeResource(resources, R.drawable.battery)
+                    val bMapScaled = Bitmap.createScaledBitmap(bMap, 200, 200, true)
+                    imageView.setImageBitmap(bMapScaled)
+                    val space = TextView(context)
+                    space.text = "        "
 
-            for (i in 0..3) {
-                val imageView = ImageView(context)
-                val bMap = BitmapFactory.decodeResource(resources, R.drawable.battery)
-                val bMapScaled = Bitmap.createScaledBitmap(bMap, 450, 450, true)
-                imageView.setImageBitmap(bMapScaled)
-                val space = TextView(context)
-                space.text = "        "
+                    linearscroll.addView(imageView)
+                    linearscroll.addView(space)
+                }
 
-                linearscroll.addView(imageView)
-                linearscroll.addView(space)
-                // trPhoto.addView(imageView)
-                /// trPhoto.addView(space)
+                trPhoto.addView(horizontalScrollView)
+                handle.post {
+                    table.addView(trName)
+                    table.addView(trPhoto)
+                }
             }
-            horizontalScrollView.addView(linearscroll)
-            trPhoto.addView(horizontalScrollView)
-            table.addView(trName)
-            table.addView(trPhoto)
+            thread.start()
         }
         layout.addView(table)
 
