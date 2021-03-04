@@ -1,5 +1,7 @@
 package spiridonov.no_to_garbage.mainMenu
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -14,6 +16,7 @@ import android.widget.*
 import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
 import spiridonov.no_to_garbage.R
+import spiridonov.no_to_garbage.descriptionMenu.OnethingActivity
 
 
 class HomeFragment : Fragment() {
@@ -32,7 +35,8 @@ class HomeFragment : Fragment() {
         val TLP = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
         val TRP = TableRow.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
         val LP = TableLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-        LP.setMargins(15)
+        val imageP = TableLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+        imageP.setMargins(15)
         var id = 1
         val table = TableLayout(context)
         table.layoutParams = TLP
@@ -46,7 +50,7 @@ class HomeFragment : Fragment() {
             textCategory.textSize = 22F
             table.layoutParams = TLP
 
-            textCategory.text = "${name}"
+            textCategory.text = " ${name}"
             trName.addView(textCategory)
             val horizontalScrollView = HorizontalScrollView(context)
             horizontalScrollView.layoutParams = TRP
@@ -56,23 +60,26 @@ class HomeFragment : Fragment() {
             horizontalScrollView.addView(linearscroll)
             trPhoto.addView(horizontalScrollView)
             val photocategory = setCategory(name)
-            for (i in photocategory) {
-                val resID = resources.getIdentifier(i, "drawable", context?.packageName)
+            val namecategory = setRusCategory(name)
+            for (i in 0..photocategory.lastIndex) {
+                val resID =
+                    resources.getIdentifier(photocategory[i], "drawable", context?.packageName)
 
                 val imageView = ImageView(context)
                 val bMap = BitmapFactory.decodeResource(resources, resID)
-                val bMapScaled = Bitmap.createScaledBitmap(
-                    bMap,
-                    screenWidth / 3 + 30, screenHeight / 5, true
-                )
+                val bMapScaled = Bitmap.createScaledBitmap(bMap, screenWidth / 3 + 20, screenHeight / 5 + 15, true)
                 imageView.setImageBitmap(bMapScaled)
-                imageView.layoutParams = LP
-                imageView.id = id
-                imageView.tag = id
-                imageView.setTag(imageView.id)
-                imageView.setOnClickListener { it
-                    val tag: String = it.tag.toString()
-                    Toast.makeText(requireContext(), tag, Toast.LENGTH_SHORT).show()
+                imageView.layoutParams = imageP
+                imageView.setOnClickListener {
+                    it
+                    val mintent = Intent(context, OnethingActivity::class.java)
+                    val msp = activity?.getSharedPreferences("things", Context.MODE_PRIVATE)
+                    val editor = msp?.edit()
+                    if (editor != null) {
+                        editor.putString("thing", namecategory[i])
+                        editor.apply()
+                        startActivity(mintent)
+                    }
 
                 }
                 linearscroll.addView(imageView)
@@ -86,6 +93,16 @@ class HomeFragment : Fragment() {
 
         return root
 
+    }
+
+    private fun setRusCategory(mainCategory: String): Array<String> {
+        return when (mainCategory) {
+            "Кухня" -> arrayOf("Стеклянные банки", "Бутылки", "Контейнеры", "Коробки")
+            "Ванная" -> arrayOf("Бутылки")
+            "Гардеробная" -> arrayOf("Одежда в плохом состоянии", "Одежда в хорошем состоянии")
+            "Кабинет" -> arrayOf("Батарейки", "Бумага", "Техника")
+            else -> arrayOf("Батарейки", "Бумага", "Техника")
+        }
     }
 
     private fun setCategory(mainCategory: String): Array<String> {
