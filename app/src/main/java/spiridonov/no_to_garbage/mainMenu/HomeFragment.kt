@@ -27,7 +27,7 @@ class HomeFragment : Fragment() {
         val root: View = inflater.inflate(R.layout.fragment_home, container, false)
 
         val layout = root.findViewById<LinearLayout>(R.id.linearMain)
-
+//TableRow.LayoutParams
         val TLP = TableLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
         TLP.setMargins(15)
         val table = TableLayout(context)
