@@ -18,6 +18,8 @@ import androidx.fragment.app.Fragment
 import spiridonov.no_to_garbage.R
 import spiridonov.no_to_garbage.descriptionMenu.OnethingActivity
 import spiridonov.no_to_garbage.homeMenu.AddGarbageActivity
+import spiridonov.no_to_garbage.homeMenu.AllMapsActivity
+import spiridonov.no_to_garbage.homeMenu.StatisticsActivity
 
 
 class HomeFragment : Fragment() {
@@ -115,15 +117,74 @@ class HomeFragment : Fragment() {
         textCategory.setTextColor(Color.BLACK)
         textCategory.textSize = 22F
         table.layoutParams = TLP
-        textCategory.text = "Другое"
+        textCategory.text = " Другое"
         trName.addView(textCategory)
         val horizontalScrollView = HorizontalScrollView(context)
         horizontalScrollView.layoutParams = TRP
         val linearscroll = LinearLayout(context)
         linearscroll.orientation = LinearLayout.HORIZONTAL
-        horizontalScrollView.addView(linearscroll)
         trPhoto.addView(horizontalScrollView)
-        val resID = resources.getIdentifier("add_garbage", "drawable", context?.packageName)
+        horizontalScrollView.addView(linearscroll)
+        addcategory(
+            linearscroll = linearscroll,
+            name = "Все мусорки города",
+            photo = "all_garbage",
+            intent = Intent(context, AllMapsActivity::class.java)
+        )
+        addcategory(
+            linearscroll = linearscroll,
+            name = "Выкинуть мусор",
+            photo = "add_garbage",
+            intent = Intent(context, AddGarbageActivity::class.java)
+        )
+        addcategory(
+            linearscroll = linearscroll,
+            name = "Статистика",
+            photo = "statistics",
+            intent = Intent(context, StatisticsActivity::class.java)
+        )
+        addcategory(
+            linearscroll = linearscroll,
+            name = "Добавить фото мусора",
+            photo = "add_garbage",
+            intent = Intent(context, AddImageFragment::class.java)
+        )
+        addcategory(
+            linearscroll = linearscroll,
+            name = "Добавить мусорку",
+            photo = "add_garbage",
+            intent = Intent(context, MapsFragment::class.java)
+        )
+        table.addView(trName)
+        table.addView(trPhoto)
+
+
+        val btnAbout = Button(context)
+        btnAbout.layoutParams = TLP
+        btnAbout.text = " О приложении"
+        btnAbout.setOnClickListener {
+            startActivity(Intent(context, AboutAppActivity::class.java))
+        }
+
+        val btnAccount = Button(context)
+        btnAccount.layoutParams = TLP
+        btnAccount.text = " Личный кабинет"
+        btnAccount.setOnClickListener {
+            startActivity(Intent(context, AccountFragment::class.java))
+        }
+        layout.addView(btnAbout)
+        layout.addView(btnAccount)
+        return root
+
+    }
+
+    private fun addcategory(
+        linearscroll: LinearLayout,
+        photo: String,
+        name: String,
+        intent: Intent
+    ) {
+        val resID = resources.getIdentifier(photo, "drawable", context?.packageName)
         val linearImage = LinearLayout(context)
         linearImage.orientation = LinearLayout.VERTICAL
         linearImage.layoutParams = linearimageP
@@ -134,22 +195,15 @@ class HomeFragment : Fragment() {
         imageView.setImageBitmap(bMapScaled)
         imageView.layoutParams = TLP
         imageView.setOnClickListener {
-            val mintent = Intent(context, AddGarbageActivity::class.java)
-            startActivity(mintent)
+            startActivity(intent)
         }
         val text = TextView(context)
         text.layoutParams = TLP
-        text.text = "Выкинуть мусор"
+        text.text = name
         linearImage.addView(imageView)
         linearImage.addView(text)
         linearscroll.addView(linearImage)
-        table.addView(trName)
-        table.addView(trPhoto)
-
-        return root
-
     }
-
 
     private fun setRusCategory(mainCategory: String): Array<String> {
         return when (mainCategory) {

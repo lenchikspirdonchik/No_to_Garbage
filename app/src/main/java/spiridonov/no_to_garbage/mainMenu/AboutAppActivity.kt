@@ -4,27 +4,21 @@ package spiridonov.no_to_garbage.mainMenu
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
 import spiridonov.no_to_garbage.Admin.AdminActivity
 import spiridonov.no_to_garbage.R
 
-class AboutAppFragment : Fragment() {
+class AboutAppActivity : AppCompatActivity() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val root = inflater.inflate(R.layout.fragment_about_app, container, false)
-        val VK = root.findViewById<TextView>(R.id.txtVK)
-        val In = root.findViewById<TextView>(R.id.txtIn)
-        val Gmail = root.findViewById<TextView>(R.id.txtGmail)
-        val img = root.findViewById<ImageView>(R.id.imgLogo)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.fragment_about_app)
+        val VK = findViewById<TextView>(R.id.txtVK)
+        val In = findViewById<TextView>(R.id.txtIn)
+        val Gmail = findViewById<TextView>(R.id.txtGmail)
+        val img = findViewById<ImageView>(R.id.imgLogo)
 
 
         VK.setOnClickListener {
@@ -49,13 +43,11 @@ class AboutAppFragment : Fragment() {
         }
 
         img.setOnLongClickListener {
-            val mintent = Intent(context, AdminActivity::class.java)
+            val mintent = Intent(this, AdminActivity::class.java)
             startActivity(mintent)
             true
         }
 
-
-        return root
     }
 
 

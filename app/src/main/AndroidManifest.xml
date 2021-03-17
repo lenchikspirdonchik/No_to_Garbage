@@ -40,6 +40,9 @@
             android:name=".Admin.AdminActivity"
             android:label="@string/adminAccount" />
         <activity
+            android:name=".mainMenu.AboutAppActivity"
+            android:label="@string/aboutApp" />
+        <activity
             android:name=".homeMenu.AllMapsActivity"
             android:label="@string/mapHome" />
         <activity
