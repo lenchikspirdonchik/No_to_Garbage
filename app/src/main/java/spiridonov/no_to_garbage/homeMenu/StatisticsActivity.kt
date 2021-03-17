@@ -64,13 +64,13 @@ class StatisticsActivity : AppCompatActivity() {
         val myinflater = LayoutInflater.from(this)
 
         if (firebaseUser != null) {
-            this.url = String.format(this.url, this.host, this.port, this.database);
+            this.url = String.format(this.url, this.host, this.port, this.database)
             val handler = Handler()
             for (i in 0..allGarbage.lastIndex) {
                 val thread = Thread {
                     try {
-                        Class.forName("org.postgresql.Driver");
-                        val connection = DriverManager.getConnection(url, user, pass);
+                        Class.forName("org.postgresql.Driver")
+                        val connection = DriverManager.getConnection(url, user, pass)
                         val st: Statement = connection.createStatement()
 
                         val rs: ResultSet =
@@ -119,7 +119,7 @@ class StatisticsActivity : AppCompatActivity() {
             linearLayout.removeAllViews()
             val thread = Thread {
                 try {
-                    Class.forName("org.postgresql.Driver");
+                    Class.forName("org.postgresql.Driver")
                     val connection = DriverManager.getConnection(url, user, pass)
                     val st: Statement = connection.createStatement()
 

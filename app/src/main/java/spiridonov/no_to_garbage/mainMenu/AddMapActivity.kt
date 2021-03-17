@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
@@ -16,13 +17,13 @@ import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.yandex.mapkit.Animation
+import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.layers.GeoObjectTapEvent
 import com.yandex.mapkit.layers.GeoObjectTapListener
 import com.yandex.mapkit.map.GeoObjectSelectionMetadata
 import com.yandex.mapkit.map.InputListener
 import com.yandex.mapkit.map.Map
-import com.yandex.mapkit.mapview.MapView
 import com.yandex.runtime.image.ImageProvider
 import kotlinx.android.synthetic.main.activity_maps.*
 import spiridonov.no_to_garbage.R
@@ -35,7 +36,6 @@ import java.util.*
 
 class AddMapActivity : AppCompatActivity(), GeoObjectTapListener, InputListener {
     var myCoordinates: LatLng? = null
-    private lateinit var mapV: MapView
     private var number = 0L
     private val host = "ec2-108-128-104-50.eu-west-1.compute.amazonaws.com"
     private val database = "dvvl3t4j8k5q7"
@@ -46,7 +46,13 @@ class AddMapActivity : AppCompatActivity(), GeoObjectTapListener, InputListener 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MapKitFactory.setApiKey("fd59b9d8-89f7-4bc6-aac0-48391066dd80")
+        MapKitFactory.initialize(this)
         setContentView(R.layout.activity_maps)
+        val actionBar = supportActionBar
+        actionBar?.setHomeButtonEnabled(true)
+        actionBar?.setDisplayHomeAsUpEnabled(true)
+
         val allGarbage = arrayOf(
             getString(R.string.BTN_Jars),
             getString(R.string.BTN_Bottles),
@@ -84,9 +90,9 @@ class AddMapActivity : AppCompatActivity(), GeoObjectTapListener, InputListener 
         }
 
 
-        mapV.map.addTapListener(this);
-        mapV.map.addInputListener(this);
-        mapV.map.mapObjects.addTapListener { varin, point ->
+        mapview.map.addTapListener(this)
+        mapview.map.addInputListener(this)
+        mapview.map.mapObjects.addTapListener { varin, point ->
             val data: UserMapData = varin.userData as UserMapData
 
             val pDialog = SweetAlertDialog(this, SweetAlertDialog.BUTTON_POSITIVE)
@@ -155,8 +161,8 @@ class AddMapActivity : AppCompatActivity(), GeoObjectTapListener, InputListener 
     private fun Save2SQL(uuid: String, latLang: String, category: String, hint: String) {
         val thread = Thread {
             try {
-                Class.forName("org.postgresql.Driver");
-                val connection = DriverManager.getConnection(url, user, pass);
+                Class.forName("org.postgresql.Driver")
+                val connection = DriverManager.getConnection(url, user, pass)
                 val st: Statement = connection.createStatement()
                 st.execute(
                     " insert into no2garbage_map (who_add, category, lat_lang, hint)\n" +
@@ -173,13 +179,13 @@ class AddMapActivity : AppCompatActivity(), GeoObjectTapListener, InputListener 
 
 
     private fun showExistMap(mainCategory: String) {
-        mapV.map.mapObjects.clear()
+        mapview.map.mapObjects.clear()
         val handler = Handler()
         val thread = Thread {
-            this.url = String.format(this.url, this.host, this.port, this.database);
+            this.url = String.format(this.url, this.host, this.port, this.database)
             try {
-                Class.forName("org.postgresql.Driver");
-                val connection = DriverManager.getConnection(url, user, pass);
+                Class.forName("org.postgresql.Driver")
+                val connection = DriverManager.getConnection(url, user, pass)
                 val st: Statement = connection.createStatement()
                 Log.d("mainCategory", mainCategory)
                 val rs: ResultSet =
@@ -190,12 +196,12 @@ class AddMapActivity : AppCompatActivity(), GeoObjectTapListener, InputListener 
                     val dbHint = rs.getString("hint").toString()
                     handler.post {
                         val data = UserMapData(category = mainCategory, hint = dbHint)
-                        mapV.map.mapObjects.addPlacemark(
+                        mapview.map.mapObjects.addPlacemark(
                             Point(dbLatLang[0].toDouble(), dbLatLang[1].toDouble()),
                             ImageProvider.fromResource(this, R.drawable.marker55)
                         ).userData = data
 
-                        mapV.map.move(
+                        mapview.map.move(
                             com.yandex.mapkit.map.CameraPosition(
                                 Point(
                                     dbLatLang[0].toDouble(),
@@ -227,7 +233,7 @@ class AddMapActivity : AppCompatActivity(), GeoObjectTapListener, InputListener 
             .metadataContainer
             .getItem(GeoObjectSelectionMetadata::class.java)
         if (selectionMetadata != null) {
-            mapV.map.selectGeoObject(selectionMetadata.id, selectionMetadata.layerId)
+            mapview.map.selectGeoObject(selectionMetadata.id, selectionMetadata.layerId)
             Log.d("map", selectionMetadata.toString())
         }
         return selectionMetadata != null
@@ -235,17 +241,25 @@ class AddMapActivity : AppCompatActivity(), GeoObjectTapListener, InputListener 
 
     override fun onMapTap(p0: Map, point: Point) {
         Log.d("map", "onMapTap")
-        mapV.map.mapObjects.addPlacemark(
+        mapview.map.mapObjects.addPlacemark(
             Point(point.latitude, point.longitude),
             ImageProvider.fromResource(this, R.drawable.marker55)
         )
         myCoordinates = LatLng(point.latitude, point.longitude)
-        mapV.map.deselectGeoObject()
+        mapview.map.deselectGeoObject()
     }
 
     override fun onMapLongTap(p0: Map, p1: Point) {
         Log.d("map", "onMapLongTap")
     }
 
-
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 }

@@ -79,10 +79,10 @@ class MapThingFragment : Fragment() {
             msp = this.requireActivity().getSharedPreferences("things", Context.MODE_PRIVATE)
             if (msp.contains(KEY_THING)) {
                 val mainCategory = msp.getString(KEY_THING, "").toString()
-                this.url = String.format(this.url, this.host, this.port, this.database);
+                this.url = String.format(this.url, this.host, this.port, this.database)
                 try {
-                    Class.forName("org.postgresql.Driver");
-                    val connection = DriverManager.getConnection(url, user, pass);
+                    Class.forName("org.postgresql.Driver")
+                    val connection = DriverManager.getConnection(url, user, pass)
                     val st: Statement = connection.createStatement()
                     Log.d("mainCategory", mainCategory)
                     val rs: ResultSet =

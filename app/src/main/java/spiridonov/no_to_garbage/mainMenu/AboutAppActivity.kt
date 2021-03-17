@@ -4,6 +4,7 @@ package spiridonov.no_to_garbage.mainMenu
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_about_app.*
 import spiridonov.no_to_garbage.Admin.AdminActivity
@@ -14,6 +15,10 @@ class AboutAppActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about_app)
+        val actionBar = supportActionBar
+        actionBar?.setHomeButtonEnabled(true)
+        actionBar?.setDisplayHomeAsUpEnabled(true)
+
         txtVK.setOnClickListener {
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://vk.com/leonid.spiri"))
             startActivity(browserIntent)
@@ -43,5 +48,13 @@ class AboutAppActivity : AppCompatActivity() {
 
     }
 
-
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 }

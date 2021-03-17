@@ -78,7 +78,7 @@ class SignUpActivity : AppCompatActivity() {
             getString(R.string.BTN_Technic)
         )
 
-        this.url = String.format(this.url, this.host, this.port, this.database);
+        this.url = String.format(this.url, this.host, this.port, this.database)
         for (i in 0..allGarbage.lastIndex) {
             val category = allGarbage[i]
             val startDate = Calendar.getInstance()
@@ -87,8 +87,8 @@ class SignUpActivity : AppCompatActivity() {
             val year = startDate.get(Calendar.YEAR).toString()
             val thread = Thread {
                 try {
-                    Class.forName("org.postgresql.Driver");
-                    val connection = DriverManager.getConnection(url, dbuser, pass);
+                    Class.forName("org.postgresql.Driver")
+                    val connection = DriverManager.getConnection(url, dbuser, pass)
                     val st: Statement = connection.createStatement()
                     st.execute(
                         " insert into no2garbage (uuid, date, category, amount)\n" +

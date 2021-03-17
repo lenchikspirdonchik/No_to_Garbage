@@ -68,10 +68,10 @@ class AllMapsActivity : AppCompatActivity() {
         val handler = Handler()
         val thread = Thread {
 
-            this.url = String.format(this.url, this.host, this.port, this.database);
+            this.url = String.format(this.url, this.host, this.port, this.database)
             try {
-                Class.forName("org.postgresql.Driver");
-                val connection = DriverManager.getConnection(url, user, pass);
+                Class.forName("org.postgresql.Driver")
+                val connection = DriverManager.getConnection(url, user, pass)
                 val st: Statement = connection.createStatement()
                 val rs: ResultSet =
                     st.executeQuery("select * from no2garbage_map")

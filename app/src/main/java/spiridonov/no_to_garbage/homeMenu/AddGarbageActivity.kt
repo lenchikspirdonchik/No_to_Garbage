@@ -56,7 +56,7 @@ class AddGarbageActivity : AppCompatActivity() {
         btnAddGarbage.setOnClickListener {
             if (firebaseUser != null) {
                 val numberGar = editTextNumber.text.toString()
-                this.url = String.format(this.url, this.host, this.port, this.database);
+                this.url = String.format(this.url, this.host, this.port, this.database)
                 if (numberGar != "") {
                     Save2SQL(
                         spinnerGarbage.selectedItem.toString(),
@@ -100,8 +100,8 @@ class AddGarbageActivity : AppCompatActivity() {
 
         val thread = Thread {
             try {
-                Class.forName("org.postgresql.Driver");
-                val connection = DriverManager.getConnection(url, user, pass);
+                Class.forName("org.postgresql.Driver")
+                val connection = DriverManager.getConnection(url, user, pass)
                 val st: Statement = connection.createStatement()
                 st.execute(
                     " insert into no2garbage (uuid, date, category, amount)\n" +

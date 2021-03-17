@@ -9,6 +9,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -30,6 +31,10 @@ class AddImageActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_image)
+        val actionBar = supportActionBar
+        actionBar?.setHomeButtonEnabled(true)
+        actionBar?.setDisplayHomeAsUpEnabled(true)
+
         val allGarbage = arrayOf(
             getString(R.string.BTN_Jars),
             getString(R.string.BTN_Bottles),
@@ -70,7 +75,7 @@ class AddImageActivity : AppCompatActivity() {
             val storageRef = FirebaseStorage.getInstance().reference
             val random = (1000000..9999999).random()
 
-            val imageRef = storageRef.child("Garbage/$category").child("${random.toString()}.jpeg")
+            val imageRef = storageRef.child("Garbage/$category").child("$random.jpeg")
             val baos = ByteArrayOutputStream()
             val bitmap = bitmapImage
             if (bitmap != null) {
@@ -153,10 +158,18 @@ class AddImageActivity : AppCompatActivity() {
             btnUploadImage.isEnabled = true
         }
 
-
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 }
 
 

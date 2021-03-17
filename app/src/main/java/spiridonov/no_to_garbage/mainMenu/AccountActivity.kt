@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.firebase.auth.FirebaseAuth
@@ -33,6 +34,9 @@ class AccountActivity : AppCompatActivity() {
         val firebaseUser = mAuth.currentUser
         val firebaseDate = FirebaseDatabase.getInstance()
         val rootReference = firebaseDate.reference
+        val actionBar = supportActionBar
+        actionBar?.setHomeButtonEnabled(true)
+        actionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (firebaseUser == null) {
             btn_null.isEnabled = false
@@ -60,10 +64,10 @@ class AccountActivity : AppCompatActivity() {
             val handler = Handler()
             val garbage = Thread {
 
-                this.url = String.format(this.url, this.host, this.port, this.database);
+                this.url = String.format(this.url, this.host, this.port, this.database)
                 try {
-                    Class.forName("org.postgresql.Driver");
-                    val connection = DriverManager.getConnection(url, user, pass);
+                    Class.forName("org.postgresql.Driver")
+                    val connection = DriverManager.getConnection(url, user, pass)
                     val st: Statement = connection.createStatement()
                     val rs: ResultSet =
                         st.executeQuery("select category, SUM(amount) from no2garbage where uuid = '${firebaseUser.uid}' group by category")
@@ -109,8 +113,8 @@ class AccountActivity : AppCompatActivity() {
                     val year = startDate.get(Calendar.YEAR).toString()
                     val thread = Thread {
                         try {
-                            Class.forName("org.postgresql.Driver");
-                            val connection = DriverManager.getConnection(url, user, pass);
+                            Class.forName("org.postgresql.Driver")
+                            val connection = DriverManager.getConnection(url, user, pass)
                             val st: Statement = connection.createStatement()
                             st.execute(
                                 " insert into no2garbage (uuid, date, category, amount)\n" +
@@ -167,10 +171,10 @@ class AccountActivity : AppCompatActivity() {
 
     private fun deleteDB(uid: String) {
         val thread = Thread {
-            this.url = String.format(this.url, this.host, this.port, this.database);
+            this.url = String.format(this.url, this.host, this.port, this.database)
             try {
-                Class.forName("org.postgresql.Driver");
-                val connection = DriverManager.getConnection(url, user, pass);
+                Class.forName("org.postgresql.Driver")
+                val connection = DriverManager.getConnection(url, user, pass)
                 val st: Statement = connection.createStatement()
                 st.execute(
                     "DELETE FROM no2garbage\n" +
@@ -189,6 +193,16 @@ class AccountActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK) {
             recreate()
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 }

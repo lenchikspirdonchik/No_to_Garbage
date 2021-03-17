@@ -8,11 +8,11 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.view.ViewGroup
+import android.util.Log
+import android.view.ViewGroup.LayoutParams
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.setMargins
-import com.yandex.mapkit.MapKitFactory
 import spiridonov.no_to_garbage.descriptionMenu.OnethingActivity
 import spiridonov.no_to_garbage.homeMenu.AddGarbageActivity
 import spiridonov.no_to_garbage.homeMenu.AllMapsActivity
@@ -27,31 +27,29 @@ class MainActivity : AppCompatActivity() {
     private var screenWidth = 0
     private var screenHeight = 0
     val TLP = LinearLayout.LayoutParams(
-        ViewGroup.LayoutParams.MATCH_PARENT,
-        ViewGroup.LayoutParams.MATCH_PARENT
+        LayoutParams.MATCH_PARENT,
+        LayoutParams.MATCH_PARENT
     )
     val TRP = TableRow.LayoutParams(
-        ViewGroup.LayoutParams.WRAP_CONTENT,
-        ViewGroup.LayoutParams.WRAP_CONTENT
+        LayoutParams.WRAP_CONTENT,
+        LayoutParams.WRAP_CONTENT
     )
     val LP = TableLayout.LayoutParams(
-        ViewGroup.LayoutParams.MATCH_PARENT,
-        ViewGroup.LayoutParams.MATCH_PARENT
+        LayoutParams.MATCH_PARENT,
+        LayoutParams.MATCH_PARENT
     )
     val imageP = TableLayout.LayoutParams(
-        ViewGroup.LayoutParams.MATCH_PARENT,
-        ViewGroup.LayoutParams.MATCH_PARENT
+        LayoutParams.MATCH_PARENT,
+        LayoutParams.MATCH_PARENT
     )
     val linearimageP = LinearLayout.LayoutParams(
-        ViewGroup.LayoutParams.WRAP_CONTENT,
-        ViewGroup.LayoutParams.WRAP_CONTENT
+        LayoutParams.WRAP_CONTENT,
+        LayoutParams.WRAP_CONTENT
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        MapKitFactory.setApiKey("fd59b9d8-89f7-4bc6-aac0-48391066dd80")
-        MapKitFactory.initialize(this)
         val displaymetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displaymetrics)
         screenWidth = displaymetrics.widthPixels
@@ -199,18 +197,26 @@ class MainActivity : AppCompatActivity() {
         name: String,
         intent: Intent
     ) {
+        val displaymetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displaymetrics)
+        screenWidth = displaymetrics.widthPixels
+        screenHeight = displaymetrics.heightPixels
         val resID = resources.getIdentifier(photo, "drawable", packageName)
         val linearImage = LinearLayout(this)
         linearImage.orientation = LinearLayout.VERTICAL
         linearImage.layoutParams = linearimageP
         val imageView = ImageView(this)
         val bMap = BitmapFactory.decodeResource(resources, resID)
-        val bMapScaled =
-            Bitmap.createScaledBitmap(bMap, screenWidth / 3 + 20, screenHeight / 5 + 15, true)
-        imageView.setImageBitmap(bMapScaled)
-        imageView.layoutParams = TLP
-        imageView.setOnClickListener {
-            startActivity(intent)
+        Log.d("screenWidth", screenWidth.toString())
+        Log.d("screenHeight", screenHeight.toString())
+        if (bMap != null) {
+            val bMapScaled =
+                Bitmap.createScaledBitmap(bMap, screenWidth / 3 + 20, screenHeight / 5 + 15, true)
+            imageView.setImageBitmap(bMapScaled)
+            imageView.layoutParams = TLP
+            imageView.setOnClickListener {
+                startActivity(intent)
+            }
         }
         val text = TextView(this)
         text.layoutParams = TLP
