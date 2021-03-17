@@ -18,9 +18,9 @@ import spiridonov.no_to_garbage.homeMenu.AddGarbageActivity
 import spiridonov.no_to_garbage.homeMenu.AllMapsActivity
 import spiridonov.no_to_garbage.homeMenu.StatisticsActivity
 import spiridonov.no_to_garbage.mainMenu.AboutAppActivity
-import spiridonov.no_to_garbage.mainMenu.AccountFragment
-import spiridonov.no_to_garbage.mainMenu.AddImageFragment
-import spiridonov.no_to_garbage.mainMenu.MapsFragment
+import spiridonov.no_to_garbage.mainMenu.AccountActivity
+import spiridonov.no_to_garbage.mainMenu.AddImageActivity
+import spiridonov.no_to_garbage.mainMenu.AddMapActivity
 
 
 class MainActivity : AppCompatActivity() {
@@ -46,6 +46,7 @@ class MainActivity : AppCompatActivity() {
         ViewGroup.LayoutParams.WRAP_CONTENT,
         ViewGroup.LayoutParams.WRAP_CONTENT
     )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -162,13 +163,13 @@ class MainActivity : AppCompatActivity() {
             linearscroll = linearscroll,
             name = "Добавить фото мусора",
             photo = "add_garbage",
-            intent = Intent(this, AddImageFragment::class.java)
+            intent = Intent(this, AddImageActivity::class.java)
         )
         addcategory(
             linearscroll = linearscroll,
             name = "Добавить мусорку",
             photo = "add_garbage",
-            intent = Intent(this, MapsFragment::class.java)
+            intent = Intent(this, AddMapActivity::class.java)
         )
         table.addView(trName)
         table.addView(trPhoto)
@@ -185,7 +186,7 @@ class MainActivity : AppCompatActivity() {
         btnAccount.layoutParams = TLP
         btnAccount.text = " Личный кабинет"
         btnAccount.setOnClickListener {
-            startActivity(Intent(this, AccountFragment::class.java))
+            startActivity(Intent(this, AccountActivity::class.java))
         }
         layout.addView(btnAbout)
         layout.addView(btnAccount)

@@ -43,6 +43,15 @@
             android:name=".mainMenu.AboutAppActivity"
             android:label="@string/aboutApp" />
         <activity
+            android:name=".mainMenu.AccountActivity"
+            android:label="@string/menu_account" />
+        <activity
+            android:name=".mainMenu.AddImageActivity"
+            android:label="@string/uploadImage" />
+        <activity
+            android:name=".mainMenu.AddMapActivity"
+            android:label="@string/menu_addMap" />
+        <activity
             android:name=".homeMenu.AllMapsActivity"
             android:label="@string/mapHome" />
         <activity

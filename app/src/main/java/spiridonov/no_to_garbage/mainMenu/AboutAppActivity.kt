@@ -4,9 +4,8 @@ package spiridonov.no_to_garbage.mainMenu
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_about_app.*
 import spiridonov.no_to_garbage.Admin.AdminActivity
 import spiridonov.no_to_garbage.R
 
@@ -14,25 +13,19 @@ class AboutAppActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.fragment_about_app)
-        val VK = findViewById<TextView>(R.id.txtVK)
-        val In = findViewById<TextView>(R.id.txtIn)
-        val Gmail = findViewById<TextView>(R.id.txtGmail)
-        val img = findViewById<ImageView>(R.id.imgLogo)
-
-
-        VK.setOnClickListener {
+        setContentView(R.layout.activity_about_app)
+        txtVK.setOnClickListener {
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://vk.com/leonid.spiri"))
             startActivity(browserIntent)
         }
-        In.setOnClickListener {
+        txtIn.setOnClickListener {
             val browserIntent = Intent(
                 Intent.ACTION_VIEW,
                 Uri.parse("https://www.linkedin.com/in/leonid-spiridonov-424a601ab/")
             )
             startActivity(browserIntent)
         }
-        Gmail.setOnClickListener {
+        txtGmail.setOnClickListener {
             val emailIntent = Intent(
                 Intent.ACTION_SENDTO, Uri.fromParts(
                     "mailto", "spiridonov.production@gmail.com", null
@@ -42,7 +35,7 @@ class AboutAppActivity : AppCompatActivity() {
             startActivity(Intent.createChooser(emailIntent, "Отправка сообщения"))
         }
 
-        img.setOnLongClickListener {
+        imgLogo.setOnLongClickListener {
             val mintent = Intent(this, AdminActivity::class.java)
             startActivity(mintent)
             true

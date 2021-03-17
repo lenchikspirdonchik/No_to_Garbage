@@ -6,12 +6,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
-import androidx.fragment.app.Fragment
+import android.widget.ArrayAdapter
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
@@ -24,6 +24,7 @@ import com.yandex.mapkit.map.InputListener
 import com.yandex.mapkit.map.Map
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.runtime.image.ImageProvider
+import kotlinx.android.synthetic.main.activity_maps.*
 import spiridonov.no_to_garbage.R
 import spiridonov.no_to_garbage.homeMenu.UserMapData
 import java.sql.DriverManager
@@ -32,7 +33,7 @@ import java.sql.Statement
 import java.util.*
 
 
-class MapsFragment : Fragment(), GeoObjectTapListener, InputListener {
+class AddMapActivity : AppCompatActivity(), GeoObjectTapListener, InputListener {
     var myCoordinates: LatLng? = null
     private lateinit var mapV: MapView
     private var number = 0L
@@ -43,11 +44,9 @@ class MapsFragment : Fragment(), GeoObjectTapListener, InputListener {
     private val pass = "c37ce7e3b99d480a04b8943b89ba6e7abb94cb86c56bfa4c6ace4fab4cbc287d"
     private var url = "jdbc:postgresql://%s:%d/%s"
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_maps)
         val allGarbage = arrayOf(
             getString(R.string.BTN_Jars),
             getString(R.string.BTN_Bottles),
@@ -59,29 +58,24 @@ class MapsFragment : Fragment(), GeoObjectTapListener, InputListener {
             getString(R.string.BTN_Paper),
             getString(R.string.BTN_Technic)
         )
-        val root: View = inflater.inflate(R.layout.fragment_maps, container, false)
-        val spinner = root.findViewById<Spinner>(R.id.spinnerMap)
-        val btn = root.findViewById<Button>(R.id.btnAddMaps)
         var category = allGarbage[0]
-        val hint = root.findViewById<EditText>(R.id.editTextMap)
-        mapV = root.findViewById<MapView>(R.id.mapview)
         val mAuth = FirebaseAuth.getInstance()
         val firebaseUser = mAuth.currentUser
 
         val adaptermain: ArrayAdapter<String> =
             ArrayAdapter<String>(
-                requireActivity(),
+                this,
                 R.layout.support_simple_spinner_dropdown_item,
                 allGarbage
             )
         adaptermain.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = adaptermain
-        spinner.onItemSelectedListener = object : OnItemSelectedListener {
+        spinnerMap.adapter = adaptermain
+        spinnerMap.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 itemSelected: View, selectedItemPosition: Int, selectedId: Long
             ) {
-                hint.setText("")
+                editTextMap.setText("")
                 showExistMap(allGarbage[selectedItemPosition])
                 category = allGarbage[selectedItemPosition]
             }
@@ -95,7 +89,7 @@ class MapsFragment : Fragment(), GeoObjectTapListener, InputListener {
         mapV.map.mapObjects.addTapListener { varin, point ->
             val data: UserMapData = varin.userData as UserMapData
 
-            val pDialog = SweetAlertDialog(context, SweetAlertDialog.BUTTON_POSITIVE)
+            val pDialog = SweetAlertDialog(this, SweetAlertDialog.BUTTON_POSITIVE)
             pDialog.progressHelper.barColor = Color.parseColor("#264599")
             pDialog.titleText = data.category
             pDialog.contentText = data.hint
@@ -123,17 +117,17 @@ class MapsFragment : Fragment(), GeoObjectTapListener, InputListener {
 
 
 
-        btn.setOnClickListener {
-            if (hint.text.toString() == "" || myCoordinates == null) {
-                Toast.makeText(requireContext(), getString(R.string.addSnippet), Toast.LENGTH_LONG)
+        btnAddMaps.setOnClickListener {
+            if (editTextMap.text.toString() == "" || myCoordinates == null) {
+                Toast.makeText(this, getString(R.string.addSnippet), Toast.LENGTH_LONG)
                     .show()
             } else {
                 if (firebaseUser != null) {
                     val latitude = String.format(Locale.ENGLISH, "%.6f", myCoordinates!!.latitude)
                     val longitude = String.format(Locale.ENGLISH, "%.6f", myCoordinates!!.longitude)
                     val latLang = "$latitude,$longitude"
-                    Save2SQL(firebaseUser.uid, latLang, category, hint.text.toString())
-                    val pDialog = SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
+                    Save2SQL(firebaseUser.uid, latLang, category, editTextMap.text.toString())
+                    val pDialog = SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE)
                     pDialog.progressHelper.barColor = Color.parseColor("#264599")
                     pDialog.titleText = "Вы успешно добавили место"
                     pDialog.contentText = "Спасибо, что делаете приложение лучше!"
@@ -141,23 +135,21 @@ class MapsFragment : Fragment(), GeoObjectTapListener, InputListener {
                     pDialog.progressHelper.rimColor = Color.parseColor("#264599")
                     pDialog.setCancelable(false)
                     pDialog.setConfirmClickListener {
-                        btn.setBackgroundColor(Color.RED)
-                        btn.isEnabled = false
+                        btnAddMaps.setBackgroundColor(Color.RED)
+                        btnAddMaps.isEnabled = false
                         pDialog.dismiss()
                     }
                     pDialog.progressHelper.spin()
                     pDialog.show()
                 } else {
                     Toast.makeText(
-                        requireContext(),
+                        this,
                         "Для начала необходимо авторизоваться",
                         Toast.LENGTH_LONG
                     ).show()
                 }
             }
         }
-        return root
-
     }
 
     private fun Save2SQL(uuid: String, latLang: String, category: String, hint: String) {
@@ -200,7 +192,7 @@ class MapsFragment : Fragment(), GeoObjectTapListener, InputListener {
                         val data = UserMapData(category = mainCategory, hint = dbHint)
                         mapV.map.mapObjects.addPlacemark(
                             Point(dbLatLang[0].toDouble(), dbLatLang[1].toDouble()),
-                            ImageProvider.fromResource(context, R.drawable.marker55)
+                            ImageProvider.fromResource(this, R.drawable.marker55)
                         ).userData = data
 
                         mapV.map.move(
@@ -245,7 +237,7 @@ class MapsFragment : Fragment(), GeoObjectTapListener, InputListener {
         Log.d("map", "onMapTap")
         mapV.map.mapObjects.addPlacemark(
             Point(point.latitude, point.longitude),
-            ImageProvider.fromResource(context, R.drawable.marker55)
+            ImageProvider.fromResource(this, R.drawable.marker55)
         )
         myCoordinates = LatLng(point.latitude, point.longitude)
         mapV.map.deselectGeoObject()

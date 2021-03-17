@@ -1,19 +1,15 @@
 package spiridonov.no_to_garbage.mainMenu
 
 import android.annotation.SuppressLint
-import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
-import android.view.*
-import android.widget.Button
-import android.widget.TextView
-import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import spiridonov.no_to_garbage.Admin.AdminActivity
+import kotlinx.android.synthetic.main.activity_account.*
 import spiridonov.no_to_garbage.R
 import spiridonov.no_to_garbage.account.LoginActivity
 import java.sql.DriverManager
@@ -22,7 +18,7 @@ import java.sql.Statement
 import java.util.*
 
 
-class AccountFragment : Fragment() {
+class AccountActivity : AppCompatActivity() {
     private lateinit var nameReference: DatabaseReference
     private val host = "ec2-108-128-104-50.eu-west-1.compute.amazonaws.com"
     private val database = "dvvl3t4j8k5q7"
@@ -30,28 +26,18 @@ class AccountFragment : Fragment() {
     private val user = "mpzdfkfaoiwywz"
     private val pass = "c37ce7e3b99d480a04b8943b89ba6e7abb94cb86c56bfa4c6ace4fab4cbc287d"
     private var url = "jdbc:postgresql://%s:%d/%s"
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-
-
-        val root = inflater.inflate(R.layout.fragment_account, container, false)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_account)
         val mAuth = FirebaseAuth.getInstance()
-        val btn_signOu = root.findViewById<Button>(R.id.btn_signOut)
-        val btn_null = root.findViewById<Button>(R.id.btn_null)
-        val btn_del = root.findViewById<Button>(R.id.btn_delete)
-        val textView = root.findViewById<TextView>(R.id.txtName)
-        val txtGarbage = root.findViewById<TextView>(R.id.txtGarbage)
         val firebaseUser = mAuth.currentUser
         val firebaseDate = FirebaseDatabase.getInstance()
         val rootReference = firebaseDate.reference
 
         if (firebaseUser == null) {
             btn_null.isEnabled = false
-            btn_signOu.isEnabled = false
-            val mintent: Intent? = Intent(context, LoginActivity::class.java)
+            btn_signOut.isEnabled = false
+            val mintent = Intent(this, LoginActivity::class.java)
             startActivityForResult(mintent, 1)
         } else {
             val name = Thread {
@@ -61,7 +47,7 @@ class AccountFragment : Fragment() {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         val value: String? = dataSnapshot.getValue(String::class.java)
                         if (value != null)
-                            textView.text = "Добрый день, " +
+                            txtName.text = "Добрый день, " +
                                     value +
                                     "\nВаша почта: ${firebaseUser.email}"
                     }
@@ -100,7 +86,7 @@ class AccountFragment : Fragment() {
             name.start()
             garbage.start()
             btn_null.isEnabled = true
-            btn_signOu.isEnabled = true
+            btn_signOut.isEnabled = true
 
             btn_null.setOnClickListener {
                 deleteDB(firebaseUser.uid)
@@ -139,12 +125,12 @@ class AccountFragment : Fragment() {
                     thread.start()
 
                 }
-                activity?.recreate()
+                recreate()
             }
 
 
-            btn_del.setOnClickListener {
-                val pDialog = SweetAlertDialog(context, SweetAlertDialog.BUTTON_POSITIVE)
+            btn_delete.setOnClickListener {
+                val pDialog = SweetAlertDialog(this, SweetAlertDialog.BUTTON_POSITIVE)
                 pDialog.progressHelper.barColor = Color.parseColor("#264599")
                 pDialog.titleText = "Вы точно хотите удалить аккаунт?"
                 pDialog.contentText =
@@ -157,7 +143,7 @@ class AccountFragment : Fragment() {
                     pDialog.dismiss()
                 }
                 pDialog.setCancelClickListener {
-                    activity?.recreate()
+                    recreate()
                     deleteDB(firebaseUser.uid)
                     val userReference = rootReference.child("Users").child(firebaseUser.uid)
                     userReference.removeValue()
@@ -168,16 +154,14 @@ class AccountFragment : Fragment() {
             }
 
 
-            btn_signOu.setOnClickListener {
+            btn_signOut.setOnClickListener {
                 mAuth.signOut()
 
-                activity?.recreate()
+                recreate()
 
             }
         }
 
-
-        return root
 
     }
 
@@ -204,24 +188,7 @@ class AccountFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK) {
-            activity?.recreate()
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.admin_account, menu)
-        return super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.navigation_admin -> {
-                val mintent = Intent(context, AdminActivity::class.java)
-                startActivity(mintent)
-                return true
-            }
-            else -> return super.onOptionsItemSelected(item)
+            recreate()
         }
     }
 }

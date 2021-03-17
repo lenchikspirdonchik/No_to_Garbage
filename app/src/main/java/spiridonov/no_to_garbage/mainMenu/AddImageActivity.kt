@@ -9,33 +9,27 @@ import android.graphics.Color
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.*
-import androidx.fragment.app.Fragment
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.android.synthetic.main.activity_add_image.*
 import spiridonov.no_to_garbage.R
 import java.io.ByteArrayOutputStream
 import java.io.FileNotFoundException
 import java.io.InputStream
 
 
-class AddImageFragment : Fragment() {
+class AddImageActivity : AppCompatActivity() {
     val CAMERA_CODE = 0
     val GALLERY_CODE = 1
     val Items = arrayOf("Камера", "Галерея")
-    lateinit var img: ImageView
-    lateinit var AddBtn: Button
-    lateinit var uploadBtn: Button
     var bitmapImage: Bitmap? = null
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val root = inflater.inflate(R.layout.fragment_add_image, container, false)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_add_image)
         val allGarbage = arrayOf(
             getString(R.string.BTN_Jars),
             getString(R.string.BTN_Bottles),
@@ -47,22 +41,18 @@ class AddImageFragment : Fragment() {
             getString(R.string.BTN_Paper),
             getString(R.string.BTN_Technic)
         )
-        val spinner = root.findViewById<Spinner>(R.id.spinnerImage)
-        uploadBtn = root.findViewById<Button>(R.id.btnUploadImage)
-        AddBtn = root.findViewById<Button>(R.id.btnAddImage)
         var category = allGarbage[0]
-        img = root.findViewById(R.id.imageView2)
 
 
         val adaptermain: ArrayAdapter<String> =
             ArrayAdapter<String>(
-                requireActivity(),
+                this,
                 R.layout.support_simple_spinner_dropdown_item,
                 allGarbage
             )
         adaptermain.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = adaptermain
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        spinnerImage.adapter = adaptermain
+        spinnerImage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 itemSelected: View, selectedItemPosition: Int, selectedId: Long
@@ -76,7 +66,7 @@ class AddImageFragment : Fragment() {
         }
 
 
-        uploadBtn.setOnClickListener {
+        btnUploadImage.setOnClickListener {
             val storageRef = FirebaseStorage.getInstance().reference
             val random = (1000000..9999999).random()
 
@@ -94,7 +84,7 @@ class AddImageFragment : Fragment() {
                     // ...
                     Log.d("addOnSuccessListener", taskSnapshot.metadata.toString())
 
-                    val pDialog = SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
+                    val pDialog = SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE)
                     pDialog.progressHelper.barColor = Color.parseColor("#264599")
                     pDialog.titleText = "Вы успешно добавили Фотографию"
                     pDialog.contentText = "Спасибо, что делаете приложение лучше!"
@@ -102,7 +92,7 @@ class AddImageFragment : Fragment() {
                     pDialog.progressHelper.rimColor = Color.parseColor("#264599")
                     pDialog.setCancelable(false)
                     pDialog.setConfirmClickListener {
-                        uploadBtn.isEnabled = false
+                        btnUploadImage.isEnabled = false
                         pDialog.dismiss()
                     }
                     pDialog.progressHelper.spin()
@@ -115,8 +105,8 @@ class AddImageFragment : Fragment() {
 
 
 
-        AddBtn.setOnClickListener {
-            val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+        btnAddImage.setOnClickListener {
+            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
             builder.setTitle("Выбор фотографии")
             builder.setItems(Items) { _, which ->
                 if (Items[which] == "Камера") {
@@ -134,9 +124,6 @@ class AddImageFragment : Fragment() {
 
 
         }
-
-
-        return root
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -152,7 +139,7 @@ class AddImageFragment : Fragment() {
                     try {
                         val imageUri = data.data
                         val imageStream: InputStream? =
-                            context?.contentResolver?.openInputStream(imageUri!!)
+                            contentResolver?.openInputStream(imageUri!!)
                         bitmapImage = BitmapFactory.decodeStream(imageStream)
 
                     } catch (e: FileNotFoundException) {
@@ -162,8 +149,8 @@ class AddImageFragment : Fragment() {
             }
         }
         if (bitmapImage != null) {
-            img.setImageBitmap(bitmapImage)
-            uploadBtn.isEnabled = true
+            imageView2.setImageBitmap(bitmapImage)
+            btnUploadImage.isEnabled = true
         }
 
 

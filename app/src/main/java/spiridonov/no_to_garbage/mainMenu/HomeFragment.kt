@@ -147,13 +147,13 @@ class HomeFragment : Fragment() {
             linearscroll = linearscroll,
             name = "Добавить фото мусора",
             photo = "add_garbage",
-            intent = Intent(context, AddImageFragment::class.java)
+            intent = Intent(context, AddImageActivity::class.java)
         )
         addcategory(
             linearscroll = linearscroll,
             name = "Добавить мусорку",
             photo = "add_garbage",
-            intent = Intent(context, MapsFragment::class.java)
+            intent = Intent(context, AddMapActivity::class.java)
         )
         table.addView(trName)
         table.addView(trPhoto)
@@ -170,7 +170,7 @@ class HomeFragment : Fragment() {
         btnAccount.layoutParams = TLP
         btnAccount.text = " Личный кабинет"
         btnAccount.setOnClickListener {
-            startActivity(Intent(context, AccountFragment::class.java))
+            startActivity(Intent(context, AccountActivity::class.java))
         }
         layout.addView(btnAbout)
         layout.addView(btnAccount)
