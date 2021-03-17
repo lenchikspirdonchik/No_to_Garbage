@@ -17,9 +17,17 @@ import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
 import spiridonov.no_to_garbage.R
 import spiridonov.no_to_garbage.descriptionMenu.OnethingActivity
+import spiridonov.no_to_garbage.homeMenu.AddGarbageActivity
 
 
 class HomeFragment : Fragment() {
+    private var screenWidth = 0
+    private var screenHeight = 0
+    val TLP = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+    val TRP = TableRow.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+    val LP = TableLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+    val imageP = TableLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+    val linearimageP = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -28,19 +36,17 @@ class HomeFragment : Fragment() {
         val root: View = inflater.inflate(R.layout.fragment_home, container, false)
         val displaymetrics = DisplayMetrics()
         activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
-        val screenWidth = displaymetrics.widthPixels
-        val screenHeight = displaymetrics.heightPixels
+        screenWidth = displaymetrics.widthPixels
+        screenHeight = displaymetrics.heightPixels
         val category = arrayOf("Кухня", "Ванная", "Гардеробная", "Кабинет")
         val layout = root.findViewById<LinearLayout>(R.id.linearMain)
-        val TLP = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-        val TRP = TableRow.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
-        val LP = TableLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-        val imageP = TableLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
         imageP.setMargins(15)
-        var id = 1
+        linearimageP.setMargins(15)
         val table = TableLayout(context)
         table.layoutParams = TLP
         layout.addView(table)
+
+
         for (name in category) {
             val trName = TableRow(context)
             val trPhoto = TableRow(context)
@@ -64,12 +70,22 @@ class HomeFragment : Fragment() {
             for (i in 0..photocategory.lastIndex) {
                 val resID =
                     resources.getIdentifier(photocategory[i], "drawable", context?.packageName)
-
+                val linearImage = LinearLayout(context)
+                linearImage.orientation = LinearLayout.VERTICAL
+                linearImage.layoutParams = linearimageP
                 val imageView = ImageView(context)
                 val bMap = BitmapFactory.decodeResource(resources, resID)
-                val bMapScaled = Bitmap.createScaledBitmap(bMap, screenWidth / 3 + 20, screenHeight / 5 + 15, true)
+                val bMapScaled = Bitmap.createScaledBitmap(
+                    bMap,
+                    screenWidth / 3 + 20,
+                    screenHeight / 5 + 15,
+                    true
+                )
                 imageView.setImageBitmap(bMapScaled)
-                imageView.layoutParams = imageP
+                imageView.layoutParams = TLP
+                val text = TextView(context)
+                text.layoutParams = TLP
+                text.text = namecategory[i]
                 imageView.setOnClickListener {
                     it
                     val mintent = Intent(context, OnethingActivity::class.java)
@@ -82,8 +98,9 @@ class HomeFragment : Fragment() {
                     }
 
                 }
-                linearscroll.addView(imageView)
-                id++
+                linearImage.addView(imageView)
+                linearImage.addView(text)
+                linearscroll.addView(linearImage)
             }
 
             table.addView(trName)
@@ -91,9 +108,48 @@ class HomeFragment : Fragment() {
 
         }
 
+        val trName = TableRow(context)
+        val trPhoto = TableRow(context)
+        trPhoto.layoutParams = LP
+        val textCategory = TextView(context)
+        textCategory.setTextColor(Color.BLACK)
+        textCategory.textSize = 22F
+        table.layoutParams = TLP
+        textCategory.text = "Другое"
+        trName.addView(textCategory)
+        val horizontalScrollView = HorizontalScrollView(context)
+        horizontalScrollView.layoutParams = TRP
+        val linearscroll = LinearLayout(context)
+        linearscroll.orientation = LinearLayout.HORIZONTAL
+        horizontalScrollView.addView(linearscroll)
+        trPhoto.addView(horizontalScrollView)
+        val resID = resources.getIdentifier("add_garbage", "drawable", context?.packageName)
+        val linearImage = LinearLayout(context)
+        linearImage.orientation = LinearLayout.VERTICAL
+        linearImage.layoutParams = linearimageP
+        val imageView = ImageView(context)
+        val bMap = BitmapFactory.decodeResource(resources, resID)
+        val bMapScaled =
+            Bitmap.createScaledBitmap(bMap, screenWidth / 3 + 20, screenHeight / 5 + 15, true)
+        imageView.setImageBitmap(bMapScaled)
+        imageView.layoutParams = TLP
+        imageView.setOnClickListener {
+            val mintent = Intent(context, AddGarbageActivity::class.java)
+            startActivity(mintent)
+        }
+        val text = TextView(context)
+        text.layoutParams = TLP
+        text.text = "Выкинуть мусор"
+        linearImage.addView(imageView)
+        linearImage.addView(text)
+        linearscroll.addView(linearImage)
+        table.addView(trName)
+        table.addView(trPhoto)
+
         return root
 
     }
+
 
     private fun setRusCategory(mainCategory: String): Array<String> {
         return when (mainCategory) {
