@@ -9,10 +9,14 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.View
 import android.view.ViewGroup.LayoutParams
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.setMargins
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
+import kotlinx.android.synthetic.main.activity_main.*
 import spiridonov.no_to_garbage.descriptionMenu.OnethingActivity
 import spiridonov.no_to_garbage.homeMenu.AddGarbageActivity
 import spiridonov.no_to_garbage.homeMenu.AllMapsActivity
@@ -24,6 +28,7 @@ import spiridonov.no_to_garbage.mainMenu.AddMapActivity
 
 
 class MainActivity : AppCompatActivity() {
+
     private var screenWidth = 0
     private var screenHeight = 0
     val TLP = LinearLayout.LayoutParams(
@@ -50,6 +55,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        MobileAds.initialize(this)
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
         val displaymetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displaymetrics)
         screenWidth = displaymetrics.widthPixels
@@ -79,6 +87,10 @@ class MainActivity : AppCompatActivity() {
 
             val linearscroll = LinearLayout(this)
             linearscroll.orientation = LinearLayout.HORIZONTAL
+            val view = View(this)
+            view.layoutParams = TLP
+            view.setBackgroundColor(Color.GRAY)
+
             horizontalScrollView.addView(linearscroll)
             trPhoto.addView(horizontalScrollView)
             val photocategory = setCategory(name)
@@ -89,6 +101,7 @@ class MainActivity : AppCompatActivity() {
                 val linearImage = LinearLayout(this)
                 linearImage.orientation = LinearLayout.VERTICAL
                 linearImage.layoutParams = linearimageP
+
                 val imageView = ImageView(this)
                 val bMap = BitmapFactory.decodeResource(resources, resID)
                 val bMapScaled = Bitmap.createScaledBitmap(
@@ -171,7 +184,7 @@ class MainActivity : AppCompatActivity() {
         )
         table.addView(trName)
         table.addView(trPhoto)
-
+        TLP.setMargins(15)
 
         val btnAbout = Button(this)
         btnAbout.layoutParams = TLP
@@ -179,6 +192,7 @@ class MainActivity : AppCompatActivity() {
         btnAbout.setOnClickListener {
             startActivity(Intent(this, AboutAppActivity::class.java))
         }
+        btnAbout.background = getDrawable(R.drawable.button)
 
         val btnAccount = Button(this)
         btnAccount.layoutParams = TLP
@@ -186,8 +200,10 @@ class MainActivity : AppCompatActivity() {
         btnAccount.setOnClickListener {
             startActivity(Intent(this, AccountActivity::class.java))
         }
-        layout.addView(btnAbout)
+        btnAccount.background = getDrawable(R.drawable.button)
         layout.addView(btnAccount)
+        layout.addView(btnAbout)
+
 
     }
 

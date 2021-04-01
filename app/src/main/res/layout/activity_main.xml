@@ -9,9 +9,15 @@
     tools:openDrawer="start">
 
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="12"
         android:background="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -22,4 +28,16 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"/>
     </ScrollView>
+
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/addId">
+    </com.google.android.gms.ads.AdView>
+
+    </LinearLayout>
 </androidx.drawerlayout.widget.DrawerLayout>

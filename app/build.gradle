@@ -10,8 +10,8 @@ android {
         applicationId "spiridonov.no_to_garbage"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 19
-        versionName "19-NewDesign"
+        versionCode 20
+        versionName "20-Ad"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -50,6 +50,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:20.0.0'
     implementation 'com.google.firebase:firebase-database:19.5.1'
     implementation 'com.google.firebase:firebase-storage:19.1.1'
+    implementation 'com.google.firebase:firebase-ads:18.3.0'
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -63,4 +64,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'org.postgresql:postgresql:42.2.5.jre7'
+    implementation 'com.google.android.gms:play-services-ads:19.8.0'
 }
