@@ -51,12 +51,7 @@
     <string name="uploadImage">Загрузить фотографию</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
-    <string name="addId">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="addIdMamifest">ca-app-pub-3940256099942544~6300978111</string>
-   <!--
-     <string name="addId">ca-app-pub-6335327761445839/3007702835</string>
+    <string name="addId">ca-app-pub-6335327761445839/3007702835</string>
     <string name="addIdMamifest">ca-app-pub-6335327761445839~3007702835</string>
 
-         <string name="addId">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="addIdMamifest">ca-app-pub-3940256099942544~6300978111</string>-->
 </resources>

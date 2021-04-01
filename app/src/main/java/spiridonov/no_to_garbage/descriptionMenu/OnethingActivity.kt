@@ -7,6 +7,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.yandex.mapkit.MapKitFactory
 import spiridonov.no_to_garbage.R
 
 
@@ -14,6 +15,8 @@ class OnethingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MapKitFactory.setApiKey("fd59b9d8-89f7-4bc6-aac0-48391066dd80")
+        MapKitFactory.initialize(this)
         setContentView(R.layout.activity_onething)
         val navView = findViewById<BottomNavigationView>(R.id.nav_view)
         val appBarConfiguration = AppBarConfiguration.Builder(
