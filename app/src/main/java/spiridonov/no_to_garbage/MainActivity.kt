@@ -14,13 +14,8 @@ import android.view.ViewGroup.LayoutParams
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.setMargins
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.OnUserEarnedRewardListener
-import com.google.android.gms.ads.rewarded.RewardedAd
-import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
-import kotlinx.android.synthetic.main.activity_main.*
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import spiridonov.no_to_garbage.descriptionMenu.OnethingActivity
 import spiridonov.no_to_garbage.homeMenu.AddGarbageActivity
 import spiridonov.no_to_garbage.homeMenu.AllMapsActivity
@@ -32,7 +27,6 @@ import spiridonov.no_to_garbage.mainMenu.AddMapActivity
 
 
 class MainActivity : AppCompatActivity() {
-    private var mRewardedAd: RewardedAd? = null
     private var screenWidth = 0
     private var screenHeight = 0
     val TLP = LinearLayout.LayoutParams(
@@ -59,12 +53,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        MobileAds.initialize(this)
-        val adRequest = AdRequest.Builder().build()
-        adView.loadAd(adRequest)
-        loadAd(adRequest)
-
-
         val displaymetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displaymetrics)
         screenWidth = displaymetrics.widthPixels
@@ -76,6 +64,8 @@ class MainActivity : AppCompatActivity() {
         val table = TableLayout(this)
         table.layoutParams = TLP
         layout.addView(table)
+
+
 
         for (name in category) {
             val trName = TableRow(this)
@@ -122,7 +112,6 @@ class MainActivity : AppCompatActivity() {
                 text.layoutParams = TLP
                 text.text = namecategory[i]
                 imageView.setOnClickListener {
-                    it
                     val mintent = Intent(this, OnethingActivity::class.java)
                     val msp = getSharedPreferences("things", Context.MODE_PRIVATE)
                     val editor = msp?.edit()
@@ -196,12 +185,6 @@ class MainActivity : AppCompatActivity() {
         btnAbout.layoutParams = TLP
         btnAbout.text = " О приложении"
         btnAbout.setOnClickListener {
-            mRewardedAd?.show(parent, OnUserEarnedRewardListener {
-                var rewardAmount = it.amount
-                var rewardType = it.type
-                Log.d("TAG", "User earned the reward.")
-                loadAd(adRequest)
-            })
             startActivity(Intent(this, AboutAppActivity::class.java))
         }
         btnAbout.background = getDrawable(R.drawable.button)
@@ -210,12 +193,6 @@ class MainActivity : AppCompatActivity() {
         btnAccount.layoutParams = TLP
         btnAccount.text = " Личный кабинет"
         btnAccount.setOnClickListener {
-            mRewardedAd?.show(parent, OnUserEarnedRewardListener {
-                var rewardAmount = it.amount
-                var rewardType = it.type
-                Log.d("TAG", "User earned the reward.")
-                loadAd(adRequest)
-            })
             startActivity(Intent(this, AccountActivity::class.java))
         }
         btnAccount.background = getDrawable(R.drawable.button)
@@ -249,14 +226,6 @@ class MainActivity : AppCompatActivity() {
             imageView.setImageBitmap(bMapScaled)
             imageView.layoutParams = TLP
             imageView.setOnClickListener {
-
-                mRewardedAd?.show(this, OnUserEarnedRewardListener {
-                    var rewardAmount = it.amount
-                    var rewardType = it.type
-                    Log.d("TAG", "User earned the reward.")
-                    val adRequest = AdRequest.Builder().build()
-                    loadAd(adRequest)
-                })
                 startActivity(intent)
             }
         }
@@ -286,24 +255,6 @@ class MainActivity : AppCompatActivity() {
             "Кабинет" -> arrayOf("battery", "paper", "technic")
             else -> arrayOf("battery", "paper", "technic")
         }
-    }
-
-    private fun loadAd(adRequest: AdRequest) {
-        RewardedAd.load(
-            this,
-            resources.getString(R.string.adVideoId),
-            adRequest,
-            object : RewardedAdLoadCallback() {
-                override fun onAdFailedToLoad(adError: LoadAdError) {
-                    Log.d("TAG", adError.message)
-                    mRewardedAd = null
-                }
-
-                override fun onAdLoaded(rewardedAd: RewardedAd) {
-                    Log.d("TAG", "Ad was loaded.")
-                    mRewardedAd = rewardedAd
-                }
-            })
     }
 
 

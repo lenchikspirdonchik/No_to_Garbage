@@ -21,9 +21,6 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
 
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/adIdManifest"/>
 
         <receiver android:name=".MyWidget">
             <intent-filter>

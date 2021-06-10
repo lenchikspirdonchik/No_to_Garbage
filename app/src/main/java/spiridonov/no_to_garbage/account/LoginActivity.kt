@@ -17,7 +17,6 @@ import spiridonov.no_to_garbage.R
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var mAuth: FirebaseAuth
-    private lateinit var msp: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

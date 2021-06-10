@@ -24,6 +24,7 @@ import java.io.InputStream
 
 
 class AddImageActivity : AppCompatActivity() {
+    lateinit var currentPhotoPath: String
     val CAMERA_CODE = 0
     val GALLERY_CODE = 1
     val Items = arrayOf("Камера", "Галерея")
@@ -91,7 +92,7 @@ class AddImageActivity : AppCompatActivity() {
 
                     val pDialog = SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE)
                     pDialog.progressHelper.barColor = Color.parseColor("#264599")
-                    pDialog.titleText = "Вы успешно добавили Фотографию"
+                    pDialog.titleText = "Вы успешно добавили фотографию"
                     pDialog.contentText = "Спасибо, что делаете приложение лучше!"
                     pDialog.confirmText = "Готово"
                     pDialog.progressHelper.rimColor = Color.parseColor("#264599")
@@ -115,8 +116,13 @@ class AddImageActivity : AppCompatActivity() {
             builder.setTitle("Выбор фотографии")
             builder.setItems(Items) { _, which ->
                 if (Items[which] == "Камера") {
-                    val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                    startActivityForResult(cameraIntent, CAMERA_CODE)
+                   /* val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                    startActivityForResult(cameraIntent, CAMERA_CODE)*/
+
+
+
+
+
                 } else if (Items[which] == "Галерея") {
                     val galleryIntent =
                         Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -170,6 +176,8 @@ class AddImageActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+
 }
 
 

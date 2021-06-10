@@ -51,10 +51,4 @@
     <string name="uploadImage">Загрузить фотографию</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
-    <string name="adId">ca-app-pub-6335327761445839/3007702835</string>
-    <string name="adIdManifest">ca-app-pub-6335327761445839~3007702835</string>
-    <string name="adVideoId">ca-app-pub-6335327761445839/9313983085</string>
-    <string name="adVideoIdManifest">ca-app-pub-6335327761445839~9313983085</string>
-
-    ca-app-pub-6335327761445839/9313983085
 </resources>
